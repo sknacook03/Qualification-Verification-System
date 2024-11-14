@@ -1,4 +1,4 @@
-import Header from "./components/header/header";
+
 import Footer from "./components/footer/footer";
 import "./App.css";
 
@@ -7,7 +7,9 @@ function App() {
     <>
       <div className="-app-contrainer">
         <div className="-box-login">
-        
+          <div className="-login">
+            
+          </div>
         </div>
         <Footer />
       </div>

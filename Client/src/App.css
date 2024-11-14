@@ -8,22 +8,27 @@ body {
   display: flex;
   background-color: #ff7100cc;
   flex-direction: column;
-  min-height: 100vh;
   font-family: "Prompt", sans-serif;
 }
 .-app-contrainer {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   min-height: 100vh;
 }
 .-box-login {
-  border-radius: 0.5rem;
-  background-color: white;
-  width: 200px;
-  height: 300px;
+  display: flex;
+  justify-content: center;
+  height: 700px;
 }
+.-box-login .-login{
+  width: 400px;
+  height: 600px;
+  align-self: center;
+  background-color: white;
+}
+
 footer {
-  margin-top: auto;
   align-items: center;
   text-align: center;
 }
