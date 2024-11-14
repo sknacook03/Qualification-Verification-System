@@ -22,6 +22,7 @@ body {
   height: 700px;
 }
 .-box-login .-login{
+  border-radius: 0.5rem;
   width: 400px;
   height: 600px;
   align-self: center;
