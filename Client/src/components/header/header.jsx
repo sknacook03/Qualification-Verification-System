@@ -1,15 +1,19 @@
-import logo from '../../assets/logo-rmuti.png';
-import './header.css'
-export default function Header() {
+import logo from "../../assets/logo-rmuti.png";
+import { Link } from "react-router-dom";
+import "./header.css";
+function Header() {
   return (
-    <div className="-contrainer-header">
-      <div className="-logo">
-        <img src={logo} alt="logo" width={65} />
+    <div className="contrainer-header">
+      <div className="logo">
+        <Link to="/">
+          <img src={logo} alt="logo" width={65} />
+        </Link>
       </div>
-      <div className="-info">
+      <div className="info">
         <h4>ระบบตรวจสอบคุณวุติ</h4>
-        <p>มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน</p>
+        <p>มหาวิทยาลัยเทคโนโลยี ราชมงคลอีสาน</p>
       </div>
     </div>
   );
 }
+export default Header;

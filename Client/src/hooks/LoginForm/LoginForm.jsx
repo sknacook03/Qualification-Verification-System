@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Input from '../Input/Input'
+import Input from '../../components/Input/Input'
 import PasswordInput from '../PasswordInput/PasswordInput';
 import './LoginForm.css';
 

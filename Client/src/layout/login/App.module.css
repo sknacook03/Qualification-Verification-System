@@ -6,30 +6,52 @@
 }
 body {
   display: flex;
-  background-color: #ff7100cc;
+  position: relative;
   flex-direction: column;
   font-family: "Prompt", sans-serif;
 }
-.-app-contrainer {
+.appContainer {
   display: flex;
+  position: relative;
   flex-direction: column;
   justify-content: space-between;
   min-height: 100vh;
+  background-image: linear-gradient(to top right, #ef852fe4, #7735004c),
+    url("../../assets/background-login.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
-.-box-login {
+.boxLogin {
   display: flex;
   justify-content: center;
   height: 700px;
 }
-.-box-login .-login{
+.boxLogin .login {
   border-radius: 0.5rem;
   width: 400px;
   height: 600px;
   align-self: center;
   background-color: white;
+  opacity: 0.9;
 }
 
 footer {
   align-items: center;
   text-align: center;
+}
+@media screen and (min-width: 768px) {
+  .boxLogin .login {
+    width: 700px;
+    height: 500px;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .boxLogin {
+    justify-content: start;
+    margin-left: 5rem;
+  }
+  .boxLogin .login {
+    width: 1000px;
+    height: 525px;
+  }
 }
