@@ -1,0 +1,37 @@
+.-contrainer-footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.5rem;
+  color: white;
+}
+.-contrainer-footer .-copy h5 {
+  font-size: 0.75rem;
+}
+.-contrainer-footer .-option {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.-contrainer-footer .-option a {
+  font-size: 0.75rem;
+  color: white;
+  text-decoration: none;
+}
+@media screen and (min-width: 768px) {
+  .-contrainer-footer {
+    flex-direction: row;
+    gap: 0;
+    justify-content: space-between;
+  }
+  .-contrainer-footer .-option {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+}
+@media screen and (min-width: 1024px) {
+    .-contrainer-footer .-option {
+      gap: 2rem;
+    }
+  }

@@ -1,0 +1,13 @@
+.-contrainer-header{
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    gap: 1rem;
+}
+.-contrainer-header .-info{
+    color: white;
+    padding-top: 2rem;
+    & p{
+        font-size: 15px;
+    }
+}
