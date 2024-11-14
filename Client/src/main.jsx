@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import App from './App.jsx'
 import {
   createBrowserRouter,
   RouterProvider,
@@ -7,11 +8,14 @@ import {
   Link,
 } from "react-router-dom";
 
-import App from './App.jsx'
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />
+  },
+  {
+    path: "/",
+    element: <Register />
   },
 ]);
 
