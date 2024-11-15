@@ -91,6 +91,7 @@ footer {
   .boxLogin .login .form {
     display: flex;
     justify-content: space-around;
+    margin-top: 2rem;
   }
   .btnLeft {
     width: 50%;

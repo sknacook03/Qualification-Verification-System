@@ -1,5 +1,4 @@
 body {
-  background-color: #ff7100cc;
   margin: 0;
 }
 .appContainer {
@@ -7,6 +6,7 @@ body {
   flex-direction: column;
   justify-content: space-between;
   min-height: 100vh;
+  background-color: #ff7100cc;
 }
 .appContainer .boxIn {
   background-color: white;
