@@ -29,12 +29,48 @@ body {
 .boxLogin .login {
   border-radius: 0.5rem;
   width: 400px;
-  height: 600px;
+  height: 655px;
+  padding: 1rem;
   align-self: center;
   background-color: white;
   opacity: 0.9;
+  transition: .3s ease-in-out;
 }
-
+.boxLogin .login:hover {
+  transition: .3s ease-in-out;
+  opacity: 1;
+}
+.forgetPass {
+  align-self: flex-start;
+  text-decoration: none;
+  color: #ff7100;
+  margin-bottom: 1rem;
+  transition: .3s ease-in-out;
+}
+.forgetPass:hover{
+  color: #a94d02;
+  transition: .3s ease-in-out;
+}
+.btnLeft,
+.btnRight {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.btnLeft {
+  margin-bottom: 1rem;
+}
+.btnRight {
+  gap: 1rem;
+}
+.btnSecondary {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: solid #d9d9d9;
+}
 footer {
   align-items: center;
   text-align: center;
@@ -42,16 +78,39 @@ footer {
 @media screen and (min-width: 768px) {
   .boxLogin .login {
     width: 700px;
-    height: 500px;
+    height: 655px;
   }
 }
 @media screen and (min-width: 1024px) {
-  .boxLogin {
-    justify-content: start;
-    margin-left: 5rem;
-  }
   .boxLogin .login {
+    display: flex;
+    flex-direction: column;
     width: 1000px;
     height: 525px;
+  }
+  .boxLogin .login .form {
+    display: flex;
+    justify-content: space-around;
+  }
+  .btnLeft {
+    width: 50%;
+    margin: 0 5rem 0 2rem;
+  }
+  .btnRight {
+    border-left: 3px solid #ff7100;
+    gap: 2rem;
+    padding: 0.5rem 2rem 2rem 5rem;
+    align-self: center;
+    width: 50%;
+  }
+  .btnSecondary {
+    padding-top: 2rem;
+    gap: 2rem;
+  }
+}
+@media screen and (min-width: 1440px) {
+  .boxLogin {
+    margin-left: 5rem;
+    justify-content: start;
   }
 }

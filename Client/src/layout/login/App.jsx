@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Button from "../../components/button/Button";
 import Footer from "../../components/footer/footer";
 import HeaderLogin from "../../components/headerLogin/headerLogin";
@@ -10,20 +11,39 @@ function App() {
       <div className={styles.appContainer}>
         <div className={styles.boxLogin}>
           <div className={styles.login}>
-            <div>
-              <Button
-                text="สมัครสมาชิก"
-                onClick={() => alert("สมัครสมาชิก")}
-                styleType="primary"
-              />
-              <Button
-                text="ดาวน์โหลดฟอร์มหนังสือรับรอง"
-                onClick={() => alert("ดาวน์โหลดฟอร์มหนังสือรับรอง")}
-                styleType="button-secondary"
-              />
-            </div>
             <HeaderLogin />
-            <LoginForm />
+            <div className={styles.form}>
+              <div className={styles.btnLeft}>
+                <LoginForm />
+                <Link to="" className={styles.forgetPass}>
+                  ลืมรหัสผ่าน?
+                </Link>
+                <Button
+                  text="เข้าสู่ระบบ"
+                  onClick={() => alert("เข้าสู่ระบบ")}
+                  styleType="primary"
+                />
+              </div>
+              <div className={styles.btnRight}>
+                <Button
+                  text="สมัครสมาชิก"
+                  onClick={() => alert("สมัครสมาชิก")}
+                  styleType="primary"
+                />
+                <div className={styles.btnSecondary}>
+                  <Button
+                    text="ดาวน์โหลดฟอร์มหนังสือรับรอง"
+                    onClick={() => alert("ดาวน์โหลดฟอร์มหนังสือรับรอง")}
+                    styleType="button-secondary"
+                  />
+                  <Button
+                    text="คู่มือการใช้งานระบบ"
+                    onClick={() => alert("คู่มือการใช้งานระบบ")}
+                    styleType="button-secondary"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <Footer />
