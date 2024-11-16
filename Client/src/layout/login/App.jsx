@@ -25,11 +25,13 @@ function App() {
                 />
               </div>
               <div className={styles.btnRight}>
-                <Button
-                  text="สมัครสมาชิก"
-                  onClick={() => alert("สมัครสมาชิก")}
-                  styleType="primary"
-                />
+                <Link to="./Register" style={{ width: "100%", textDecoration: "none" }}>
+                  <Button
+                    text="สมัครสมาชิก"
+                    onClick={() => alert("สมัครสมาชิก")}
+                    styleType="primary"
+                  />
+                </Link>
                 <div className={styles.btnSecondary}>
                   <Button
                     text="ดาวน์โหลดฟอร์มหนังสือรับรอง"
