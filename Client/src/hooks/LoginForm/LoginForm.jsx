@@ -10,13 +10,17 @@ const LoginForm = () => {
   return (
     <div className="login-form">
       <Input 
-        label="อีเมล" 
+        label="อีเมล"
+        id="email"
+        name="email" 
         type="email" 
         value={email} 
         onChange={(e) => setEmail(e.target.value)} 
       />
       <PasswordInput 
-        label="รหัสผ่าน" 
+        label="รหัสผ่าน"
+        id="password"
+        name="password"
         value={password} 
         onChange={(e) => setPassword(e.target.value)} 
       />

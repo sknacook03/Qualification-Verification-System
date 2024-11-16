@@ -1,0 +1,34 @@
+.arrow-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s;
+}
+  
+.arrow-button.orange {
+    background-color: #ff6600; 
+}
+  
+.arrow-button.orange:hover {
+    background-color: #e65c00; 
+}
+  
+.arrow-button.grey {
+    background-color: #b3b3b3; 
+}
+  
+.arrow-button.grey:hover {
+    background-color: #999; 
+}
+
+.arrow {
+    font-size: 42px;
+    color: #fff; 
+}
+  

@@ -3,7 +3,7 @@ import hide from '../../assets/hide.png';
 import visibility from '../../assets/visibility.png';
 import './PasswordInput.css';
 
-const PasswordInput = ({ label, value, onChange }) => {
+const PasswordInput = ({ label, id, name, value, onChange }) => {
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
@@ -14,6 +14,8 @@ const PasswordInput = ({ label, value, onChange }) => {
         <input 
           className="password-field"
           type={showPassword ? 'text' : 'password'} 
+          id={id}
+          name={name}
           value={value} 
           onChange={onChange} 
         />
