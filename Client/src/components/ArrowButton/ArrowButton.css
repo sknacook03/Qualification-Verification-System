@@ -2,10 +2,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 80px;
-    height: 50px;
+    width: 60px;
+    height: 40px;
     border: none;
-    border-radius: 10px;
+    border-radius: 0.5rem;
     cursor: pointer;
     outline: none;
     transition: background-color 0.3s;
@@ -28,7 +28,7 @@
 }
 
 .arrow {
-    font-size: 42px;
+    font-size: 30px;
     color: #fff; 
 }
   
