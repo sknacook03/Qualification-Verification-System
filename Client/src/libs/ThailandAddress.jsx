@@ -3,9 +3,9 @@ import {
   ThailandAddressTypeahead,
   ThailandAddressValue,
 } from 'react-thailand-address-typeahead';
+import './ThailandAddress.css'; 
 
 function ThailandAddress() {
-  // ใช้ ThailandAddressValue.empty() และตรวจสอบค่าเริ่มต้น
   const [val, setVal] = useState(ThailandAddressValue.empty() || {
     subdistrict: '',
     district: '',
@@ -14,34 +14,44 @@ function ThailandAddress() {
   });
 
   return (
-    <div>
+    <div className="address-container">
       <ThailandAddressTypeahead
         value={val}
-        onValueChange={(updatedVal) => setVal(updatedVal)} // อัปเดต state เมื่อค่าที่อยู่เปลี่ยน
+        onValueChange={(updatedVal) => setVal(updatedVal)}
       >
-        <ThailandAddressTypeahead.SubdistrictInput
-          style={{ borderRadius: 4, marginBottom: 4, fontSize: 18 }}
-          placeholder="ตำบล / แขวง"
-        />
-        <ThailandAddressTypeahead.DistrictInput
-          style={{ borderRadius: 4, marginBottom: 4, fontSize: 18 }}
-          placeholder="อำเภอ / เขต"
-        />
-        <ThailandAddressTypeahead.ProvinceInput
-          style={{ borderRadius: 4, marginBottom: 4, fontSize: 18 }}
-          placeholder="จังหวัด"
-        />
-        <ThailandAddressTypeahead.PostalCodeInput
-          style={{ borderRadius: 4, marginBottom: 4, fontSize: 18 }}
-          placeholder="รหัสไปรษณีย์"
-        />
+        <div>
+          <ThailandAddressTypeahead.SubdistrictInput
+            placeholder="ตำบล / แขวง"
+            className="address-input"
+          />
+        </div>
+        <div>
+          <ThailandAddressTypeahead.DistrictInput
+            placeholder="อำเภอ / เขต"
+            className="address-input"
+          />
+        </div>
+        <div>
+          <ThailandAddressTypeahead.ProvinceInput
+            placeholder="จังหวัด"
+            className="address-input"
+          />
+        </div>
+        <div>
+          <ThailandAddressTypeahead.PostalCodeInput
+            placeholder="รหัสไปรษณีย์"
+            className="address-input"
+          />
+        </div>
         <ThailandAddressTypeahead.Suggestion
-          containerProps={{ style: { border: "1px solid black" } }}
-          optionItemProps={{ style: { fontSize: 10, cursor: "pointer" } }}
+          containerProps={{
+            className: "suggestions-container" 
+          }}
+          optionItemProps={{
+            className: "suggestion-item" 
+          }}
         />
       </ThailandAddressTypeahead>
-      <br />
-      <code>{JSON.stringify(val)}</code>
     </div>
   );
 }

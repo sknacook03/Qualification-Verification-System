@@ -16,6 +16,7 @@ const LoginForm = () => {
         type="email" 
         value={email} 
         onChange={(e) => setEmail(e.target.value)} 
+        placeholder=" "
       />
       <PasswordInput 
         label="รหัสผ่าน"
@@ -23,6 +24,7 @@ const LoginForm = () => {
         name="password"
         value={password} 
         onChange={(e) => setPassword(e.target.value)} 
+        placeholder=" "
       />
     </div>
   );

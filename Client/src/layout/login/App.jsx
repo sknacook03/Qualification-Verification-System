@@ -20,7 +20,6 @@ function App() {
                 </Link>
                 <Button
                   text="เข้าสู่ระบบ"
-                  onClick={() => alert("เข้าสู่ระบบ")}
                   styleType="primary"
                 />
               </div>
@@ -28,19 +27,16 @@ function App() {
                 <Link to="./Register" style={{ width: "100%", textDecoration: "none" }}>
                   <Button
                     text="สมัครสมาชิก"
-                    onClick={() => alert("สมัครสมาชิก")}
                     styleType="primary"
                   />
                 </Link>
                 <div className={styles.btnSecondary}>
                   <Button
                     text="ดาวน์โหลดฟอร์มหนังสือรับรอง"
-                    onClick={() => alert("ดาวน์โหลดฟอร์มหนังสือรับรอง")}
                     styleType="button-secondary"
                   />
                   <Button
                     text="คู่มือการใช้งานระบบ"
-                    onClick={() => alert("คู่มือการใช้งานระบบ")}
                     styleType="button-secondary"
                   />
                 </div>

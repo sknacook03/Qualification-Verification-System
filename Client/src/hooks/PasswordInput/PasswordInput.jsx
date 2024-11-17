@@ -3,7 +3,7 @@ import hide from '../../assets/hide.png';
 import visibility from '../../assets/visibility.png';
 import './PasswordInput.css';
 
-const PasswordInput = ({ label, id, name, value, onChange }) => {
+const PasswordInput = ({ label, id, name, value, onChange, placeholder }) => {
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
@@ -17,7 +17,8 @@ const PasswordInput = ({ label, id, name, value, onChange }) => {
           id={id}
           name={name}
           value={value} 
-          onChange={onChange} 
+          onChange={onChange}
+          placeholder={placeholder}
         />
         <button 
           type="button" 
