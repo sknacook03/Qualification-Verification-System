@@ -1,10 +1,11 @@
-import { useState } from 'react'
-import PasswordInput from '../../hooks/PasswordInput/PasswordInput'
-import Header from '../../components/header/header'
-import Input from '../../components/Input/Input'
-import Footer from '../../components/footer/footer'
-import Button from '../../components/button/Button'
-import styles from './RegisterNext.module.css'
+import { useState } from "react";
+import PasswordInput from "../../hooks/PasswordInput/PasswordInput";
+import Header from "../../components/header/header";
+import Input from "../../components/Input/Input";
+import Footer from "../../components/footer/footer";
+import Button from "../../components/button/Button";
+import styles from "./RegisterNext.module.css";
+import { Link } from "react-router-dom";
 
 function RegisterNext() {
   const [password, setPassword] = useState("");
@@ -27,41 +28,37 @@ function RegisterNext() {
           ))}
         </div>
         <h3>สมัครสมาชิก</h3>
-        <div className='inputForm'>
+        <div className="inputForm">
           <form action="">
-          <PasswordInput
-                label=" "
-                id="password"
-                name="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="รหัสผ่านใหม่"
-              />
-              <PasswordInput
-                label=" "
-                id="confirmPassword"
-                name="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="ยืนยันรหัสผ่าน"
-              />
-              <div className={styles.infoInput}>
-                <p>อัพโหลดหนังสือรับรองเพื่อเข้าใช้งานระบบ</p>
-                <p>(รองรับไฟล์ .pdf .png .jpg ขนาดไม่เกิน 10 MB)</p>
-              </div>
-              <Input
-                type='file'
-              />
+            <PasswordInput
+              label=" "
+              id="password"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="รหัสผ่านใหม่"
+            />
+            <PasswordInput
+              label=" "
+              id="confirmPassword"
+              name="confirmPassword"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="ยืนยันรหัสผ่าน"
+            />
+            <div className={styles.infoInput}>
+              <p>อัพโหลดหนังสือรับรองเพื่อเข้าใช้งานระบบ</p>
+              <p>(รองรับไฟล์ .pdf .png .jpg ขนาดไม่เกิน 10 MB)</p>
+            </div>
+            <Input type="file" />
             <div className={styles.buttonSubmit}>
-              <Button 
-                text="ยืนยันการสมัครสมาชิก"
-                styleType="third"
-                />
-              <Button 
-                text="ย้อนกลับ"
-                styleType="back"
-                />
-              </div>
+              <Link  style={{ textDecoration: "none" }}>
+                <Button text="ยืนยันการสมัครสมาชิก" styleType="third" />
+              </Link>
+              <Link to="/Register" style={{ textDecoration: "none" }}>
+                <Button text="ย้อนกลับ" styleType="back" />
+              </Link>
+            </div>
           </form>
         </div>
       </div>
@@ -70,4 +67,4 @@ function RegisterNext() {
   );
 }
 
-export default RegisterNext
+export default RegisterNext;
