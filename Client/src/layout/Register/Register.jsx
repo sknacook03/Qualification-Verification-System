@@ -6,6 +6,7 @@ import ThailandAddress from "../../libs/ThailandAddress";
 import Input from "../../components/Input/Input";
 import Textfield from "../../components/Textfield/Textfield";
 import styles from "./Register.module.css";
+import OptionTypeAgency from "../../components/OptionTypeAgency/OptionTypeAgency";
 import { Link } from "react-router-dom";
 
 function Register() {
@@ -14,6 +15,7 @@ function Register() {
   const [department, setDepartment] = useState("");
   const [orgaddress, setOrgaddress] = useState("");
   const [telphone, setTelphone] = useState("");
+  const [orgType, setOrgType] = useState('');
 
   return (
     <div className={styles.appContainer}>
@@ -36,59 +38,61 @@ function Register() {
           <div className={styles.inputForm}>
             <div className={styles.inputRegister}>
               <Input
-                label=" "
+                label="อีเมล*"
                 id="emailregister"
                 name="emailregister"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="อีเมล"
+                placeholder=""
               />
-            </div>
-            <div className={styles.inputRegister}>
               <Input
-                label=" "
+                label="ชื่อหน่วยงาน*"
                 id="orgname"
                 name="orgname"
                 type="text"
                 value={orgname}
                 onChange={(e) => setOrgname(e.target.value)}
-                placeholder="ชื่อหน่วยงาน"
+                placeholder=""
               />
-            </div>
-            <div className={styles.inputRegister}>
               <Input
-                label=" "
+                label="แผนกงานที่รับผิดชอบตรวจสอบคุณวุฒิ*"
                 id="department"
                 name="department"
                 type="text"
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
-                placeholder="แผนกงานที่รับผิดชอบตรวจสอบคุณวุฒิ "
+                placeholder=""
               />
-            </div>
-            <div className={styles.inputRegister}>
-              <Textfield
-                label=" "
-                id="orgaddress"
-                name="orgaddress"
-                type="text"
-                value={orgaddress}
-                onChange={(e) => setOrgaddress(e.target.value)}
-                placeholder="ที่อยู่ของหน่วยงาน"
-              />
-            </div>
-            <ThailandAddress />
-            <div className={styles.inputRegister}>
               <Input
-                label=" "
+                label="เบอร์โทรศัพท์ของหน่วยงาน*"
                 id="telphone"
                 name="telphone"
                 type="text"
                 value={telphone}
                 onChange={(e) => setTelphone(e.target.value)}
-                placeholder="เบอร์โทรศัพท์ของหน่วยงาน"
+                placeholder=""
               />
+              <Textfield
+                label="ที่อยู่ของหน่วยงาน*"
+                id="orgaddress"
+                name="orgaddress"
+                type="text"
+                value={orgaddress}
+                onChange={(e) => setOrgaddress(e.target.value)}
+                placeholder=""
+              />
+            </div>
+            <div className={styles.inputRegister}>
+            <ThailandAddress />
+            <OptionTypeAgency
+              label="ประเภทหน่วยงาน*"
+              name="optionTypeAgency"
+              id="optionTypeAgency"
+              value={orgType}
+              onChange={(e) => setOrgType(e.target.value)}
+              placeholder="กรุณาเลือกประเภททหน่วยงาน"
+            />
             </div>
           </div>
         </form>

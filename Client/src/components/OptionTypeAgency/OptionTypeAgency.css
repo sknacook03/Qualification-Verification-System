@@ -1,39 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-
-.password-container {
+.input-label {
     display: block;
-    margin-bottom: 16px;
-}
-.password-container label{
     color: #555;
     font-size: 16px;
 }
-
-.password-field-wrapper {
-    position: relative;
-}
-.password-field-wrapper button img {
-    opacity: 0.5;
-}  
-.password-field {
+.input-select {
+    width: 100%;
     border-radius: 0.5rem;
     border: solid #d9d9d9;
-    width: 100%;
     padding: 12px;
-    margin-top: 4px;
     font-family: "Prompt", sans-serif;
 }
-.password-field:focus{
+.input-select:focus {
     box-shadow: 0 0 4px #c8c8c8;
     outline: none;
 }
-  
-.toggle-password-btn {
-    position: absolute;
-    right: 8px;
-    top: 16px;
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-  

@@ -36,7 +36,7 @@ function RegisterNext() {
               name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="รหัสผ่านใหม่"
+              placeholder="รหัสผ่าน"
             />
             <PasswordInput
               label=" "

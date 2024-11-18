@@ -26,7 +26,7 @@ function App() {
               <div className={styles.btnRight}>
                 <Link to="/Register" style={{ width: "100%", textDecoration: "none" }}>
                   <Button
-                    text="สมัครสมาชิก"
+                    text="สมัครสมาชิก(หน่วยงานใหม่)"
                     styleType="primary"
                   />
                 </Link>
