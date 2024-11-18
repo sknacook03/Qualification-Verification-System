@@ -18,7 +18,7 @@ function Register() {
       <div className={styles.appContent}>
         <h3>สมัครสมาชิก</h3>
         <form action="">
-          <div className="inputForm">
+          <div className={styles.inputForm}>
             <Input
               label=" "
               id="emailregister"
