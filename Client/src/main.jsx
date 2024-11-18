@@ -8,6 +8,8 @@ import TermsofUse from "./Layout/Terms-of-Use/terms-of-Use.jsx";
 import ForgetPassword from "./layout/ForgetPassword/ForgetPassword.jsx";
 import ForgetPasswordCode from "./layout/ForgetPasswordCode/ForgetPasswordCode.jsx";
 import ForgetPasswordReset from "./layout/ForgetPasswordReset/ForgetPasswordReset.jsx";
+import RegisterNext from "./Layout/Register/RegisterNext.jsx";
+
 import {
   createBrowserRouter,
   RouterProvider,
@@ -47,6 +49,10 @@ const router = createBrowserRouter([
   {
     path: "/ForgetPasswordReset",
     element: <ForgetPasswordReset />,
+  },
+  {
+    path: "/RegisterNext",
+    element: <RegisterNext />,
   },
 ]);
 

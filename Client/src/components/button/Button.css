@@ -39,14 +39,34 @@
   font-family: "Prompt", sans-serif;
   transition: 0.3s ease-in-out;
 }
+.button-back{
+  background-color: #ADAAA7;
+  color: white;
+  border: none;
+  padding: 15px 0;
+  width: 100%;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: "Prompt", sans-serif;
+  transition: 0.3s ease-in-out;
+}
+
 .button-primary:hover {
   background-color: #ec6a00;
   transition: 0.3s ease-in-out;
 }
 .button-secondary:hover {
   box-shadow: 0 0 4px #c8c8c8;
-  transition: 0.2s ease-in-out;
+  transition: 0.3s ease-in-out;
 }
+
+.button-back:hover{
+  background-color: #848484;
+  transition: 0.3s ease-in-out;
+}
+
 .button-third:hover {
   background-color: #1fd568;
   transition: 0.3s ease-in-out;

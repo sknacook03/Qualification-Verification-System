@@ -6,12 +6,14 @@ const Button = ({ text, onClick, styleType }) => {
     <button
       onClick={onClick}
       className={
-        styleType === "primary"
-          ? "button-primary"
-          : styleType === "secondary"
-          ? "button-secondary"
-          : "button-third"
-      }
+          styleType === "primary"
+            ? "button-primary"
+            : styleType === "secondary"
+            ? "button-secondary"
+            : styleType === "back"
+            ? "button-back"
+            : "button-third"
+          }
     >
       {text}
     </button>

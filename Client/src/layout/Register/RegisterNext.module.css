@@ -41,13 +41,18 @@ body{
     margin: 0.7rem;
 }
 
-.inputForm .inputRegister{
-    margin-bottom: 1rem;
+.infoInput{
+    margin: 0.7rem 0;
 }
 
-.arrowButton{   
-    margin-top: 2rem;
+.infoInput p{
+    padding-left: 0.5rem;
+    font-size: 14px;
+}
+
+.buttonSubmit{
+    margin: 1.5rem 0;
     display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
+    flex-direction: column;
+    gap: 1rem;
 }
