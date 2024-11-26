@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,9 +6,92 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  test String @unique
+
+model Agency {
+  id                BigInt  @id @default(autoincrement())
+  email             String  @unique
+  agency_name       String
+  telephone_number  String? @unique
+  address           String?
+  subdistrict       String?
+  district          String?
+  province          String?
+  postal_code       String?
+  type_id           BigInt
+  password          String
+  certificate       String?
+  status_approve    StatusApprove?
+  approve_by        BigInt?
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  // Relation to TypeAgency
+  typeAgency        TypeAgency @relation(fields: [type_id], references: [id])
+  pageViews         PageView[]
+}
+
+model TypeAgency {
+  id         BigInt  @id @default(autoincrement())
+  type_name  String  @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // Relation to Agency
+  agencies   Agency[]
+}
+
+model Officer {
+  id         BigInt  @id @default(autoincrement())
+  username   String  @unique
+  first_name String?
+  last_name  String?
+  password   String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model PageView {
+  id           BigInt  @id @default(autoincrement())
+  agency_id    BigInt
+  student_id   BigInt
+  page_url     String
+  faculty      String
+  department   String
+  ip_address   String?
+  user_agent   String?
+  created_at   DateTime @default(now())
+
+  // Relations
+  agency       Agency  @relation(fields: [agency_id], references: [id])
+  student      Student @relation(fields: [student_id], references: [id])
+}
+
+model Student {
+  id                BigInt  @id @default(autoincrement())
+  year_no           Int
+  semester_no       Int
+  student_no        String
+  std_year_no       Int
+  prefix_name       String
+  name              String
+  lname             String
+  cca               Int?
+  gpa               Float?
+  status_graduate   Int?
+  graduate_date     DateTime?
+  deg_name          String?
+  honors            String?
+  thesis_topic_th   String?
+  thesis_topic_en   String?
+  dept_code         Int?
+  curr_name         String?
+
+  // Relations
+  pageViews         PageView[]
+}
+
+enum StatusApprove {
+  pending
+  approved
+  rejected
 }
