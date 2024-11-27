@@ -27,7 +27,9 @@ model Agency {
 
   // Relation to TypeAgency
   typeAgency        TypeAgency @relation(fields: [type_id], references: [id])
+  officer           Officer? @relation("OfficerToAgency", fields: [approve_by], references: [id])
   pageViews         PageView[]
+
 }
 
 model TypeAgency {
@@ -48,6 +50,8 @@ model Officer {
   password   String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+
+  approvedAgencies Agency[] @relation("OfficerToAgency")
 }
 
 model PageView {
