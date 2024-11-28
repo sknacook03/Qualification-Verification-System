@@ -1,8 +1,10 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-
+import IndexRouter from './src/index.route.js';
 const app = express();
-
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(IndexRouter)
 app.get('/', (req, res) => {
   res.send('Server is running with Bun!');
 });
