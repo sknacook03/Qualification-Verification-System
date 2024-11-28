@@ -1,9 +1,8 @@
 import AgencyService from "../services/agency.service.js";
 
-// Custom replacer function สำหรับแปลง BigInt เป็น String
 const replacer = (key, value) => {
   if (typeof value === "bigint") {
-    return value.toString(); // แปลง BigInt เป็น String
+    return value.toString(); 
   }
   return value;
 };
@@ -11,6 +10,8 @@ const replacer = (key, value) => {
 const AgencyController = {
   getAgencyController: async (req, res) => {
     try {
+      const agency = req.agency; // ข้อมูลจาก JWT
+      console.log("Agency accessing this route:", agency);
       const agencys = await AgencyService.getAgencyAll();
 
       // ใช้ JSON.stringify กับ replacer function เพื่อแปลง BigInt เป็น String
@@ -62,7 +63,6 @@ const AgencyController = {
 
       const agency = await AgencyService.createAgency(agencyData);
 
-      // ใช้ JSON.stringify กับ replacer function เพื่อแปลง BigInt เป็น String
       const responseData = JSON.parse(JSON.stringify(agency, replacer));
 
       res.status(201).json({
@@ -77,11 +77,11 @@ const AgencyController = {
   deleteAgencyController: async (req, res) => {
     try {
       const agencyId = req.params.id;
-  
+
       await AgencyService.deleteAgency(agencyId);
-  
+
       await AgencyService.resetAutoIncrement();
-  
+
       res.status(200).json({
         success: true,
         message: "Agency deleted and AUTO_INCREMENT reset successfully",
@@ -91,7 +91,34 @@ const AgencyController = {
       res.status(500).json({ error: "Failed to delete agency" });
     }
   },
-  
+
+  loginController: async (req, res) => {
+    try {
+      const { email, password } = req.body;
+
+      if (!email || !password) {
+        return res
+          .status(400)
+          .json({ error: "Email and password are required" });
+      }
+      const {massage, token} = await AgencyService.loginAgency(email, password);
+
+      res.cookie("token", token, {
+        maxAge: 3600000, // 1 ชั่วโมง
+        secure: true,
+        httpOnly: true,
+        sameSite: "strict",
+      });
+      
+      res.status(200).json(massage);
+    } catch (error) {
+      if (error.message === "Invalid credentials") {
+        return res.status(401).json({ error: "Email or password is incorrect" });
+      }
+      console.error(error);
+      res.status(500).json({ error: "Failed to login" });
+    }
+  },
 };
 
 export default AgencyController;

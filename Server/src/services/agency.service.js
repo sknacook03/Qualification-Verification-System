@@ -1,5 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 const prisma = new PrismaClient();
 
 const AgencyService = {
@@ -107,11 +110,11 @@ const AgencyService = {
           id: true,
         },
       });
-  
+
       const maxId = maxIdResult._max.id ? maxIdResult._max.id.toString() : "0";
-  
+
       const newAutoIncrement = BigInt(maxId) + 1n;
-  
+
       await prisma.$executeRawUnsafe(
         `ALTER TABLE agency AUTO_INCREMENT = ${newAutoIncrement}`
       );
@@ -120,7 +123,33 @@ const AgencyService = {
       throw new Error("Failed to reset AUTO_INCREMENT");
     }
   },
-  
+  loginAgency: async (email, password) => {
+    try {
+      const agency = await prisma.agency.findUnique({
+        where: { email },
+      });
+
+      if (!agency) {
+        throw new Error("Agency not found");
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, agency.password);
+      if (!isPasswordValid) {
+        throw new Error("Password is incorrect");
+      }
+
+      const token = jwt.sign(
+        { id: agency.id.toString(), email: agency.email, role: 'agency' },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+      );
+
+      return { message: "Login successful", token };
+    } catch (error) {
+      console.error("Failed to login:", error);
+      throw new Error("Failed to login");
+    }
+  },
 };
 
 export default AgencyService;
