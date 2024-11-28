@@ -12,11 +12,11 @@ model Agency {
   email             String  @unique
   agency_name       String
   telephone_number  String? @unique
-  address           String?
-  subdistrict       String?
-  district          String?
-  province          String?
-  postal_code       String?
+  address           String  @default("-")
+  subdistrict       String  @default("-")
+  district          String  @default("-")
+  province          String  @default("-")
+  postal_code       String  @default("-")
   type_id           BigInt
   password          String
   certificate       String?
