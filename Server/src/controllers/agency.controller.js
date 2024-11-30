@@ -1,3 +1,5 @@
+import multer from "multer";
+import path from "path";
 import AgencyService from "../services/agency.service.js";
 
 const replacer = (key, value) => {
@@ -6,6 +8,30 @@ const replacer = (key, value) => {
   }
   return value;
 };
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // กำหนดโฟลเดอร์สำหรับเก็บไฟล์
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `${Date.now()}${ext}`); // กำหนดชื่อไฟล์ใหม่
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // ขนาดไฟล์ไม่เกิน 10 MB
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = [".pdf", ".png", ".jpg"];
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (allowedTypes.includes(ext)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Unsupported file type"));
+    }
+  },
+}).single("certificate");
 
 const AgencyController = {
   getAgencyController: async (req, res) => {
@@ -28,51 +54,58 @@ const AgencyController = {
   },
 
   createAgencyController: async (req, res) => {
-    try {
-      const {
-        email,
-        agency_name,
-        telephone_number,
-        address,
-        subdistrict,
-        district,
-        province,
-        postal_code,
-        type_id,
-        password,
-        certificate,
-      } = req.body;
+    upload(req, res, async (err) => {
+      if (err) {
+        return res.status(400).json({ error: err.message });
+      }
 
-      const lastAgency = await AgencyService.getLastAgency();
-      const newId = lastAgency ? Number(lastAgency.id) + 1 : 1;
+      try {
+        const {
+          email,
+          agency_name,
+          telephone_number,
+          address,
+          subdistrict,
+          district,
+          province,
+          postal_code,
+          type_id,
+          password,
+        } = req.body;
 
-      const agencyData = {
-        id: newId,
-        email,
-        agency_name,
-        telephone_number,
-        address,
-        subdistrict,
-        district,
-        province,
-        postal_code,
-        type_id,
-        password,
-        certificate,
-      };
+        const certificate = req.file ? req.file.path : "no_certificate_uploaded";;
 
-      const agency = await AgencyService.createAgency(agencyData);
+        const lastAgency = await AgencyService.getLastAgency();
+        const newId = lastAgency ? Number(lastAgency.id) + 1 : 1;
 
-      const responseData = JSON.parse(JSON.stringify(agency, replacer));
+        const agencyData = {
+          id: newId,
+          email,
+          agency_name,
+          telephone_number,
+          address,
+          subdistrict,
+          district,
+          province,
+          postal_code,
+          type_id,
+          password,
+          certificate,
+        };
 
-      res.status(201).json({
-        success: true,
-        data: responseData,
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Failed to create agency" });
-    }
+        const agency = await AgencyService.createAgency(agencyData);
+
+        const responseData = JSON.parse(JSON.stringify(agency, replacer));
+
+        res.status(201).json({
+          success: true,
+          data: responseData,
+        });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Failed to create agency" });
+      }
+    });
   },
   deleteAgencyController: async (req, res) => {
     try {

@@ -1,32 +1,41 @@
-import React, { useState } from 'react';
-import Input from '../../components/Input/Input'
-import PasswordInput from '../PasswordInput/PasswordInput';
-import './LoginForm.css';
+import React, { useState } from "react";
+import Input from "../../components/Input/Input";
+import PasswordInput from "../PasswordInput/PasswordInput";
+import Button from "../../components/button/Button";
+import "./LoginForm.css";
 
-const LoginForm = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const LoginForm = ({ onSubmit }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (onSubmit) {
+      onSubmit({ email, password });
+    }
+  };
 
   return (
-    <div className="login-form">
-      <Input 
+    <form className="login-form" onSubmit={handleSubmit}>
+      <Input
         label="อีเมล"
         id="email"
-        name="email" 
-        type="email" 
-        value={email} 
-        onChange={(e) => setEmail(e.target.value)} 
+        name="email"
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
         placeholder=" "
       />
-      <PasswordInput 
+      <PasswordInput
         label="รหัสผ่าน"
         id="password"
         name="password"
-        value={password} 
-        onChange={(e) => setPassword(e.target.value)} 
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
         placeholder=" "
       />
-    </div>
+      <Button type="submit" text="เข้าสู่ระบบ" styleType="primary" />
+    </form>
   );
 };
 

@@ -15,7 +15,17 @@ function Register() {
   const [department, setDepartment] = useState("");
   const [orgaddress, setOrgaddress] = useState("");
   const [telphone, setTelphone] = useState("");
-  const [orgType, setOrgType] = useState('');
+  const [orgType, setOrgType] = useState("");
+  const [address, setAddress] = useState({
+    subdistrict: '',
+    district: '',
+    province: '',
+    postalCode: ''
+  });
+
+  const handleAddressChange = (newAddress) => {
+    setAddress(newAddress);
+  };
 
   return (
     <div className={styles.appContainer}>
@@ -84,15 +94,15 @@ function Register() {
               />
             </div>
             <div className={styles.inputRegister}>
-            <ThailandAddress />
-            <OptionTypeAgency
-              label="ประเภทหน่วยงาน*"
-              name="optionTypeAgency"
-              id="optionTypeAgency"
-              value={orgType}
-              onChange={(e) => setOrgType(e.target.value)}
-              placeholder="กรุณาเลือกประเภททหน่วยงาน"
-            />
+              <ThailandAddress onAddressChange={handleAddressChange} />
+              <OptionTypeAgency
+                label="ประเภทหน่วยงาน*"
+                name="optionTypeAgency"
+                id="optionTypeAgency"
+                value={orgType}
+                onChange={(e) => setOrgType(e.target.value)}
+                placeholder="กรุณาเลือกประเภททหน่วยงาน"
+              />
             </div>
           </div>
         </form>
@@ -100,7 +110,19 @@ function Register() {
           <Link to="/" style={{ textDecoration: "none" }}>
             <ArrowButton direction="left" color="grey" />
           </Link>
-          <Link to="/RegisterNext" style={{ textDecoration: "none" }}>
+          <Link
+            to="/RegisterNext"
+            state={{
+              email,
+              orgname,
+              department,
+              orgaddress,
+              telphone,
+              ...address,
+              orgType,
+            }}
+            style={{ textDecoration: "none" }}
+          >
             <ArrowButton direction="right" color="orange" />
           </Link>
         </div>

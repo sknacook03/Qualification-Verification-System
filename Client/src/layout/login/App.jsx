@@ -18,10 +18,6 @@ function App() {
                 <Link to="/ForgetPassword" className={styles.forgetPass}>
                   ลืมรหัสผ่าน?
                 </Link>
-                <Button
-                  text="เข้าสู่ระบบ"
-                  styleType="primary"
-                />
               </div>
               <div className={styles.btnRight}>
                 <Link to="/Register" style={{ width: "100%", textDecoration: "none" }}>

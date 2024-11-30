@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 import PasswordInput from "../../hooks/PasswordInput/PasswordInput";
 import Header from "../../components/header/header";
@@ -5,11 +6,45 @@ import Input from "../../components/Input/Input";
 import Footer from "../../components/footer/footer";
 import Button from "../../components/button/Button";
 import styles from "./RegisterNext.module.css";
-import { Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 function RegisterNext() {
+  const location = useLocation();
+  const formData = location.state || {};
   const [password, setPassword] = useState("");
-  const [confirmPassword, setconfirmPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [file, setFile] = useState(null);
+
+  console.log(formData)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const finalData = new FormData();
+    finalData.append("password", password);
+    finalData.append("confirmPassword", confirmPassword);
+    finalData.append("certificate", file);
+    finalData.append("agency_name", formData.orgname);
+    finalData.append("telephone_number", formData.telphone);
+    finalData.append("address", formData.orgaddress);
+    finalData.append("postal_code", formData.postalCode);
+
+    Object.keys(formData).forEach((key) => {
+      finalData.append(key, formData[key]);
+    });
+
+    try {
+      const response = await axios.post("http://localhost:3000/agency", finalData);
+      
+      if (response.status === 200) {
+        alert("สมัครสมาชิกสำเร็จ!");
+      } else {
+        alert("เกิดข้อผิดพลาดในการสมัครสมาชิก");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("เกิดข้อผิดพลาด: " + error.message);
+    }
+  };
 
   return (
     <div className={styles.appContainer}>
@@ -29,7 +64,7 @@ function RegisterNext() {
         </div>
         <h3>สมัครสมาชิก</h3>
         <div className="inputForm">
-          <form action="">
+          <form onSubmit={handleSubmit}>
             <PasswordInput
               label=" "
               id="password"
@@ -50,11 +85,12 @@ function RegisterNext() {
               <p>อัพโหลดหนังสือรับรองเพื่อเข้าใช้งานระบบ</p>
               <p>(รองรับไฟล์ .pdf .png .jpg ขนาดไม่เกิน 10 MB)</p>
             </div>
-            <Input type="file" />
+            <Input
+              type="file"
+              onChange={(e) => setFile(e.target.files[0])}
+            />
             <div className={styles.buttonSubmit}>
-              <Link  style={{ textDecoration: "none" }}>
-                <Button text="ยืนยันการสมัครสมาชิก" styleType="third" />
-              </Link>
+              <Button text="ยืนยันการสมัครสมาชิก" styleType="third" />
               <Link to="/Register" style={{ textDecoration: "none" }}>
                 <Button text="ย้อนกลับ" styleType="back" />
               </Link>

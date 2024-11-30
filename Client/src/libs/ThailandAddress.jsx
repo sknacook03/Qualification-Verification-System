@@ -5,7 +5,7 @@ import {
 } from 'react-thailand-address-typeahead';
 import './ThailandAddress.css'; 
 
-function ThailandAddress() {
+function ThailandAddress({ onAddressChange }) {
   const [val, setVal] = useState(ThailandAddressValue.empty() || {
     subdistrict: '',
     district: '',
@@ -13,11 +13,18 @@ function ThailandAddress() {
     postalCode: ''
   });
 
+  const handleValueChange = (updatedVal) => {
+    setVal(updatedVal);
+    if (onAddressChange) {
+      onAddressChange(updatedVal); 
+    }
+  };
+
   return (
     <div className="address-container">
       <ThailandAddressTypeahead
         value={val}
-        onValueChange={(updatedVal) => setVal(updatedVal)}
+        onValueChange={handleValueChange}
       >
         <div>
           <label className="input-label">ตำบล / แขวง*</label>
