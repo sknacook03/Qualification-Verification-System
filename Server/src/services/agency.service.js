@@ -45,6 +45,21 @@ const AgencyService = {
         status_approve = "pending",
       } = agency;
 
+      console.log("Received type_id:", agency.type_id);
+
+      if (!type_id) {
+        throw new Error("Type ID is required");
+      }
+  
+
+      const typeAgency = await prisma.typeAgency.findUnique({
+        where: { id: type_id },
+      });
+  
+      if (!typeAgency) {
+        throw new Error("Invalid Type ID");
+      }
+
       const hashedPassword = await bcrypt.hash(password, 10);
 
       return prisma.agency.create({
@@ -59,7 +74,7 @@ const AgencyService = {
           province: province || "-",
           postal_code: postal_code || "-",
           typeAgency: {
-            connect: { id: type_id },
+            connect: { id: type_id },  // ใส่ type_id หรือ type_name ที่ตรงกับฐานข้อมูลของคุณ
           },
           password: hashedPassword,
           certificate,

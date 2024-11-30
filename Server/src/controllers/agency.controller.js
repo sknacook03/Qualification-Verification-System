@@ -73,7 +73,7 @@ const AgencyController = {
           type_id,
           password,
         } = req.body;
-
+        console.log(req.body);  // ตรวจสอบค่าที่ได้รับจากฟอร์ม
         const certificate = req.file ? req.file.path : "no_certificate_uploaded";;
 
         const lastAgency = await AgencyService.getLastAgency();
@@ -96,7 +96,6 @@ const AgencyController = {
         };
 
         const agency = await AgencyService.createAgency(agencyData);
-
         const responseData = JSON.parse(JSON.stringify(agency, replacer));
 
         res.status(201).json({

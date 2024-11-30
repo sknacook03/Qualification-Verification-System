@@ -15,7 +15,8 @@ function RegisterNext() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [file, setFile] = useState(null);
 
-  console.log(formData)
+  console.log(formData);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -27,23 +28,40 @@ function RegisterNext() {
     finalData.append("telephone_number", formData.telphone);
     finalData.append("address", formData.orgaddress);
     finalData.append("postal_code", formData.postalCode);
+    finalData.append("type_id", formData.orgType);
 
     Object.keys(formData).forEach((key) => {
+      console.log(`${key}: ${formData[key]}`);
       finalData.append(key, formData[key]);
     });
 
     try {
-      const response = await axios.post("http://localhost:3000/agency", finalData);
-      
-      if (response.status === 200) {
+      const response = await axios.post(
+        "http://localhost:3000/agency",
+        finalData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (response.status === 200 || response.status === 201) {
         alert("สมัครสมาชิกสำเร็จ!");
       } else {
-        alert("เกิดข้อผิดพลาดในการสมัครสมาชิก");
+        alert("เกิดข้อผิดพลาดในการสมัครสมาชิก: " + response.status);
       }
     } catch (error) {
-      console.error("Error:", error);
-      alert("เกิดข้อผิดพลาด: " + error.message);
-    }
+      if (error.response) {
+        console.error("Error response:", error.response.data);
+        alert("เกิดข้อผิดพลาด: " + (error.response.data.message || "ไม่สามารถสมัครสมาชิกได้"));
+      } else if (error.request) {
+        console.error("Error request:", error.request);
+        alert("เกิดข้อผิดพลาด: ไม่สามารถติดต่อเซิร์ฟเวอร์ได้");
+      } else {
+        console.error("Error:", error.message);
+        alert("เกิดข้อผิดพลาด: " + error.message);
+      }
+   }
   };
 
   return (
@@ -85,10 +103,7 @@ function RegisterNext() {
               <p>อัพโหลดหนังสือรับรองเพื่อเข้าใช้งานระบบ</p>
               <p>(รองรับไฟล์ .pdf .png .jpg ขนาดไม่เกิน 10 MB)</p>
             </div>
-            <Input
-              type="file"
-              onChange={(e) => setFile(e.target.files[0])}
-            />
+            <Input type="file" onChange={(e) => setFile(e.target.files[0])} />
             <div className={styles.buttonSubmit}>
               <Button text="ยืนยันการสมัครสมาชิก" styleType="third" />
               <Link to="/Register" style={{ textDecoration: "none" }}>
