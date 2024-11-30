@@ -63,6 +63,7 @@ const AgencyController = {
         const {
           email,
           agency_name,
+          department,
           telephone_number,
           address,
           subdistrict,
@@ -82,6 +83,7 @@ const AgencyController = {
           id: newId,
           email,
           agency_name,
+          department,
           telephone_number,
           address,
           subdistrict,

@@ -31,6 +31,7 @@ const AgencyService = {
       const {
         email,
         agency_name,
+        department,
         telephone_number,
         address,
         subdistrict,
@@ -50,6 +51,7 @@ const AgencyService = {
         data: {
           email,
           agency_name,
+          department,
           telephone_number,
           address: address || "-",
           subdistrict: subdistrict || "-",

@@ -11,6 +11,7 @@ model Agency {
   id                BigInt  @id @default(autoincrement())
   email             String  @unique
   agency_name       String
+  department        String
   telephone_number  String  @unique
   address           String  @default("-")
   subdistrict       String  @default("-")

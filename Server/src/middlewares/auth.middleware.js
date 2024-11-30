@@ -16,8 +16,8 @@ const authMiddleware = (req, res, next) => {
     }
 
     // เก็บข้อมูลที่ถอดรหัสไว้ใน req.agency
-    req.agency = decoded;
-    next(); // ให้ผ่านไปยังฟังก์ชันถัดไป
+    req.agency = decoded; //decoded = {id, email, role: 'agency'} ส่งมาจาก agency.service 
+    next();
   } catch (error) {
     console.error("Authorization error:", error.message);
     res.status(401).json({ error: "Unauthorized: Invalid token" });
