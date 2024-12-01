@@ -69,7 +69,7 @@ function RegisterNext() {
       <Header />
       <div className={styles.appContent}>
         <div className={styles.topBar}>
-          {["#a2fbb5", "#09FF3E"].map((color, index) => (
+          {["#09FF3E", "#09FF3E"].map((color, index) => (
             <div
               key={index}
               style={{

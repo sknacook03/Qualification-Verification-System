@@ -10,18 +10,18 @@ const OptionTypeAgency = ({ label, id, name, value, onChange, placeholder }) => 
     const fetchOptions = async () => {
       try {
         const response = await axios.get('http://localhost:3000/typeagency');
-        const result = response.data; // ดึงข้อมูล JSON จาก response
+        const result = response.data; 
         if (result.success) {
-          setOptions(result.data); // ตั้งค่า options ด้วยข้อมูลที่ได้
+          setOptions(result.data); 
         } else {
           console.error('Error: API response unsuccessful');
-          setOptions([]); // ตั้งค่า options เป็นอาร์เรย์ว่างหาก API ไม่สำเร็จ
+          setOptions([]); 
         }
       } catch (error) {
         console.error('Error fetching options:', error);
-        setOptions([]); // ตั้งค่า options เป็นอาร์เรย์ว่างในกรณีมีข้อผิดพลาด
+        setOptions([]); 
       } finally {
-        setLoading(false); // ปิดสถานะกำลังโหลด
+        setLoading(false); 
       }
     };
 

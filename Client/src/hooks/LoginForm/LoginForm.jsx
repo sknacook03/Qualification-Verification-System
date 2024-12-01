@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Input from "../../components/Input/Input";
 import PasswordInput from "../PasswordInput/PasswordInput";
+import { useNavigate } from "react-router-dom";
 import Button from "../../components/button/Button";
 import "./LoginForm.css";
 
 const LoginForm = ({ onSubmit }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,6 +28,7 @@ const LoginForm = ({ onSubmit }) => {
       console.log(response.data);
       if (response.status === 200) {
         alert("ล็อคอินสำเร็จ!");
+        navigate("/ForgetPassword");
       } else {
         alert("เกิดข้อผิดพลาดในการสมัครสมาชิก: " + response.status);
       }
