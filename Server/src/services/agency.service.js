@@ -149,7 +149,7 @@ const AgencyService = {
       if (!agency) {
         throw new Error("Agency not found");
       }
-
+      
       const isPasswordValid = await bcrypt.compare(password, agency.password);
       if (!isPasswordValid) {
         throw new Error("Password is incorrect");
@@ -163,8 +163,15 @@ const AgencyService = {
 
       return { message: "Login successful", token };
     } catch (error) {
+      // กรณีที่เกิดข้อผิดพลาด ไม่ควรโยน Error แบบทั่วไป
+      if (error.message === "Agency not found") {
+        throw new Error("Agency not found");  // เก็บข้อผิดพลาดไว้เพื่อให้ Controller จัดการ
+      }
+      if (error.message === "Password is incorrect") {
+        throw new Error("Password is incorrect");
+      }
       console.error("Failed to login:", error);
-      throw new Error("Failed to login");
+      throw error; // โยน error ที่เกิดขึ้นให้ Controller จัดการ
     }
   },
 };

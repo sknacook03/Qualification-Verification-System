@@ -136,7 +136,7 @@ const AgencyController = {
           .json({ error: "Email and password are required" });
       }
       const {massage, token} = await AgencyService.loginAgency(email, password);
-
+      
       res.cookie("token", token, {
         maxAge: 3600000, // 1 ชั่วโมง
         secure: true,
@@ -144,13 +144,22 @@ const AgencyController = {
         sameSite: "strict",
       });
       
-      res.status(200).json(massage);
+      res.status(200).json({
+        massage: 'login success',
+      });
     } catch (error) {
-      if (error.message === "Invalid credentials") {
-        return res.status(401).json({ error: "Email or password is incorrect" });
+      if (error.message === "Agency not found") {
+        console.error("Login failed: Non-existing email:", req.body.email);
+        return res.status(401).json({ error: "ไม่พบข้อมูลในระบบ" });
       }
-      console.error(error);
-      res.status(500).json({ error: "Failed to login" });
+  
+      if (error.message === "Password is incorrect") {
+        console.error("Login failed: Incorrect password for email:", req.body.email);
+        return res.status(401).json({ error: "รหัสผ่านไม่ถูกต้อง" });
+      }
+  
+      console.error("Unexpected error in loginController:", error);
+      return res.status(500).json({ error: "Failed to login" });
     }
   },
 };

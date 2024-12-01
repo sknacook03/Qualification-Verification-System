@@ -53,17 +53,6 @@ body {
   transition: .3s ease-in-out;
   opacity: 1;
 }
-.forgetPass {
-  align-self: flex-start;
-  text-decoration: none;
-  color: #ff7100;
-  margin-bottom: 1rem;
-  transition: .3s ease-in-out;
-}
-.forgetPass:hover{
-  color: #a94d02;
-  transition: .3s ease-in-out;
-}
 .btnLeft,
 .btnRight {
   display: flex;

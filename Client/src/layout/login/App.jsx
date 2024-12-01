@@ -15,12 +15,12 @@ function App() {
             <div className={styles.form}>
               <div className={styles.btnLeft}>
                 <LoginForm />
-                <Link to="/ForgetPassword" className={styles.forgetPass}>
-                  ลืมรหัสผ่าน?
-                </Link>
               </div>
               <div className={styles.btnRight}>
-                <Link to="/Register" style={{ width: "100%", textDecoration: "none" }}>
+                <Link
+                  to="/Register"
+                  style={{ width: "100%", textDecoration: "none" }}
+                >
                   <Button
                     text="สมัครสมาชิก(หน่วยงานใหม่)"
                     styleType="primary"
@@ -31,10 +31,7 @@ function App() {
                     text="ดาวน์โหลดฟอร์มหนังสือรับรอง"
                     styleType="secondary"
                   />
-                  <Button
-                    text="คู่มือการใช้งานระบบ"
-                    styleType="secondary"
-                  />
+                  <Button text="คู่มือการใช้งานระบบ" styleType="secondary" />
                 </div>
               </div>
             </div>

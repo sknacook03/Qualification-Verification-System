@@ -81,8 +81,8 @@ function RegisterNext() {
           ))}
         </div>
         <h3>สมัครสมาชิก</h3>
-        <div className="inputForm">
           <form onSubmit={handleSubmit}>
+            <div className={styles.inputForm}>
             <PasswordInput
               label=" "
               id="password"
@@ -99,6 +99,7 @@ function RegisterNext() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="ยืนยันรหัสผ่าน"
             />
+            </div>
             <div className={styles.infoInput}>
               <p>อัพโหลดหนังสือรับรองเพื่อเข้าใช้งานระบบ</p>
               <p>(รองรับไฟล์ .pdf .png .jpg ขนาดไม่เกิน 10 MB)</p>
@@ -111,7 +112,6 @@ function RegisterNext() {
               </Link>
             </div>
           </form>
-        </div>
       </div>
       <Footer />
     </div>

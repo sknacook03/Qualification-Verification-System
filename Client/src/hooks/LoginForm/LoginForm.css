@@ -4,4 +4,14 @@
     flex-direction: column;
     gap: 1rem;
   }
+  .forgetPass {
+    align-self: flex-start;
+    text-decoration: none;
+    color: #ff7100;
+    transition: .3s ease-in-out;
+  }
+  .forgetPass:hover{
+    color: #a94d02;
+    transition: .3s ease-in-out;
+  }
   
