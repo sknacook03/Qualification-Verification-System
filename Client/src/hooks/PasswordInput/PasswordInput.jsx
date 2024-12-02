@@ -19,6 +19,7 @@ const PasswordInput = ({ label, id, name, value, onChange, placeholder }) => {
           value={value} 
           onChange={onChange}
           placeholder={placeholder}
+          required
         />
         <button 
           type="button" 

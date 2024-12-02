@@ -8,8 +8,10 @@ import Textfield from "../../components/Textfield/Textfield";
 import styles from "./Register.module.css";
 import OptionTypeAgency from "../../components/OptionTypeAgency/OptionTypeAgency";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [orgname, setOrgname] = useState("");
   const [department, setDepartment] = useState("");
@@ -17,14 +19,28 @@ function Register() {
   const [telphone, setTelphone] = useState("");
   const [orgType, setOrgType] = useState("");
   const [address, setAddress] = useState({
-    subdistrict: '',
-    district: '',
-    province: '',
-    postalCode: ''
+    subdistrict: "",
+    district: "",
+    province: "",
+    postalCode: "",
   });
 
   const handleAddressChange = (newAddress) => {
     setAddress(newAddress);
+  };
+
+  const handleNext = () => {
+    navigate("/RegisterNext", {
+      state: {
+        email,
+        orgname,
+        department,
+        orgaddress,
+        telphone,
+        ...address,
+        orgType,
+      },
+    });
   };
 
   return (
@@ -110,21 +126,9 @@ function Register() {
           <Link to="/" style={{ textDecoration: "none" }}>
             <ArrowButton direction="left" color="grey" />
           </Link>
-          <Link
-            to="/RegisterNext"
-            state={{
-              email,
-              orgname,
-              department,
-              orgaddress,
-              telphone,
-              ...address,
-              orgType,
-            }}
-            style={{ textDecoration: "none" }}
-          >
+          <button type="button" onClick={handleNext} style={{ border: "none" }}>
             <ArrowButton direction="right" color="orange" />
-          </Link>
+          </button>
         </div>
       </div>
       <Footer />

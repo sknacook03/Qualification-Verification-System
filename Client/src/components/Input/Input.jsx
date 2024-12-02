@@ -12,6 +12,7 @@ const Input = ({ label, id, name, type = 'text', value, onChange, placeholder })
       value={value} 
       onChange={onChange}
       placeholder={placeholder}
+      required
     />
   </div>
 );

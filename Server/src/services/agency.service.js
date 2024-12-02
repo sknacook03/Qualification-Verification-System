@@ -163,7 +163,6 @@ const AgencyService = {
 
       return { message: "Login successful", token };
     } catch (error) {
-      // กรณีที่เกิดข้อผิดพลาด ไม่ควรโยน Error แบบทั่วไป
       if (error.message === "Agency not found") {
         throw new Error("Agency not found");  // เก็บข้อผิดพลาดไว้เพื่อให้ Controller จัดการ
       }
