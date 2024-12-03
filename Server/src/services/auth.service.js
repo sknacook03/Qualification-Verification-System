@@ -30,13 +30,13 @@ const AuthService = {
       return { message: "Login successful", token };
     } catch (error) {
       if (error.message === "Agency not found") {
-        throw new Error("Agency not found"); // เก็บข้อผิดพลาดไว้เพื่อให้ Controller จัดการ
+        throw new Error("Agency not found"); 
       }
       if (error.message === "Password is incorrect") {
         throw new Error("Password is incorrect");
       }
       console.error("Failed to login:", error);
-      throw error; // โยน error ที่เกิดขึ้นให้ Controller จัดการ
+      throw error; 
     }
   },
 };

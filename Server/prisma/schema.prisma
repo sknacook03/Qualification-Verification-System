@@ -58,6 +58,14 @@ model ApprovalLog {
   officer        Officer?    @relation(fields: [officer_id], references: [id])
 }
 
+model PasswordReset {
+  id        BigInt   @id @default(autoincrement())
+  email     String   @unique
+  code      String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
 model Officer {
   id         BigInt  @id @default(autoincrement())
   username   String  @unique

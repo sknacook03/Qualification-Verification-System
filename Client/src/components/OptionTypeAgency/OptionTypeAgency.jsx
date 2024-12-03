@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // ตรวจสอบว่าติดตั้ง axios แล้ว: npm install axios
+import axios from 'axios'; 
 import './OptionTypeAgency.css';
 
 const OptionTypeAgency = ({ label, id, name, value, onChange, placeholder }) => {

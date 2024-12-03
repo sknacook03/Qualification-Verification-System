@@ -3,7 +3,7 @@ import Button from "../../components/button/Button";
 import Footer from "../../components/footer/footer";
 import HeaderLogin from "../../components/headerLogin/headerLogin";
 import LoginForm from "../../hooks/LoginForm/LoginForm";
-import styles from "./App.module.css";
+import styles from "./login.module.css";
 
 function App() {
   return (

@@ -1,0 +1,81 @@
+import React, { useState } from "react";
+import axios from "axios";
+import Header from "../../../components/header/header.jsx";
+import Footer from "../../../components/footer/footer.jsx";
+import styles from "./ForgetPasswordEmail.module.css";
+import Input from "../../../components/Input/Input.jsx";
+import ArrowButton from "../../../components/ArrowButton/ArrowButton.jsx";
+import { Link, useNavigate } from "react-router-dom";
+
+function ForgetPassword() {
+  const [emailForget, setEmailForget] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSendCode = async () => {
+    setLoading(true);
+    try {
+      await axios.post("http://localhost:3000/password-reset/request-reset", {
+        email: emailForget,
+      });
+      setMessage("รหัสรีเซ็ตได้ถูกส่งไปที่อีเมลของคุณแล้ว");
+      setLoading(false);
+      navigate("/ForgetPasswordCode", { state: { email: emailForget } }); 
+    } catch (error) {
+      setMessage("ไม่สามารถส่งรหัสได้ โปรดลองใหม่อีกครั้ง");
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <div className={styles.appContainer}>
+        <Header />
+        <div className={styles.boxContact}>
+          <div className={styles.boxIn}>
+            <div className={styles.topBar}>
+              {["#09FF3E", "#a2fbb5", "#a2fbb5"].map((color, index) => (
+                <div
+                  key={index}
+                  style={{
+                    flexGrow: 2,
+                    height: "100%",
+                    backgroundColor: color,
+                  }}
+                ></div>
+              ))}
+            </div>
+
+            <h3>ลืมรหัสผ่านหรือไม่?</h3>
+            <Input
+              label=" "
+              id="emailForget"
+              name="emailForget"
+              type="email"
+              value={emailForget}
+              onChange={(e) => setEmailForget(e.target.value)}
+              placeholder="กรุณากรอกอีเมล"
+            />
+            {message && <p className={styles.message}>{message}</p>}
+            <div className={styles.arrowButton}>
+              <Link to="/" style={{ textDecoration: "none" }}>
+                <ArrowButton direction="left" color="grey" />
+              </Link>
+              <button
+                className={styles.arrowButtonWrapper}
+                onClick={handleSendCode}
+                disabled={loading || !emailForget.trim()}
+              >
+                <ArrowButton direction="right" color="orange" />
+              </button>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export default ForgetPassword;
