@@ -31,7 +31,7 @@ model Agency {
   typeAgency        TypeAgency @relation(fields: [type_id], references: [id])
   officer           Officer? @relation("OfficerToAgency", fields: [approve_by], references: [id])
   pageViews         PageView[]
-
+  approvalLogs      ApprovalLog[]
 }
 
 model TypeAgency {
@@ -42,6 +42,20 @@ model TypeAgency {
 
   // Relation to Agency
   agencies   Agency[]
+}
+
+model ApprovalLog {
+  id             BigInt      @id @default(autoincrement())
+  agency_id      BigInt
+  officer_id     BigInt?
+  status_before  StatusApprove
+  status_after   StatusApprove
+  comment        String?
+  created_at     DateTime    @default(now())
+
+  // Relations
+  agency         Agency      @relation(fields: [agency_id], references: [id])
+  officer        Officer?    @relation(fields: [officer_id], references: [id])
 }
 
 model Officer {
@@ -55,6 +69,7 @@ model Officer {
   updated_at DateTime @updatedAt
 
   approvedAgencies Agency[] @relation("OfficerToAgency")
+  approvalLogs      ApprovalLog[]
 }
 
 model PageView {

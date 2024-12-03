@@ -6,7 +6,6 @@ const AgencyRouter = express.Router();
 
 AgencyRouter.post("/", AgencyController.createAgencyController)
 AgencyRouter.delete("/:id", AgencyController.deleteAgencyController)
-AgencyRouter.post("/login", AgencyController.loginController)
 AgencyRouter.get("/agencies", authMiddleware, AgencyController.getAgencyController)
 
 export default AgencyRouter;

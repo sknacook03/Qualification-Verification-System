@@ -18,7 +18,7 @@ const LoginForm = ({ onSubmit }) => {
       onSubmit({ email, password });
     }
     try {
-      const response = await axios.post("http://localhost:3000/agency/login", {
+      const response = await axios.post("http://localhost:3000/auth/login", {
         email,
         password,
       }, {
