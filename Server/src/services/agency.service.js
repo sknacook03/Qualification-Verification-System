@@ -71,7 +71,7 @@ const AgencyService = {
           province: province || "-",
           postal_code: postal_code || "-",
           typeAgency: {
-            connect: { id: type_id },  // ใส่ type_id หรือ type_name ที่ตรงกับฐานข้อมูลของคุณ
+            connect: { id: type_id }, 
           },
           password: hashedPassword,
           certificate,

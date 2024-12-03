@@ -103,7 +103,7 @@ function ForgetPasswordCode() {
             </div>
             {message && <p className={styles.message}>{message}</p>} {/* แสดงข้อความ */}
             <div className={styles.arrowButton}>
-              <Link to="/ForgetPasswordEmail" style={{ textDecoration: "none" }}>
+              <Link to="/ForgetPassword" style={{ textDecoration: "none" }}>
                 <ArrowButton direction="left" color="grey" />
               </Link>
               <button

@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
+import ClipLoader from "react-spinners/ClipLoader";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Header from "../../../components/header/header.jsx";
 import Footer from "../../../components/footer/footer.jsx";
 import styles from "./ForgetPasswordEmail.module.css";
@@ -9,21 +12,32 @@ import { Link, useNavigate } from "react-router-dom";
 
 function ForgetPassword() {
   const [emailForget, setEmailForget] = useState("");
-  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSendCode = async () => {
+    if (!emailForget.trim()) {
+      setLoading(false);
+      toast.error("กรุณากรอกอีเมล");
+      return;
+    }
     setLoading(true);
     try {
-      await axios.post("http://localhost:3000/password-reset/request-reset", {
-        email: emailForget,
-      });
-      setMessage("รหัสรีเซ็ตได้ถูกส่งไปที่อีเมลของคุณแล้ว");
+      const response = await axios.post(
+        "http://localhost:3000/password-reset/request-reset",
+        {
+          email: emailForget,
+        }
+      );
+      toast.success("รหัสรีเซ็ตได้ถูกส่งไปที่อีเมลของคุณแล้ว");
       setLoading(false);
-      navigate("/ForgetPasswordCode", { state: { email: emailForget } }); 
+      navigate("/ForgetPasswordCode", { state: { email: emailForget } });
     } catch (error) {
-      setMessage("ไม่สามารถส่งรหัสได้ โปรดลองใหม่อีกครั้ง");
+      if (error.response?.status === 404) {
+        toast.error("ไม่มีข้อมูลในระบบ");
+      } else {
+        toast.error("ไม่สามารถส่งรหัสได้ โปรดลองใหม่อีกครั้ง");
+      }
       setLoading(false);
     }
   };
@@ -57,7 +71,6 @@ function ForgetPassword() {
               onChange={(e) => setEmailForget(e.target.value)}
               placeholder="กรุณากรอกอีเมล"
             />
-            {message && <p className={styles.message}>{message}</p>}
             <div className={styles.arrowButton}>
               <Link to="/" style={{ textDecoration: "none" }}>
                 <ArrowButton direction="left" color="grey" />
@@ -65,15 +78,32 @@ function ForgetPassword() {
               <button
                 className={styles.arrowButtonWrapper}
                 onClick={handleSendCode}
-                disabled={loading || !emailForget.trim()}
+                disabled={loading}
               >
-                <ArrowButton direction="right" color="orange" />
+                {loading ? (
+                  <ClipLoader size={15} color={"#FF7100"} />
+                ) : (
+                  <ArrowButton direction="right" color="orange" />
+                )}
               </button>
             </div>
           </div>
         </div>
         <Footer />
       </div>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition:Bounce
+      />
     </>
   );
 }
