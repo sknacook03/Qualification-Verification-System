@@ -28,7 +28,7 @@ const LoginForm = ({ onSubmit }) => {
       console.log(response.data);
       if (response.status === 200) {
         alert("ล็อคอินสำเร็จ!");
-        navigate("/ForgetPassword");
+        navigate("/Homepages");
       } else {
         alert("เกิดข้อผิดพลาดในการสมัครสมาชิก: " + response.status);
       }

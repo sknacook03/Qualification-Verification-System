@@ -36,11 +36,10 @@ const upload = multer({
 const AgencyController = {
   getAgencyController: async (req, res) => {
     try {
-      const agency = req.agency; // ข้อมูลจาก JWT
+      const agency = req.agency;
       console.log("Agency accessing this route:", agency);
       const agencys = await AgencyService.getAgencyAll();
 
-      // ใช้ JSON.stringify กับ replacer function เพื่อแปลง BigInt เป็น String
       const responseData = JSON.parse(JSON.stringify(agencys, replacer));
 
       res.status(200).json({
@@ -52,7 +51,37 @@ const AgencyController = {
       res.status(500).json({ error: "Failed to get agency" });
     }
   },
-
+  getLoggedInController: async (req, res) => {
+    try {
+      const agencyId = req.agency.id; // ข้อมูลที่มาจาก middleware
+      
+      const agencyData = await AgencyService.getAgencyById(agencyId);
+  
+      if (!agencyData) {
+        // ถ้าไม่พบข้อมูล agency
+        return res.status(404).json({ error: "Agency data not found" });
+      }
+  
+      // ตรวจสอบและแปลงค่า BigInt เป็น string ก่อนส่งกลับ
+      if (agencyData.id) {
+        agencyData.id = agencyData.id.toString(); // แปลง BigInt เป็น string
+      }
+  
+      // ตรวจสอบว่า `agencyData` มี field ที่เป็น BigInt อื่นๆ หรือไม่
+      // ใช้ฟังก์ชันในการแปลงค่าทั้งหมดเป็น string
+      const agencyDataStringified = JSON.parse(
+        JSON.stringify(agencyData, (key, value) =>
+          typeof value === 'bigint' ? value.toString() : value
+        )
+      );
+  
+      res.json({ data: agencyDataStringified });
+    } catch (error) {
+      console.error("Error fetching agency data:", error.message);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
+  
   createAgencyController: async (req, res) => {
     upload(req, res, async (err) => {
       if (err) {

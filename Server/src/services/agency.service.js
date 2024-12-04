@@ -137,6 +137,23 @@ const AgencyService = {
       throw new Error("Failed to reset AUTO_INCREMENT");
     }
   },
+  getAgencyById: async (id) => {
+    try {
+      console.log("Fetching agency by ID:", id);
+      const agency = await prisma.agency.findUnique({
+        where: { id: BigInt(id) },
+      });
+  
+      if (!agency) {
+        console.error("No agency found for ID:", id);
+      }
+      return agency;
+    } catch (error) {
+      console.error("Error in getAgencyById:", error.message);
+      throw error;
+    }
+  },
+  
 };
 
 export default AgencyService;

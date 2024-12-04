@@ -9,6 +9,7 @@ import ForgetPassword from "./pages/ForgetPassword/ForgetPasswordEmail/ForgetPas
 import ForgetPasswordCode from "./pages/ForgetPassword/ForgetPasswordCode/ForgetPasswordCode.jsx";
 import ForgetPasswordReset from "./pages/ForgetPassword/ForgetPasswordReset/ForgetPasswordReset.jsx";
 import RegisterNext from "./pages/Register/RegisterNext.jsx";
+import Homepages from "./pages/Homepages/Homepages.jsx"
 
 import {
   createBrowserRouter,
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
   {
     path: "/RegisterNext",
     element: <RegisterNext />,
+  },
+  {
+    path: "/Homepages",
+    element: <Homepages />,
   },
 ]);
 
