@@ -14,6 +14,22 @@ const AgencyService = {
       };
     }
   },
+  getAgencyById: async (id) => {
+    try {
+      console.log("Fetching agency by ID:", id);
+      const agency = await prisma.agency.findUnique({
+        where: { id: BigInt(id) },
+      });
+  
+      if (!agency) {
+        console.error("No agency found for ID:", id);
+      }
+      return agency;
+    } catch (error) {
+      console.error("Error in getAgencyById:", error.message);
+      throw error;
+    }
+  },
   createAgency: async (agency) => {
     try {
       const existingAgency = await prisma.agency.findUnique({
@@ -135,22 +151,6 @@ const AgencyService = {
     } catch (error) {
       console.error("Failed to reset AUTO_INCREMENT:", error);
       throw new Error("Failed to reset AUTO_INCREMENT");
-    }
-  },
-  getAgencyById: async (id) => {
-    try {
-      console.log("Fetching agency by ID:", id);
-      const agency = await prisma.agency.findUnique({
-        where: { id: BigInt(id) },
-      });
-  
-      if (!agency) {
-        console.error("No agency found for ID:", id);
-      }
-      return agency;
-    } catch (error) {
-      console.error("Error in getAgencyById:", error.message);
-      throw error;
     }
   },
   

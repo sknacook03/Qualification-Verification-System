@@ -5,10 +5,10 @@ import Footer from "../../components/footer/footer";
 import ThailandAddress from "../../libs/ThailandAddress";
 import Input from "../../components/Input/Input";
 import Textfield from "../../components/Textfield/Textfield";
-import styles from "./Register.module.css";
 import OptionTypeAgency from "../../components/OptionTypeAgency/OptionTypeAgency";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import styles from "./Register.module.css";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Register() {
   const navigate = useNavigate();
@@ -29,18 +29,55 @@ function Register() {
     setAddress(newAddress);
   };
 
-  const handleNext = () => {
-    navigate("/RegisterNext", {
-      state: {
-        email,
-        orgname,
-        department,
-        orgaddress,
-        telphone,
-        ...address,
-        orgType,
-      },
-    });
+  const handleNext = async () => {
+    try {
+      // ถ้าผู้ใช้เลือกประเภท 'อื่นๆ'
+      if (orgType === "other") {
+        const otherTypeInput = document.getElementById("otherType");
+
+        // ตรวจสอบว่าผู้ใช้กรอกค่าในช่อง 'อื่นๆ'
+        if (otherTypeInput && otherTypeInput.value.trim()) {
+          const otherValue = otherTypeInput.value.trim();
+
+          // ส่งคำขอ POST เพื่อสร้างประเภทใหม่ในฐานข้อมูล
+          const response = await axios.post(
+            "http://localhost:3000/typeagency/create-type",
+            {
+              type_name: otherValue,
+            }
+          );
+          console.log(response);
+
+          if (response.status === 201) {
+            const newType = response.data.data; 
+            if (newType && newType.id) {
+              setOrgType(newType.id);
+            } else {
+              throw new Error("Failed to save new agency type");
+            }
+          }
+        } else {
+          alert("กรุณาระบุประเภทหน่วยงานในช่อง 'อื่นๆ'");
+          return;
+        }
+      }
+
+      // เมื่อข้อมูลถูกบันทึกเสร็จสิ้น ให้ไปยังหน้าถัดไป
+      navigate("/RegisterNext", {
+        state: {
+          email,
+          orgname,
+          department,
+          orgaddress,
+          telphone,
+          ...address,
+          orgType,
+        },
+      });
+    } catch (error) {
+      console.error("Error handling next:", error);
+      alert(error.message || "เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+    }
   };
 
   return (
@@ -117,7 +154,7 @@ function Register() {
                 id="optionTypeAgency"
                 value={orgType}
                 onChange={(e) => setOrgType(e.target.value)}
-                placeholder="กรุณาเลือกประเภททหน่วยงาน"
+                placeholder="กรุณาเลือกประเภทหน่วยงาน"
               />
             </div>
           </div>
