@@ -3,13 +3,14 @@ import { createRoot } from "react-dom/client";
 import App from "./pages/login/login.jsx";
 import Register from "./pages/Register/Register.jsx";
 import Contact from "./layout/contact/contact.jsx";
-import LoginAdmin from "./pages/LoginAdmin/LoginAdmin.jsx";
+import LoginOfficer from "./pages/LoginOfficer/LoginOfficer.jsx";
 import TermsofUse from "./layout/Terms-of-Use/terms-of-Use.jsx";
 import ForgetPassword from "./pages/ForgetPassword/ForgetPasswordEmail/ForgetPasswordEmail.jsx";
 import ForgetPasswordCode from "./pages/ForgetPassword/ForgetPasswordCode/ForgetPasswordCode.jsx";
 import ForgetPasswordReset from "./pages/ForgetPassword/ForgetPasswordReset/ForgetPasswordReset.jsx";
 import RegisterNext from "./pages/Register/RegisterNext.jsx";
 import Homepages from "./pages/Homepages/Homepages.jsx"
+import HomepagesOfficer from "./pages/HomepageOfficer/HomepageOfficer.jsx";
 
 import {
   createBrowserRouter,
@@ -32,8 +33,8 @@ const router = createBrowserRouter([
     element: <Contact />,
   },
   {
-    path: "/LoginAdmin",
-    element: <LoginAdmin />,
+    path: "/LoginOfficer",
+    element: <LoginOfficer />,
   },
   {
     path: "/terms-of-Use",
@@ -58,6 +59,10 @@ const router = createBrowserRouter([
   {
     path: "/Homepages",
     element: <Homepages />,
+  },
+  {
+    path: "/HomepagesOfficer",
+    element: <HomepagesOfficer />,
   },
 ]);
 

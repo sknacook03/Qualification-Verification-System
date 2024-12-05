@@ -39,6 +39,7 @@ function Homepages() {
       <h1>Welcome, {agency.agency_name}</h1>
       <p>Email: {agency.email}</p>
       <p>Department: {agency.department}</p>
+      <p>Role: {agency.role}</p>
     </div>
   );
 }

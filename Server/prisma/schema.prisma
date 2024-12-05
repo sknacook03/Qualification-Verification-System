@@ -67,7 +67,7 @@ model PasswordReset {
 
 model Officer {
   id         BigInt   @id @default(autoincrement())
-  username   String   @unique
+  email      String   @unique
   first_name String
   last_name  String
   password   String
