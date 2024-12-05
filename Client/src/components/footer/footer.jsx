@@ -11,7 +11,7 @@ function Footer() {
           </h5>
         </div>
         <div className="option">
-          <Link to="/staff">สำหรับเจ้าหน้าที่</Link>
+          <Link to="/LoginAdmin">สำหรับเจ้าหน้าที่</Link>
           <Link to="/terms-of-Use">ข้อตกลงการใช้ระบบ</Link>
           <Link to="/contact">ติดต่อ</Link>
         </div>

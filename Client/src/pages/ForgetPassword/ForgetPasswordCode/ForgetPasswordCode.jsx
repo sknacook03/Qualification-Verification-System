@@ -106,13 +106,15 @@ function ForgetPasswordCode() {
               <Link to="/ForgetPassword" style={{ textDecoration: "none" }}>
                 <ArrowButton direction="left" color="grey" />
               </Link>
-              <button
+              <div
                 onClick={handleVerifyCode}
+                role="button"
+                tabIndex="0"
                 disabled={loading}
                 style={{ background: "none", border: "none" }}
               >
                 <ArrowButton direction="right" color="orange" />
-              </button>
+              </div>
             </div>
           </div>
         </div>

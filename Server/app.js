@@ -8,7 +8,7 @@ const app = express();
 app.use(
   cors({
     credentials: true,
-    origin: "http://localhost:8888", 
+    origin: "http://localhost:5173", 
   })
 );
 app.use(express.urlencoded({ extended: true }));
