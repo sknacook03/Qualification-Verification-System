@@ -75,17 +75,21 @@ function ForgetPassword() {
               <Link to="/" style={{ textDecoration: "none" }}>
                 <ArrowButton direction="left" color="grey" />
               </Link>
-              <button
+              <div
                 className={styles.arrowButtonWrapper}
                 onClick={handleSendCode}
+                role="button"
+                tabIndex="0"
                 disabled={loading}
               >
                 {loading ? (
+                  <div className={styles.loader}>
                   <ClipLoader size={15} color={"#FF7100"} />
+                  </div>
                 ) : (
                   <ArrowButton direction="right" color="orange" />
                 )}
-              </button>
+              </div>
             </div>
           </div>
         </div>

@@ -8,54 +8,53 @@ datasource db {
 }
 
 model Agency {
-  id                BigInt  @id @default(autoincrement())
-  email             String  @unique
-  agency_name       String
-  department        String
-  telephone_number  String  @unique
-  address           String  @default("-")
-  subdistrict       String  @default("-")
-  district          String  @default("-")
-  province          String  @default("-")
-  postal_code       String  @default("-")
-  type_id           BigInt
-  password          String
-  certificate       String
-  role              Role
-  status_approve    StatusApprove
-  approve_by        BigInt?
-  created_at        DateTime @default(now())
-  updated_at        DateTime @updatedAt
+  id               BigInt        @id @default(autoincrement())
+  email            String        @unique
+  agency_name      String
+  department       String
+  telephone_number String        @unique
+  address          String        @default("-")
+  subdistrict      String        @default("-")
+  district         String        @default("-")
+  province         String        @default("-")
+  postal_code      String        @default("-")
+  type_id          BigInt
+  password         String
+  certificate      String
+  role             Role
+  status_approve   StatusApprove
+  approve_by       BigInt?
+  created_at       DateTime      @default(now())
+  updated_at       DateTime      @updatedAt
 
   // Relation to TypeAgency
-  typeAgency        TypeAgency @relation(fields: [type_id], references: [id])
-  officer           Officer? @relation("OfficerToAgency", fields: [approve_by], references: [id])
-  pageViews         PageView[]
-  approvalLogs      ApprovalLog[]
+  typeAgency   TypeAgency    @relation(fields: [type_id], references: [id])
+  officer      Officer?      @relation("OfficerToAgency", fields: [approve_by], references: [id])
+  pageViews    PageView[]
+  approvalLogs ApprovalLog[]
 }
 
 model TypeAgency {
-  id         BigInt  @id @default(autoincrement())
-  type_name  String  @unique
+  id         BigInt   @id @default(autoincrement())
+  type_name  String   @unique
   created_at DateTime @default(now())
-  updated_at DateTime @updatedAt @default(now())
+  updated_at DateTime @default(now()) @updatedAt
 
   // Relation to Agency
-  agencies   Agency[]
+  agencies Agency[]
 }
 
 model ApprovalLog {
-  id             BigInt      @id @default(autoincrement())
+  id             BigInt        @id @default(autoincrement())
   agency_id      BigInt
   officer_id     BigInt?
-  status_before  StatusApprove
-  status_after   StatusApprove
-  comment        String?
-  created_at     DateTime    @default(now())
+  status_approve StatusApprove
+  comment        String?       @db.VarChar(255)
+  created_at     DateTime      @default(now())
 
   // Relations
-  agency         Agency      @relation(fields: [agency_id], references: [id])
-  officer        Officer?    @relation(fields: [officer_id], references: [id])
+  agency  Agency   @relation(fields: [agency_id], references: [id])
+  officer Officer? @relation(fields: [officer_id], references: [id])
 }
 
 model PasswordReset {
@@ -67,57 +66,57 @@ model PasswordReset {
 }
 
 model Officer {
-  id         BigInt  @id @default(autoincrement())
-  username   String  @unique
+  id         BigInt   @id @default(autoincrement())
+  username   String   @unique
   first_name String
   last_name  String
   password   String
-  role       Role 
+  role       Role
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  approvedAgencies Agency[] @relation("OfficerToAgency")
-  approvalLogs      ApprovalLog[]
+  approvedAgencies Agency[]      @relation("OfficerToAgency")
+  approvalLogs     ApprovalLog[]
 }
 
 model PageView {
-  id           BigInt  @id @default(autoincrement())
-  agency_id    BigInt
-  student_id   BigInt
-  page_url     String
-  faculty      String
-  department   String
-  ip_address   String?
-  user_agent   String?
-  created_at   DateTime @default(now())
+  id         BigInt   @id @default(autoincrement())
+  agency_id  BigInt
+  student_id BigInt
+  page_url   String
+  faculty    String
+  department String
+  ip_address String?
+  user_agent String?
+  created_at DateTime @default(now())
 
   // Relations
-  agency       Agency  @relation(fields: [agency_id], references: [id])
-  student      Student @relation(fields: [student_id], references: [id])
+  agency  Agency  @relation(fields: [agency_id], references: [id])
+  student Student @relation(fields: [student_id], references: [id])
 }
 
 model Student {
-  id                BigInt  @id @default(autoincrement())
-  year_no           Int
-  semester_no       Int
-  student_no        String
-  std_year_no       Int
-  prefix_name       String
-  name              String
-  lname             String
-  cca               Int?
-  gpa               Float?
-  status_graduate   Int?
-  graduate_date     DateTime?
-  deg_name          String?
-  honors            String?
-  thesis_topic_th   String?
-  thesis_topic_en   String?
-  dept_code         Int?
-  curr_name         String?
+  id              BigInt    @id @default(autoincrement())
+  year_no         Int
+  semester_no     Int
+  student_no      String
+  std_year_no     Int
+  prefix_name     String
+  name            String
+  lname           String
+  cca             Int?
+  gpa             Float?
+  status_graduate Int?
+  graduate_date   DateTime?
+  deg_name        String?
+  honors          String?
+  thesis_topic_th String?
+  thesis_topic_en String?
+  dept_code       Int?
+  curr_name       String?
 
   // Relations
-  pageViews         PageView[]
+  pageViews PageView[]
 }
 
 enum StatusApprove {

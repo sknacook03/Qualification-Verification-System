@@ -1,0 +1,37 @@
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+  background-color: #ff7100cc;
+}
+.appContainer .boxIn {
+  background-color: white;
+  justify-self: center;
+  display: flex;
+  padding: 1rem;
+  flex-direction: column;
+  border-radius: 0.5rem;
+  width: 400px;
+  height: fit-content;
+  justify-content: center;
+}
+.appContainer .boxIn {
+  background-color: white;
+  justify-self: center;
+  display: flex;
+  padding: 1rem;
+  flex-direction: column;
+  border-radius: 0.5rem;
+  width: 400px;
+  height: fit-content;
+  justify-content: center;
+}
+.appContainer .boxIn h2{
+ align-self: center;
+}
+@media screen and (min-width: 768px) {
+  .appContainer .boxIn {
+    margin-top: -5rem;
+  }
+}
