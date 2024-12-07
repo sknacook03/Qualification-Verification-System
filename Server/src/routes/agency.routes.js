@@ -7,8 +7,8 @@ const AgencyRouter = express.Router();
 AgencyRouter.get("/agencies", AgencyController.getAgencyController)
 AgencyRouter.get("/logged-in",authMiddleware, AgencyController.getLoggedInController);
 AgencyRouter.post("/", AgencyController.createAgencyController)
-AgencyRouter.put("/update-agency/:id", AgencyController.updateAgencyController);
-AgencyRouter.delete("/delete-agency/:id", AgencyController.deleteAgencyController)
+AgencyRouter.put("/update-agency/:id",authMiddleware, AgencyController.updateAgencyController);
+AgencyRouter.delete("/delete-agency/:id",authMiddleware, AgencyController.deleteAgencyController)
   
 
 export default AgencyRouter;
