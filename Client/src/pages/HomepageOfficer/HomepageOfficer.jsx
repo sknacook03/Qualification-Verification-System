@@ -15,7 +15,6 @@ function HomepagesOfficer() {
           withCredentials: true,
         });
         setOfficer(res.data.data);
-        console.log(res.data.data);
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch officer data:", error);

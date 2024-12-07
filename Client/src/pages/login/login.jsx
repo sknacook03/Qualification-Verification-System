@@ -13,39 +13,36 @@ function App() {
   const navigate = useNavigate();
 
   const handleSubmit = async ({ email, password }) => {
+    toast.dismiss();
+    if (!email || !password) {
+      toast.error("กรุณากรอกข้อมูลให้ครบ");
+      return;
+    }
     try {
       // Step 1: ส่งคำขอ Login
       const loginResponse = await axios.post(
         "http://localhost:3000/auth/login",
         { email, password },
-        { withCredentials: false }
+        { withCredentials: true }
       );
-  
-      console.log("Login Response:", loginResponse.data);
-  
+
       if (loginResponse.status === 200) {
-        const token = loginResponse.data.token;
-  
+
         // Step 2: ตรวจสอบ status_approve
         try {
-          const statusResponse = await axios.get(
-            "http://localhost:3000/agency/logged-in",
+          const statusResponse = await toast.promise(
+            axios.get("http://localhost:3000/agency/logged-in", {
+              withCredentials: true,
+            }),
             {
-              headers: {
-                Authorization: `Bearer ${token}`, // ส่ง Token ใน Header
-              },
+              pending: "กำลังตรวจสอบสถานะ...",
             }
           );
-  
-          console.log("Status Response:", statusResponse.data);
-  
           const { status_approve } = statusResponse.data.data;
-  
+
           if (status_approve === "approved") {
-            // Step 3: เก็บ Token ลง Cookie
-            document.cookie = `token=${token}; path=/; secure`;
             toast.success("ล็อกอินสำเร็จ!");
-            navigate("/Homepages"); // ไปยังหน้า Homepages
+            navigate("/Homepages");
           } else {
             toast.error(
               "บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ"
@@ -69,7 +66,6 @@ function App() {
       );
     }
   };
-  
 
   return (
     <div className={styles.appContainer}>

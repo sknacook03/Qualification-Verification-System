@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 
 function Homepages() {
@@ -7,28 +9,34 @@ function Homepages() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/agency/logged-in", {
+        const res = await toast.promise( axios.get("http://localhost:3000/agency/logged-in", {
           withCredentials: true,
-        });
+        }),
+        {
+          pending: "กำลังตรวจสอบสถานะ...",
+        }
+      );
+        if (res.data.data.status_approve !== "approved") {
+          alert("บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ");
+          navigate("/");
+          return;
+        }
         setAgency(res.data.data);
-        console.log(res.data.data);
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch agency data:", error);
         alert("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
         navigate("/");
+        return;
       }
     };
 
     fetchUserData();
   }, [navigate]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   if (!agency) {
     return <div>ไม่พบข้อมูล Agency</div>;

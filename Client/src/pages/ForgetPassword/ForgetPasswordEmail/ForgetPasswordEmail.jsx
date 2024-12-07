@@ -14,8 +14,8 @@ function ForgetPassword() {
   const [emailForget, setEmailForget] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
   const handleSendCode = async () => {
+    toast.dismiss();
     if (!emailForget.trim()) {
       setLoading(false);
       toast.error("กรุณากรอกอีเมล");
@@ -29,6 +29,7 @@ function ForgetPassword() {
           email: emailForget,
         }
       );
+      
       toast.success("รหัสรีเซ็ตได้ถูกส่งไปที่อีเมลของคุณแล้ว");
       setLoading(false);
       navigate("/ForgetPasswordCode", { state: { email: emailForget } });
@@ -97,16 +98,6 @@ function ForgetPassword() {
       </div>
       <ToastContainer
         position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        transition:Bounce
       />
     </>
   );
