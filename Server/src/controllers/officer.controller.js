@@ -99,5 +99,28 @@ const OfficerController = {
       res.status(500).json({ error: "Failed to delete officer" });
     }
   },
+  updateOfficerController: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updateData = req.body;
+  
+      if (Object.keys(updateData).length === 0) {
+        return res.status(400).json({ error: "There is no information for updates." });
+      }
+  
+      const updateOfficerData = await OfficerService.updateOfficer(id, updateData);
+  
+      const responseData = JSON.parse(JSON.stringify(updateOfficerData, replacer));
+  
+      res.status(200).json({
+        success: true,
+        message: "Successfully updated officer.",
+        data: responseData,
+      });
+    } catch (error) {
+      console.error("An error occurred while updating the unit:", error.message);
+      res.status(500).json({ error: error.message || "Unable to update officer" });
+    }
+  },
 };
 export default OfficerController;

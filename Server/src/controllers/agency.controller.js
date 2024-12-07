@@ -102,7 +102,7 @@ const AgencyController = {
           type_id,
           password,
         } = req.body;
-        console.log(req.body);  // ตรวจสอบค่าที่ได้รับจากฟอร์ม
+        console.log(req.body); 
         const certificate = req.file ? req.file.path : "no_certificate_uploaded";;
 
         const lastAgency = await AgencyService.getLastAgency();
@@ -152,6 +152,29 @@ const AgencyController = {
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Failed to delete agency" });
+    }
+  },
+  updateAgencyController: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updateData = req.body;
+  
+      if (Object.keys(updateData).length === 0) {
+        return res.status(400).json({ error: "There is no information for updates." });
+      }
+  
+      const updateAgencyData = await AgencyService.updateAgency(id, updateData);
+  
+      const responseData = JSON.parse(JSON.stringify(updateAgencyData, replacer));
+  
+      res.status(200).json({
+        success: true,
+        message: "Successfully updated agency.",
+        data: responseData,
+      });
+    } catch (error) {
+      console.error("An error occurred while updating the unit:", error.message);
+      res.status(500).json({ error: error.message || "Unable to update agency" });
     }
   },
 };

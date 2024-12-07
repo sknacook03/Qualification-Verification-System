@@ -69,6 +69,27 @@ const OfficerService = {
       throw error;
     }
   },
+  updateOfficer: async (id, DataOfficer) => {
+    try {
+      const existOfficer = await prisma.officer.findUnique({
+        where: { id: BigInt(id) }
+      });
+
+      if (!existOfficer) {
+        throw new Error(`Officer with ID ${id} does not exist.`);
+      }
+
+      const updatedOfficer = await prisma.officer.update({
+        where: { id: BigInt(id) },
+        data: DataOfficer,
+      });
+  
+      return updatedOfficer;
+    } catch (error) {
+      console.error("Failed to update officer:", error);
+      throw error;
+    }
+  },
   getLastOfficer: async () => {
     try {
       const officer = await prisma.officer.findFirst({

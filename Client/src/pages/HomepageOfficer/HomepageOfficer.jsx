@@ -4,7 +4,7 @@ import axios from "axios";
 
 function HomepagesOfficer() {
   const [officer, setOfficer] = useState(null);
-  const [agency, setAgency] = useState(null);
+  const [agency, setAgency] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 

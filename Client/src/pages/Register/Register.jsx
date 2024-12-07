@@ -31,15 +31,12 @@ function Register() {
 
   const handleNext = async () => {
     try {
-      // ถ้าผู้ใช้เลือกประเภท 'อื่นๆ'
       if (orgType === "other") {
         const otherTypeInput = document.getElementById("otherType");
 
-        // ตรวจสอบว่าผู้ใช้กรอกค่าในช่อง 'อื่นๆ'
         if (otherTypeInput && otherTypeInput.value.trim()) {
           const otherValue = otherTypeInput.value.trim();
 
-          // ส่งคำขอ POST เพื่อสร้างประเภทใหม่ในฐานข้อมูล
           const response = await axios.post(
             "http://localhost:3000/typeagency/create-type",
             {
