@@ -5,6 +5,8 @@ import Footer from "../../../components/footer/footer";
 import styles from "./ForgetPasswordCode.module.css";
 import Input from "../../../components/Input/Input.jsx";
 import ArrowButton from "../../../components/ArrowButton/ArrowButton.jsx";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 
 function ForgetPasswordCode() {
@@ -13,39 +15,54 @@ function ForgetPasswordCode() {
   const [email, setEmail] = useState(location.state?.email ?? "");
   const [CodeReset, setCodeReset] = useState("");
   const [message, setMessage] = useState("");
-  const [timeout, setTimeoutState] = useState(5 * 60);
+  const [timeout, setTimeoutState] = useState(0.1 * 60);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
-  const handleVerifyCode = async () => {
-    if (!email || !CodeReset) {
-      setMessage("กรุณากรอกโค้ดให้ครบถ้วน");
-      return;
+  const validateForm = () => {
+    const newErrors = {};
+    if (!CodeReset) {
+      newErrors.code = "กรุณากรอกโค้ด*";
     }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  const handleVerifyCode = async () => {
+    toast.dismiss();
     setLoading(true);
-    try {
-      await axios.post("http://localhost:3000/password-reset/verify-code", { email, code: CodeReset });
-      setMessage("โค้ดยืนยันสำเร็จ!");
-      navigate("/ForgetPasswordReset", { state: { email } }); 
-      setLoading(false);
-    } catch (error) {
-      setMessage("โค้ดไม่ถูกต้องหรือหมดอายุ");
-    } finally {
-      setLoading(false);
+    if (validateForm()) {
+      try {
+        await axios.post("http://localhost:3000/password-reset/verify-code", {
+          email,
+          code: CodeReset,
+        });
+        toast.success("โค้ดยืนยันสำเร็จ!");
+        navigate("/ForgetPasswordReset", { state: { email } });
+        setLoading(false);
+      } catch (error) {
+        toast.error("โค้ดไม่ถูกต้องหรือหมดอายุ");
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
   const handleResendCode = async () => {
-    if (!email) {
-      setMessage("กรุณากรอกอีเมล");
-      return;
-    }
+    toast.dismiss();
     setLoading(true);
     try {
-      await axios.post("http://localhost:3000/password-reset/request-reset", { email });
-      setMessage("รหัสใหม่ถูกส่งไปที่อีเมลของคุณแล้ว");
-      setTimeoutState(5 * 60); 
+      await toast.promise(
+        axios.post("http://localhost:3000/password-reset/request-reset", {
+          email,
+        }),
+        {
+          pending: "ระบบกำลังส่งรหัสให้คุณ..."
+        }
+      );
+      toast.success("รหัสใหม่ถูกส่งไปที่อีเมลของคุณแล้ว");
+      setTimeoutState(0.1 * 60);
     } catch (error) {
-      setMessage("ไม่สามารถส่งโค้ดใหม่ได้");
+      toast.error("ไม่สามารถส่งโค้ดใหม่ได้");
     } finally {
       setLoading(false);
     }
@@ -93,15 +110,21 @@ function ForgetPasswordCode() {
                 value={CodeReset}
                 onChange={(e) => setCodeReset(e.target.value)}
                 placeholder="กรุณากรอกโค้ด"
+                error={errors.code}
               />
               <div className={styles.codeAllow}>
                 <p>โค้ดจะหมดอายุใน {formatTime(timeout)}</p>
-                <button onClick={handleResendCode} disabled={loading || timeout > 0}>
+                <button
+                  onClick={handleResendCode}
+                  disabled={loading || timeout > 0}
+                  className={
+                    timeout === 0 ? styles.resendCodeTimeout : styles.resendCode
+                  }
+                >
                   ส่งโค้ดอีกรอบ
                 </button>
               </div>
             </div>
-            {message && <p className={styles.message}>{message}</p>} {/* แสดงข้อความ */}
             <div className={styles.arrowButton}>
               <Link to="/ForgetPassword" style={{ textDecoration: "none" }}>
                 <ArrowButton direction="left" color="grey" />
@@ -120,6 +143,7 @@ function ForgetPasswordCode() {
         </div>
         <Footer />
       </div>
+        <ToastContainer position="top-center" />
     </>
   );
 }

@@ -14,32 +14,43 @@ function ForgetPassword() {
   const [emailForget, setEmailForget] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const handleSendCode = async () => {
-    toast.dismiss();
-    if (!emailForget.trim()) {
-      setLoading(false);
-      toast.error("กรุณากรอกอีเมล");
-      return;
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!emailForget) {
+      newErrors.email = "กรุณากรอกอีเมล*";
     }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSendCode = async () => {
+    if (loading) return; 
+    toast.dismiss();
     setLoading(true);
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/password-reset/request-reset",
-        {
-          email: emailForget,
+    if (validateForm()) {
+      try {
+        const response = await axios.post(
+          "http://localhost:3000/password-reset/request-reset",
+          {
+            email: emailForget,
+          }
+        );
+  
+        toast.success("รหัสรีเซ็ตได้ถูกส่งไปที่อีเมลของคุณแล้ว");
+        setLoading(false); 
+        navigate("/ForgetPasswordCode", { state: { email: emailForget } });
+      } catch (error) {
+        if (error.response?.status === 404) {
+          toast.error("ไม่มีข้อมูลในระบบ");
+        } else {
+          toast.error("ไม่สามารถส่งรหัสได้ โปรดลองใหม่อีกครั้ง");
         }
-      );
-      
-      toast.success("รหัสรีเซ็ตได้ถูกส่งไปที่อีเมลของคุณแล้ว");
-      setLoading(false);
-      navigate("/ForgetPasswordCode", { state: { email: emailForget } });
-    } catch (error) {
-      if (error.response?.status === 404) {
-        toast.error("ไม่มีข้อมูลในระบบ");
-      } else {
-        toast.error("ไม่สามารถส่งรหัสได้ โปรดลองใหม่อีกครั้ง");
+        setLoading(false); 
       }
-      setLoading(false);
+    } else {
+      setLoading(false); 
     }
   };
 
@@ -71,6 +82,7 @@ function ForgetPassword() {
               value={emailForget}
               onChange={(e) => setEmailForget(e.target.value)}
               placeholder="กรุณากรอกอีเมล"
+              error={errors.email}
             />
             <div className={styles.arrowButton}>
               <Link to="/" style={{ textDecoration: "none" }}>
@@ -78,14 +90,14 @@ function ForgetPassword() {
               </Link>
               <div
                 className={styles.arrowButtonWrapper}
-                onClick={handleSendCode}
+                onClick={!loading ? handleSendCode : null}
                 role="button"
                 tabIndex="0"
                 disabled={loading}
               >
                 {loading ? (
                   <div className={styles.loader}>
-                  <ClipLoader size={15} color={"#FF7100"} />
+                    <ClipLoader size={15} color={"#FF7100"} />
                   </div>
                 ) : (
                   <ArrowButton direction="right" color="orange" />
@@ -96,9 +108,7 @@ function ForgetPassword() {
         </div>
         <Footer />
       </div>
-      <ToastContainer
-        position="top-center"
-      />
+      <ToastContainer position="top-center" />
     </>
   );
 }

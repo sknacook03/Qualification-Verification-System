@@ -5,17 +5,31 @@ import PasswordInput from "../PasswordInput/PasswordInput";
 import Button from "../../components/button/Button";
 import "./LoginForm.css";
 
+
+
 const LoginForm = ({ onSubmit }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!email) {
+      newErrors.email = "กรุณากรอกอีเมล*";
+    }
+    if (!password) {
+      newErrors.password = "กรุณากรอกรหัสผ่าน*";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    if (onSubmit) {
+    if (validateForm() && onSubmit) {
       onSubmit({ email, password });
     }
   };
-
   return (
     <form onSubmit={handleFormSubmit} className="login-form">
       <Input
@@ -26,6 +40,7 @@ const LoginForm = ({ onSubmit }) => {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder=" "
+        error={errors.email}
       />
       <PasswordInput
         label="รหัสผ่าน"
@@ -34,6 +49,7 @@ const LoginForm = ({ onSubmit }) => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         placeholder=" "
+        error={errors.password}
       />
       <Link to="/ForgetPassword" className="forgetPass">
         ลืมรหัสผ่าน?

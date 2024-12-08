@@ -14,20 +14,20 @@ function App() {
 
   const handleSubmit = async ({ email, password }) => {
     toast.dismiss();
-    if (!email || !password) {
-      toast.error("กรุณากรอกข้อมูลให้ครบ");
-      return;
-    }
     try {
       // Step 1: ส่งคำขอ Login
-      const loginResponse = await axios.post(
-        "http://localhost:3000/auth/login",
-        { email, password },
-        { withCredentials: true }
+      const loginResponse = await toast.promise(
+        axios.post(
+          "http://localhost:3000/auth/login",
+          { email, password },
+          { withCredentials: true }
+        ),
+        {
+          pending: "กำลังตรวจสอบข้อมูล..."
+        }
       );
 
       if (loginResponse.status === 200) {
-
         // Step 2: ตรวจสอบ status_approve
         try {
           const statusResponse = await toast.promise(
@@ -95,19 +95,7 @@ function App() {
         </div>
       </div>
       <Footer />
-      <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        transition:Bounce
-      />
+      <ToastContainer position="top-center" />
     </div>
   );
 }

@@ -14,4 +14,16 @@
     color: #a94d02;
     transition: .3s ease-in-out;
   }
+  .input-error {
+    border: 1px solid red;
+  }
+  .password-error {
+    border: 1px solid red;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 0.8em;
+    margin-top: 5px;
+  }
   

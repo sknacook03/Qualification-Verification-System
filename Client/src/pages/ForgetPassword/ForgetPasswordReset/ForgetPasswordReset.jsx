@@ -5,6 +5,8 @@ import Footer from "../../../components/footer/footer";
 import styles from "./ForgetPasswordReset.module.css";
 import PasswordInput from "../../../hooks/PasswordInput/PasswordInput";
 import Button from "../../../components/button/Button";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function ForgetPasswordReset() {
@@ -14,35 +16,51 @@ function ForgetPasswordReset() {
   const [passwordNew, setPasswordNew] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  const [errors, setErrors] = useState({});
+  const validateForm = () => {
+    const newErrors = {};
+    if (!password) {
+      newErrors.password = "กรุณากรอกรหัสผ่าน";
+    }
+    if (!passwordNew) {
+      newErrors.passwordNew = "กรุณากรอกยืนยันรหัสผ่าน";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleResetPassword = async () => {
-    if (!email) {
-      alert("ไม่พบอีเมลสำหรับการรีเซ็ตรหัสผ่าน");
-      return;
-    }
-    if (password !== passwordNew) {
-      alert("รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน");
-      return;
-    }
-    if (password.length < 8) {
-      alert("รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร");
-      return;
-    }
-
+    toast.dismiss();
     setLoading(true);
-    try {
-      await axios.post("http://localhost:3000/password-reset/reset-password", {
-        email,
-        newPassword: password,
-      });
-      alert("รีเซ็ตรหัสผ่านสำเร็จ");
-      navigate("/");
-    } catch (error) {
-      console.error(error);
-      alert("ไม่สามารถรีเซ็ตรหัสผ่านได้");
-    } finally {
-      setLoading(false);
+    if (validateForm()) {
+      if (!email) {
+        toast.error("ไม่พบอีเมลสำหรับการรีเซ็ตรหัสผ่าน");
+        return;
+      }
+      if (password !== passwordNew) {
+        toast.error("รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน");
+        return;
+      }
+      if (password.length < 8) {
+        toast.error("รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร");
+        return;
+      }
+      try {
+        await axios.post(
+          "http://localhost:3000/password-reset/reset-password",
+          {
+            email,
+            newPassword: password,
+          }
+        );
+        toast.success("รีเซ็ตรหัสผ่านสำเร็จ");
+        navigate("/");
+      } catch (error) {
+        console.error(error);
+        toast.error("ไม่สามารถรีเซ็ตรหัสผ่านได้");
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -74,6 +92,7 @@ function ForgetPasswordReset() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="กรุณาใส่รหัสผ่านใหม่"
+                error={errors.password}
               />
               <PasswordInput
                 label="ยืนยันรหัสผ่านใหม่"
@@ -82,6 +101,7 @@ function ForgetPasswordReset() {
                 value={passwordNew}
                 onChange={(e) => setPasswordNew(e.target.value)}
                 placeholder="กรุณายืนยันรหัสผ่านใหม่"
+                error={errors.passwordNew}
               />
               <Button
                 text="ยืนยันการรีเซ็ตรหัสผ่าน"
@@ -92,8 +112,10 @@ function ForgetPasswordReset() {
             </div>
           </div>
         </div>
+        
         <Footer />
       </div>
+      <ToastContainer position="top-center" />
     </>
   );
 }
