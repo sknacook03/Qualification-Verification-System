@@ -7,8 +7,8 @@ const OfficerRouter = express.Router();
 OfficerRouter.get("/officers", authMiddleware, OfficerController.getOfficerController)
 OfficerRouter.get("/logged-in",authMiddleware, OfficerController.getLoggedInController);
 OfficerRouter.post("/", OfficerController.createOfficerController)
-OfficerRouter.put("/update-officer/:id", OfficerController.updateOfficerController)
-OfficerRouter.delete("/delete-officer/:id", OfficerController.deleteOfficerController)
+OfficerRouter.put("/update-officer/:id", authMiddleware, OfficerController.updateOfficerController)
+OfficerRouter.delete("/delete-officer/:id", authMiddleware, OfficerController.deleteOfficerController)
   
 
 export default OfficerRouter;
