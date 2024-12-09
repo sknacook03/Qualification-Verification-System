@@ -5,6 +5,8 @@ import Header from "../../components/header/header";
 import Input from "../../components/Input/Input";
 import Footer from "../../components/footer/footer";
 import Button from "../../components/button/Button";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import styles from "./RegisterNext.module.css";
 import { useLocation, Link } from "react-router-dom";
 
@@ -14,8 +16,21 @@ function RegisterNext() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [file, setFile] = useState(null);
-
-  console.log(formData);
+  const [errors, setErrors] = useState({});
+  const validateForm = () => {
+    const newErrors = {};
+    if (!password) {
+      newErrors.password = "กรุณากรอกรหัสผ่าน";
+    }
+    if (!confirmPassword) {
+      newErrors.confirmPassword = "กรุณากรอกยืนยันรหัสผ่าน";
+    }
+    if (!file) {
+      newErrors.file = "กรุณาอัพโหลดไฟล์";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,34 +49,38 @@ function RegisterNext() {
       console.log(`${key}: ${formData[key]}`);
       finalData.append(key, formData[key]);
     });
-
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/agency",
-        finalData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+    if (validateForm()) {
+      try {
+        const response = await axios.post(
+          "http://localhost:3000/agency",
+          finalData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        if (response.status === 200 || response.status === 201) {
+          toast.success("สมัครสมาชิกสำเร็จ!");
+        } else {
+          toast.error("เกิดข้อผิดพลาดในการสมัครสมาชิก: " + response.status);
         }
-      );
-      if (response.status === 200 || response.status === 201) {
-        alert("สมัครสมาชิกสำเร็จ!");
-      } else {
-        alert("เกิดข้อผิดพลาดในการสมัครสมาชิก: " + response.status);
+      } catch (error) {
+        if (error.response) {
+          console.error("Error response:", error.response.data);
+          toast.error(
+            "เกิดข้อผิดพลาด: " +
+              (error.response.data.message || "ไม่สามารถสมัครสมาชิกได้")
+          );
+        } else if (error.request) {
+          console.error("Error request:", error.request);
+          toast.error("เกิดข้อผิดพลาด: ไม่สามารถติดต่อเซิร์ฟเวอร์ได้");
+        } else {
+          console.error("Error:", error.message);
+          toast.error("เกิดข้อผิดพลาด: " + error.message);
+        }
       }
-    } catch (error) {
-      if (error.response) {
-        console.error("Error response:", error.response.data);
-        alert("เกิดข้อผิดพลาด: " + (error.response.data.message || "ไม่สามารถสมัครสมาชิกได้"));
-      } else if (error.request) {
-        console.error("Error request:", error.request);
-        alert("เกิดข้อผิดพลาด: ไม่สามารถติดต่อเซิร์ฟเวอร์ได้");
-      } else {
-        console.error("Error:", error.message);
-        alert("เกิดข้อผิดพลาด: " + error.message);
-      }
-   }
+    }
   };
 
   return (
@@ -81,8 +100,8 @@ function RegisterNext() {
           ))}
         </div>
         <h3>สมัครสมาชิก</h3>
-          <form onSubmit={handleSubmit}>
-            <div className={styles.inputForm}>
+        <form onSubmit={handleSubmit}>
+          <div className={styles.inputForm}>
             <PasswordInput
               label=" "
               id="password"
@@ -90,6 +109,7 @@ function RegisterNext() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="รหัสผ่าน"
+              error={errors.password}
             />
             <PasswordInput
               label=" "
@@ -98,22 +118,24 @@ function RegisterNext() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="ยืนยันรหัสผ่าน"
+              error={errors.confirmPassword}
             />
-            </div>
-            <div className={styles.infoInput}>
-              <p>อัพโหลดหนังสือรับรองเพื่อเข้าใช้งานระบบ</p>
-              <p>(รองรับไฟล์ .pdf .png .jpg ขนาดไม่เกิน 10 MB)</p>
-            </div>
-            <Input type="file" onChange={(e) => setFile(e.target.files[0])} />
-            <div className={styles.buttonSubmit}>
-              <Button text="ยืนยันการสมัครสมาชิก" styleType="third" />
-              <Link to="/Register" style={{ textDecoration: "none" }}>
-                <Button text="ย้อนกลับ" styleType="back" />
-              </Link>
-            </div>
-          </form>
+          </div>
+          <div className={styles.infoInput}>
+            <p>อัพโหลดหนังสือรับรองเพื่อเข้าใช้งานระบบ</p>
+            <p>(รองรับไฟล์ .pdf .png .jpg ขนาดไม่เกิน 10 MB)</p>
+          </div>
+          <Input type="file" onChange={(e) => setFile(e.target.files[0])} error={errors.file}/>
+          <div className={styles.buttonSubmit}>
+            <Button text="ยืนยันการสมัครสมาชิก" styleType="third" />
+            <Link to="/Register" style={{ textDecoration: "none" }}>
+              <Button text="ย้อนกลับ" styleType="back" />
+            </Link>
+          </div>
+        </form>
       </div>
       <Footer />
+      <ToastContainer position="top-center" />
     </div>
   );
 }

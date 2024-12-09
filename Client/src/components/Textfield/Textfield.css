@@ -23,3 +23,6 @@
   box-shadow: 0 0 4px #c8c8c8;
   outline: none;
 }
+.input-error{
+  border: 1px solid red;
+}

@@ -1,69 +1,77 @@
 @import url("https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 .address-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 0;
-    width: 100%;
-    margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .address-input {
-    width: 100%;
-    padding: 12px;
-    border: solid #d9d9d9;
-    border-radius: 0.5rem;
-    background-color: #fff;
-    transition: border-color 0.3s ease-in-out;
-    font-family: "Prompt", sans-serif;
+  width: 100%;
+  padding: 12px;
+  border: solid #d9d9d9;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  transition: border-color 0.3s ease-in-out;
+  font-family: "Prompt", sans-serif;
 }
 
 .address-input:focus {
-    box-shadow: 0 0 4px #c8c8c8;
-    outline: none;
+  box-shadow: 0 0 4px #c8c8c8;
+  outline: none;
 }
 
 .suggestions-container {
-    margin: 0rem 0 15px 0;
-    border: 1px solid #ccc;
-    border-radius: 0.5rem;
-    background-color: #fff;
-    max-height: 250px;
-    overflow-y: auto;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 5px 0;
+  margin: 0rem 0 15px 0;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  max-height: 250px;
+  overflow-y: auto;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 5px 0;
 }
 
 .suggestions-container::-webkit-scrollbar {
-    width: 8px;
+  width: 8px;
 }
 
 .suggestions-container::-webkit-scrollbar-thumb {
-    background-color: #d9d9d9;
-    border-radius: 10px;
-    cursor: pointer;
+  background-color: #d9d9d9;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 .suggestions-container::-webkit-scrollbar-thumb:hover {
-    background-color: #ccc;
-    cursor: pointer;
+  background-color: #ccc;
+  cursor: pointer;
 }
 
 .suggestion-item {
-    font-size: 14px;
-    padding: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s ease-out;
-    border-bottom: 1px solid #f1f1f1;
+  font-size: 14px;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-out;
+  border-bottom: 1px solid #f1f1f1;
 }
 
 .suggestion-item:hover {
-    background-color: #f0f0f0;
-    padding-left: 15px;
+  background-color: #f0f0f0;
+  padding-left: 15px;
 }
 
 .suggestion-item:hover,
 .suggestion-item:focus {
-    font-size: 16px;
+  font-size: 16px;
+}
+.input-error {
+  border: 1px solid red;
+}
+.error-message {
+  color: red;
+  font-size: 0.8em;
+  margin-top: 5px;
 }

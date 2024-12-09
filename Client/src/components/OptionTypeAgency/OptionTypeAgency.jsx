@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./OptionTypeAgency.css";
 
-const OptionTypeAgency = ({ label, id, name, value, onChange, placeholder }) => {
+const OptionTypeAgency = ({ label, id, name, value, onChange, placeholder, error }) => {
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showOtherInput, setShowOtherInput] = useState(false);
@@ -44,14 +44,14 @@ const OptionTypeAgency = ({ label, id, name, value, onChange, placeholder }) => 
 
   return (
     <div className="input-container">
-      <label className="input-label">{label}</label>
+      <label className="input-label" htmlFor={id} >{label}</label>
       <select
         name={name}
         id={id}
         value={selectedValue}
         onChange={handleSelectChange}
         placeholder={placeholder}
-        className="input-select"
+        className={`input-select ${error ? 'input-error' : ''}`}
       >
         <option value="">กรุณาเลือกประเภทหน่วยงาน</option>
         {loading ? (
@@ -65,7 +65,7 @@ const OptionTypeAgency = ({ label, id, name, value, onChange, placeholder }) => 
         )}
         <option value="other">อื่นๆ</option>
       </select>
-
+      {error && <div className="error-message">{error}</div>}
       {showOtherInput && (
         <input
           type="text"
@@ -74,8 +74,9 @@ const OptionTypeAgency = ({ label, id, name, value, onChange, placeholder }) => 
           value={otherValue}
           onChange={handleOtherInputChange}
           placeholder="กรุณาระบุประเภทหน่วยงาน"
-          className="input-text"
+          className={`input-text ${error ? 'input-error' : ''}`}
         />
+        
       )}
     </div>
   );
