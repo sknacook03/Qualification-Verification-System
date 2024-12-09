@@ -8,9 +8,10 @@ import Button from "../../components/button/Button";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "./RegisterNext.module.css";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 
 function RegisterNext() {
+  const navigate = useNavigate();
   const location = useLocation();
   const formData = location.state || {};
   const [password, setPassword] = useState("");
@@ -31,27 +32,15 @@ function RegisterNext() {
     if (!confirmPassword) {
       newErrors.confirmPassword = "กรุณากรอกยืนยันรหัสผ่าน";
     }
+    if (!file) {
+      newErrors.file = "กรุณาอัปโหลดไฟล์หนังสือรับรอง";
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (password !== confirmPassword) {
-      toast.error("รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน!");
-      return;
-    }
-
-    if (!isPasswordStrong(password)) {
-      toast.error("รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร");
-      return;
-    }
-
-    if (!file) {
-      toast.error("กรุณาอัปโหลดไฟล์หนังสือรับรอง");
-      return;
-    }
 
     const finalData = new FormData();
     finalData.append("password", password);
@@ -68,27 +57,41 @@ function RegisterNext() {
     });
 
     if (validateForm()) {
+
+      if (password !== confirmPassword) {
+        toast.error("รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน!");
+        return;
+      }
+  
+      if (!isPasswordStrong(password)) {
+        toast.error("รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร");
+        return;
+      }
+
       try {
-        const response = await axios.post(
-          "http://localhost:3000/agency",
-          finalData,
+        await toast.promise(
+          axios.post(
+            "http://localhost:3000/agency",
+            finalData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          ),
           {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
+            pending: 'กำลังสมัครสมาชิก...',
+            success: 'สมัครสมาชิกสำเร็จ!',
+            error: 'เกิดข้อผิดพลาดในการสมัครสมาชิก!',
           }
         );
-        if (response.status === 200 || response.status === 201) {
-          toast.success("สมัครสมาชิกสำเร็จ!");
-        } else {
-          toast.error("เกิดข้อผิดพลาดในการสมัครสมาชิก: " + response.status);
-        }
+    
+        navigate("/");
       } catch (error) {
         if (error.response) {
           console.error("Error response:", error.response.data);
           toast.error(
-            "เกิดข้อผิดพลาด: " +
-              (error.response.data.message || "ไม่สามารถสมัครสมาชิกได้")
+            "เกิดข้อผิดพลาด: " + (error.response.data.message || "ไม่สามารถสมัครสมาชิกได้")
           );
         } else if (error.request) {
           console.error("Error request:", error.request);
@@ -143,7 +146,7 @@ function RegisterNext() {
             <p>อัพโหลดหนังสือรับรองเพื่อเข้าใช้งานระบบ</p>
             <p>(รองรับไฟล์ .pdf .png .jpg ขนาดไม่เกิน 10 MB)</p>
           </div>
-          <Input type="file" onChange={(e) => setFile(e.target.files[0])} />
+          <Input type="file" onChange={(e) => setFile(e.target.files[0])} error={errors.file} />
           <div className={styles.buttonSubmit}>
             <Button text="ยืนยันการสมัครสมาชิก" styleType="third" />
             <Link to="/Register" style={{ textDecoration: "none" }}>
@@ -152,8 +155,8 @@ function RegisterNext() {
           </div>
         </form>
       </div>
-      <Footer />
       <ToastContainer position="top-center" />
+      <Footer />
     </div>
   );
 }

@@ -94,8 +94,8 @@ function App() {
           </div>
         </div>
       </div>
-      <Footer />
       <ToastContainer position="top-center" />
+      <Footer />
     </div>
   );
 }
