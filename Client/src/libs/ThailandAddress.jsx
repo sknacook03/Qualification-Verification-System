@@ -5,7 +5,7 @@ import {
 } from 'react-thailand-address-typeahead';
 import './ThailandAddress.css'; 
 
-function ThailandAddress({ onAddressChange }) {
+function ThailandAddress({ onAddressChange, error = {} }) {
   const [val, setVal] = useState(ThailandAddressValue.empty() || {
     subdistrict: '',
     district: '',
@@ -19,7 +19,6 @@ function ThailandAddress({ onAddressChange }) {
       onAddressChange(updatedVal); 
     }
   };
-
   return (
     <div className="address-container">
       <ThailandAddressTypeahead
@@ -30,29 +29,33 @@ function ThailandAddress({ onAddressChange }) {
           <label className="input-label">ตำบล / แขวง*</label>
           <ThailandAddressTypeahead.SubdistrictInput
             placeholder=""
-            className="address-input"
+            className={`address-input ${error.subdistrict ? 'input-error' : ''}`}
           />
+          {error.subdistrict && <div className="error-message">{error.subdistrict}</div>}
         </div>
         <div>
         <label className="input-label">อำเภอ / เขต*</label>
           <ThailandAddressTypeahead.DistrictInput
             placeholder=""
-            className="address-input"
+            className={`address-input ${error.district ? 'input-error' : ''}`}
           />
+          {error.district && <div className="error-message">{error.district}</div>}
         </div>
         <div>
         <label className="input-label">จังหวัด*</label>
           <ThailandAddressTypeahead.ProvinceInput
             placeholder=""
-            className="address-input"
+            className={`address-input ${error.province ? 'input-error' : ''}`}
           />
+          {error.province && <div className="error-message">{error.province}</div>}
         </div>
         <div>
         <label className="input-label">รหัสไปรษณีย์*</label>
           <ThailandAddressTypeahead.PostalCodeInput
             placeholder=""
-            className="address-input"
+            className={`address-input ${error.postalCode ? 'input-error' : ''}`}
           />
+          {error.postalCode && <div className="error-message">{error.postalCode}</div>}
         </div>
         <ThailandAddressTypeahead.Suggestion
           containerProps={{

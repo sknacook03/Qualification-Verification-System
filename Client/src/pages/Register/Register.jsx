@@ -14,6 +14,7 @@ import axios from "axios";
 
 function Register() {
   const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
   const [email, setEmail] = useState("");
   const [orgname, setOrgname] = useState("");
   const [department, setDepartment] = useState("");
@@ -27,8 +28,47 @@ function Register() {
     postalCode: "",
   });
 
+  const validateForm = () => {
+    const newErrors = {};
+    if (!email) {
+      newErrors.email = "กรุณากรอกอีเมล*";
+    }
+    if (!orgname) {
+      newErrors.orgname = "กรุณากรอกชื่อหน่วยงาน*";
+    }
+    if (!department) {
+      newErrors.department = "กรุณากรอกแผนกงานที่รับผิดชอบตรวจสอบคุณวุฒิ*";
+    }
+    if (!telphone) {
+      newErrors.telphone = "กรุณากรอกเบอร์โทรศัพท์ของหน่วยงาน*";
+    }
+    if (!orgType) {
+      newErrors.orgType = "กรุณากรอกประเภทหน่วยงาน*";
+    }
+    if (!orgaddress) {
+      newErrors.orgaddress = "กรุณากรอกอีเมลที่อยู่ของหน่วยงาน*";
+    }
+    if (!address.subdistrict) {
+      newErrors.subdistrict = "กรุณากรอกตำบล / แขวง*";
+    }
+    if (!address.district) {
+      newErrors.district = "กรุณากรอกอำเภอ / เขต*";
+    }
+    if (!address.province) {
+      newErrors.province = "กรุณากรอกจังหวัด*";
+    }
+    if (!address.postalCode) {
+      newErrors.postalCode = "กรุณากรอกรหัสไปรษณีย์*";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleAddressChange = (newAddress) => {
     setAddress(newAddress);
+    if (validateForm()) {
+      setErrors({});
+    }
   };
 
   const handleNext = async () => {
@@ -47,7 +87,6 @@ function Register() {
         return;
       }
 
-
       const checkEmailResponse = await axios.post(
         "http://localhost:3000/agency/check-email",
         { email }
@@ -59,7 +98,7 @@ function Register() {
 
       const checkTelResponse = await axios.post(
         "http://localhost:3000/agency/check-telphone",
-        { telephone_number: telphone  }
+        { telephone_number: telphone }
       );
       if (checkTelResponse.data.exists) {
         toast.error("เบอร์โทรศัพท์นี้ถูกใช้ไปแล้ว");
@@ -92,6 +131,7 @@ function Register() {
         }
       }
 
+      // If validation passes, navigate to the next page
       navigate("/RegisterNext", {
         state: {
           email,
@@ -136,7 +176,7 @@ function Register() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder=""
+                error={errors.email}
               />
               <Input
                 label="ชื่อหน่วยงาน*"
@@ -145,7 +185,7 @@ function Register() {
                 type="text"
                 value={orgname}
                 onChange={(e) => setOrgname(e.target.value)}
-                placeholder=""
+                error={errors.orgname}
               />
               <Input
                 label="แผนกงานที่รับผิดชอบตรวจสอบคุณวุฒิ*"
@@ -154,7 +194,7 @@ function Register() {
                 type="text"
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
-                placeholder=""
+                error={errors.department}
               />
               <Input
                 label="เบอร์โทรศัพท์ของหน่วยงาน*"
@@ -163,7 +203,7 @@ function Register() {
                 type="text"
                 value={telphone}
                 onChange={(e) => setTelphone(e.target.value)}
-                placeholder=""
+                error={errors.telphone}
               />
               <Textfield
                 label="ที่อยู่ของหน่วยงาน*"
@@ -172,11 +212,19 @@ function Register() {
                 type="text"
                 value={orgaddress}
                 onChange={(e) => setOrgaddress(e.target.value)}
-                placeholder=""
+                error={errors.orgaddress}
               />
             </div>
             <div className={styles.inputRegister}>
-              <ThailandAddress onAddressChange={handleAddressChange} />
+              <ThailandAddress
+                onAddressChange={handleAddressChange}
+                error={{
+                  subdistrict: errors.subdistrict,
+                  district: errors.district,
+                  province: errors.province,
+                  postalCode: errors.postalCode,
+                }}
+              />
               <OptionTypeAgency
                 label="ประเภทหน่วยงาน*"
                 name="optionTypeAgency"
@@ -184,6 +232,7 @@ function Register() {
                 value={orgType}
                 onChange={(e) => setOrgType(e.target.value)}
                 placeholder="กรุณาเลือกประเภทหน่วยงาน"
+                error={errors.orgType}
               />
             </div>
           </div>

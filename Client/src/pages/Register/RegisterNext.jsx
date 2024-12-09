@@ -5,9 +5,9 @@ import Header from "../../components/header/header";
 import Input from "../../components/Input/Input";
 import Footer from "../../components/footer/footer";
 import Button from "../../components/button/Button";
-import styles from "./RegisterNext.module.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import styles from "./RegisterNext.module.css";
 import { useLocation, Link } from "react-router-dom";
 
 function RegisterNext() {
@@ -16,13 +16,23 @@ function RegisterNext() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [file, setFile] = useState(null);
+  const [errors, setErrors] = useState({});
 
   const isPasswordStrong = (password) => {
-    const minLength = 8; 
+    const minLength = 8;
+    return password.length >= minLength;
+  };
 
-
-    if (password.length < minLength) return false;
-    return true;
+  const validateForm = () => {
+    const newErrors = {};
+    if (!password) {
+      newErrors.password = "กรุณากรอกรหัสผ่าน";
+    }
+    if (!confirmPassword) {
+      newErrors.confirmPassword = "กรุณากรอกยืนยันรหัสผ่าน";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
@@ -57,28 +67,36 @@ function RegisterNext() {
       finalData.append(key, formData[key]);
     });
 
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/agency",
-        finalData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+    if (validateForm()) {
+      try {
+        const response = await axios.post(
+          "http://localhost:3000/agency",
+          finalData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        if (response.status === 200 || response.status === 201) {
+          toast.success("สมัครสมาชิกสำเร็จ!");
+        } else {
+          toast.error("เกิดข้อผิดพลาดในการสมัครสมาชิก: " + response.status);
         }
-      );
-      if (response.status === 200 || response.status === 201) {
-        toast.success("สมัครสมาชิกสำเร็จ!");
-      } else {
-        toast.error(`เกิดข้อผิดพลาดในการสมัครสมาชิก: ${response.status}`);
-      }
-    } catch (error) {
-      if (error.response) {
-        toast.error(`เกิดข้อผิดพลาด: ${error.response.data.message || "ไม่สามารถสมัครสมาชิกได้"}`);
-      } else if (error.request) {
-        toast.error("เกิดข้อผิดพลาด: ไม่สามารถติดต่อเซิร์ฟเวอร์ได้");
-      } else {
-        toast.error(`เกิดข้อผิดพลาด: ${error.message}`);
+      } catch (error) {
+        if (error.response) {
+          console.error("Error response:", error.response.data);
+          toast.error(
+            "เกิดข้อผิดพลาด: " +
+              (error.response.data.message || "ไม่สามารถสมัครสมาชิกได้")
+          );
+        } else if (error.request) {
+          console.error("Error request:", error.request);
+          toast.error("เกิดข้อผิดพลาด: ไม่สามารถติดต่อเซิร์ฟเวอร์ได้");
+        } else {
+          console.error("Error:", error.message);
+          toast.error("เกิดข้อผิดพลาด: " + error.message);
+        }
       }
     }
   };
@@ -109,6 +127,7 @@ function RegisterNext() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="รหัสผ่าน"
+              error={errors.password}
             />
             <PasswordInput
               label=" "
@@ -117,6 +136,7 @@ function RegisterNext() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="ยืนยันรหัสผ่าน"
+              error={errors.confirmPassword}
             />
           </div>
           <div className={styles.infoInput}>
