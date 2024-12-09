@@ -175,6 +175,18 @@ const AgencyService = {
       throw new Error("Failed to reset AUTO_INCREMENT");
     }
   },
+  checkEmailExists: async (email) => {
+    const existingAgency = await prisma.agency.findUnique({
+      where: { email },
+    });
+    return !!existingAgency;
+  },
+  checkTelephoneExists: async (telephone_number) => {
+    const existingTelAgency = await prisma.agency.findUnique({
+      where: { telephone_number },
+    });
+    return !!existingTelAgency;
+  }
   
 };
 

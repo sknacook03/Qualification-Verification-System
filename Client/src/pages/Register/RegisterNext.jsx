@@ -6,6 +6,8 @@ import Input from "../../components/Input/Input";
 import Footer from "../../components/footer/footer";
 import Button from "../../components/button/Button";
 import styles from "./RegisterNext.module.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useLocation, Link } from "react-router-dom";
 
 function RegisterNext() {
@@ -15,10 +17,31 @@ function RegisterNext() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [file, setFile] = useState(null);
 
-  console.log(formData);
+  const isPasswordStrong = (password) => {
+    const minLength = 8; 
+
+
+    if (password.length < minLength) return false;
+    return true;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (password !== confirmPassword) {
+      toast.error("รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน!");
+      return;
+    }
+
+    if (!isPasswordStrong(password)) {
+      toast.error("รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร");
+      return;
+    }
+
+    if (!file) {
+      toast.error("กรุณาอัปโหลดไฟล์หนังสือรับรอง");
+      return;
+    }
 
     const finalData = new FormData();
     finalData.append("password", password);
@@ -31,7 +54,6 @@ function RegisterNext() {
     finalData.append("type_id", formData.orgType);
 
     Object.keys(formData).forEach((key) => {
-      console.log(`${key}: ${formData[key]}`);
       finalData.append(key, formData[key]);
     });
 
@@ -46,22 +68,19 @@ function RegisterNext() {
         }
       );
       if (response.status === 200 || response.status === 201) {
-        alert("สมัครสมาชิกสำเร็จ!");
+        toast.success("สมัครสมาชิกสำเร็จ!");
       } else {
-        alert("เกิดข้อผิดพลาดในการสมัครสมาชิก: " + response.status);
+        toast.error(`เกิดข้อผิดพลาดในการสมัครสมาชิก: ${response.status}`);
       }
     } catch (error) {
       if (error.response) {
-        console.error("Error response:", error.response.data);
-        alert("เกิดข้อผิดพลาด: " + (error.response.data.message || "ไม่สามารถสมัครสมาชิกได้"));
+        toast.error(`เกิดข้อผิดพลาด: ${error.response.data.message || "ไม่สามารถสมัครสมาชิกได้"}`);
       } else if (error.request) {
-        console.error("Error request:", error.request);
-        alert("เกิดข้อผิดพลาด: ไม่สามารถติดต่อเซิร์ฟเวอร์ได้");
+        toast.error("เกิดข้อผิดพลาด: ไม่สามารถติดต่อเซิร์ฟเวอร์ได้");
       } else {
-        console.error("Error:", error.message);
-        alert("เกิดข้อผิดพลาด: " + error.message);
+        toast.error(`เกิดข้อผิดพลาด: ${error.message}`);
       }
-   }
+    }
   };
 
   return (
@@ -81,8 +100,8 @@ function RegisterNext() {
           ))}
         </div>
         <h3>สมัครสมาชิก</h3>
-          <form onSubmit={handleSubmit}>
-            <div className={styles.inputForm}>
+        <form onSubmit={handleSubmit}>
+          <div className={styles.inputForm}>
             <PasswordInput
               label=" "
               id="password"
@@ -99,21 +118,22 @@ function RegisterNext() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="ยืนยันรหัสผ่าน"
             />
-            </div>
-            <div className={styles.infoInput}>
-              <p>อัพโหลดหนังสือรับรองเพื่อเข้าใช้งานระบบ</p>
-              <p>(รองรับไฟล์ .pdf .png .jpg ขนาดไม่เกิน 10 MB)</p>
-            </div>
-            <Input type="file" onChange={(e) => setFile(e.target.files[0])} />
-            <div className={styles.buttonSubmit}>
-              <Button text="ยืนยันการสมัครสมาชิก" styleType="third" />
-              <Link to="/Register" style={{ textDecoration: "none" }}>
-                <Button text="ย้อนกลับ" styleType="back" />
-              </Link>
-            </div>
-          </form>
+          </div>
+          <div className={styles.infoInput}>
+            <p>อัพโหลดหนังสือรับรองเพื่อเข้าใช้งานระบบ</p>
+            <p>(รองรับไฟล์ .pdf .png .jpg ขนาดไม่เกิน 10 MB)</p>
+          </div>
+          <Input type="file" onChange={(e) => setFile(e.target.files[0])} />
+          <div className={styles.buttonSubmit}>
+            <Button text="ยืนยันการสมัครสมาชิก" styleType="third" />
+            <Link to="/Register" style={{ textDecoration: "none" }}>
+              <Button text="ย้อนกลับ" styleType="back" />
+            </Link>
+          </div>
+        </form>
       </div>
       <Footer />
+      <ToastContainer position="top-center" />
     </div>
   );
 }

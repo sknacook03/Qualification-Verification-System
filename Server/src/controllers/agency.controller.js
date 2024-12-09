@@ -177,6 +177,29 @@ const AgencyController = {
       res.status(500).json({ error: error.message || "Unable to update agency" });
     }
   },
+  checkEmailController: async (req, res) => {
+    const { email } = req.body;
+  
+    try {
+      const exists = await AgencyService.checkEmailExists(email);
+      res.status(200).json({ exists });
+    } catch (error) {
+      console.error('Error checking email:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
+  checkTelephoneController: async (req, res) => {
+    const { telephone_number } = req.body;
+  
+    try {
+      const exists = await AgencyService.checkTelephoneExists(telephone_number);
+      res.status(200).json({ exists });
+    } catch (error) {
+      console.error('Error checking telephone:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
+  
 };
 
 export default AgencyController;

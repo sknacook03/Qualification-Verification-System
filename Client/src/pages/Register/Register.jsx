@@ -7,6 +7,8 @@ import Input from "../../components/Input/Input";
 import Textfield from "../../components/Textfield/Textfield";
 import OptionTypeAgency from "../../components/OptionTypeAgency/OptionTypeAgency";
 import styles from "./Register.module.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -31,9 +33,41 @@ function Register() {
 
   const handleNext = async () => {
     try {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        toast.error("รูปแบบอีเมลไม่ถูกต้อง");
+        return;
+      }
+
+      const mobilePhoneRegex = /^(0[89]{1}[0-9]{8})$/;
+      const landlinePhoneRegex = /^(0[2-9]{1}[0-9]{7})$/;
+
+      if (!mobilePhoneRegex.test(telphone) && !landlinePhoneRegex.test(telphone)) {
+        toast.error("กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง (เบอร์มือถือหรือเบอร์บ้าน/สำนักงาน)");
+        return;
+      }
+
+
+      const checkEmailResponse = await axios.post(
+        "http://localhost:3000/agency/check-email",
+        { email }
+      );
+      if (checkEmailResponse.data.exists) {
+        toast.error("อีเมลนี้ถูกใช้ไปแล้ว");
+        return;
+      }
+
+      const checkTelResponse = await axios.post(
+        "http://localhost:3000/agency/check-telphone",
+        { telephone_number: telphone  }
+      );
+      if (checkTelResponse.data.exists) {
+        toast.error("เบอร์โทรศัพท์นี้ถูกใช้ไปแล้ว");
+        return;
+      }
+
       if (orgType === "other") {
         const otherTypeInput = document.getElementById("otherType");
-
         if (otherTypeInput && otherTypeInput.value.trim()) {
           const otherValue = otherTypeInput.value.trim();
 
@@ -43,10 +77,9 @@ function Register() {
               type_name: otherValue,
             }
           );
-          console.log(response);
 
           if (response.status === 201) {
-            const newType = response.data.data; 
+            const newType = response.data.data;
             if (newType && newType.id) {
               setOrgType(newType.id);
             } else {
@@ -54,12 +87,11 @@ function Register() {
             }
           }
         } else {
-          alert("กรุณาระบุประเภทหน่วยงานในช่อง 'อื่นๆ'");
+          toast.error("กรุณาระบุประเภทหน่วยงานในช่อง 'อื่นๆ'");
           return;
         }
       }
 
-      // เมื่อข้อมูลถูกบันทึกเสร็จสิ้น ให้ไปยังหน้าถัดไป
       navigate("/RegisterNext", {
         state: {
           email,
@@ -73,7 +105,7 @@ function Register() {
       });
     } catch (error) {
       console.error("Error handling next:", error);
-      alert(error.message || "เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+      toast.error(error.message || "เกิดข้อผิดพลาดในการบันทึกข้อมูล");
     }
   };
 
@@ -166,6 +198,7 @@ function Register() {
         </div>
       </div>
       <Footer />
+      <ToastContainer position="top-center" />
     </div>
   );
 }
