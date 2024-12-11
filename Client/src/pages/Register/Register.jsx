@@ -93,19 +93,27 @@ function Register() {
           return;
         }
 
-        const checkEmailResponse = await axios.post(
+        const checkEmailResponse = await toast.promise( axios.post(
           "http://localhost:3000/agency/check-email",
           { email }
-        );
+        ),
+      {
+        pending: "กำลังตรวจสอบข้อมูล..."
+      }
+      );
         if (checkEmailResponse.data.exists) {
           toast.error("อีเมลนี้ถูกใช้ไปแล้ว");
           return;
         }
 
-        const checkTelResponse = await axios.post(
+        const checkTelResponse = await toast.promise( axios.post(
           "http://localhost:3000/agency/check-telphone",
           { telephone_number: telphone }
-        );
+        ),
+      {
+        pending: "กำลังตรวจสอบข้อมูล..."
+      }
+      );
         if (checkTelResponse.data.exists) {
           toast.error("เบอร์โทรศัพท์นี้ถูกใช้ไปแล้ว");
           return;
