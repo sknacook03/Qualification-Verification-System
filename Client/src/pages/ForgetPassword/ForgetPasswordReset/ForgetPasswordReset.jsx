@@ -7,16 +7,20 @@ import PasswordInput from "../../../hooks/PasswordInput/PasswordInput";
 import Button from "../../../components/button/Button";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Popup from "../../../components/Popup/Popup";
+import KeySuccess from "../../../assets/verify.png";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function ForgetPasswordReset() {
+  const navigate = useNavigate();
   const location = useLocation();
+  const [showPopup, setShowPopup] = useState(false);
   const [email, setEmail] = useState(location.state?.email ?? "");
   const [password, setPassword] = useState("");
   const [passwordNew, setPasswordNew] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const [errors, setErrors] = useState({});
+
   const validateForm = () => {
     const newErrors = {};
     if (!password) {
@@ -27,6 +31,11 @@ function ForgetPasswordReset() {
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const closePopup = (e) => {
+    setShowPopup(false);
+    navigate("/login");
   };
 
   const handleResetPassword = async () => {
@@ -54,7 +63,7 @@ function ForgetPasswordReset() {
           }
         );
         toast.success("รีเซ็ตรหัสผ่านสำเร็จ");
-        navigate("/login");
+        setShowPopup(true);
       } catch (error) {
         console.error(error);
         toast.error("ไม่สามารถรีเซ็ตรหัสผ่านได้");
@@ -109,10 +118,19 @@ function ForgetPasswordReset() {
                 onClick={handleResetPassword}
                 disabled={loading || !password || !passwordNew}
               />
+              {showPopup && (
+                <Popup
+                  topic="รีเซ็ตรหัสผ่านสำเร็จ!"
+                  info="คุณสามารถเข้าสู่ระบบโดยกรอกรหัสผ่านใหม่ได้แล้ว"
+                  img={KeySuccess}
+                  closePopup={closePopup}
+                  textButton="กลับไปยังหน้าเข้าสู่ระบบ"
+                />
+              )}
             </div>
           </div>
         </div>
-        
+
         <Footer />
       </div>
       <ToastContainer position="top-center" />

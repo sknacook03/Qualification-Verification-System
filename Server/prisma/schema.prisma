@@ -83,12 +83,11 @@ model PageView {
   id         BigInt   @id @default(autoincrement())
   agency_id  BigInt
   student_id BigInt
-  page_url   String
   faculty    String
   department String
-  ip_address String?
-  user_agent String?
+  action_type ActionType  @default(VIEW)
   created_at DateTime @default(now())
+  updated_at  DateTime @updatedAt
 
   // Relations
   agency  Agency  @relation(fields: [agency_id], references: [id])
@@ -128,4 +127,10 @@ enum StatusApprove {
 enum Role {
   admin
   agency
+}
+
+enum ActionType {
+  VIEW
+  EXPORT
+  PRINT
 }

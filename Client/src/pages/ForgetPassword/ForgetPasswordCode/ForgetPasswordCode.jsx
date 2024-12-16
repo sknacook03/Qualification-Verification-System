@@ -15,7 +15,7 @@ function ForgetPasswordCode() {
   const [email, setEmail] = useState(location.state?.email ?? "");
   const [CodeReset, setCodeReset] = useState("");
   const [message, setMessage] = useState("");
-  const [timeout, setTimeoutState] = useState(0.1 * 60);
+  const [timeout, setTimeoutState] = useState(5 * 60);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -32,10 +32,15 @@ function ForgetPasswordCode() {
     setLoading(true);
     if (validateForm()) {
       try {
-        await axios.post("http://localhost:3000/password-reset/verify-code", {
-          email,
-          code: CodeReset,
-        });
+        await toast.promise(
+          axios.post("http://localhost:3000/password-reset/verify-code", {
+            email,
+            code: CodeReset,
+          }),
+          {
+            pending: "กำลังตรวจสอบโค้ด...",
+          }
+        );
         toast.success("โค้ดยืนยันสำเร็จ!");
         navigate("/ForgetPasswordReset", { state: { email } });
         setLoading(false);
@@ -56,11 +61,11 @@ function ForgetPasswordCode() {
           email,
         }),
         {
-          pending: "ระบบกำลังส่งรหัสให้คุณ..."
+          pending: "ระบบกำลังส่งรหัสให้คุณ...",
         }
       );
       toast.success("รหัสใหม่ถูกส่งไปที่อีเมลของคุณแล้ว");
-      setTimeoutState(0.1 * 60);
+      setTimeoutState(5 * 60);
     } catch (error) {
       toast.error("ไม่สามารถส่งโค้ดใหม่ได้");
     } finally {
@@ -143,7 +148,7 @@ function ForgetPasswordCode() {
         </div>
         <Footer />
       </div>
-        <ToastContainer position="top-center" />
+      <ToastContainer position="top-center" />
     </>
   );
 }

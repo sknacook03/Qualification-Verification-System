@@ -161,12 +161,12 @@ function RegisterNext() {
           </div>
           {showPopup && (
             <Popup
-              topic="สมัครสมาชิกสำเร็จ"
+              topic="สมัครสมาชิกสำเร็จ!"
               info="รอการตรวจสอบจากเจ้าหน้าที่ เมื่อตรวจสอบสำเร็จแล้ว
               จะส่งผลการตรวจสอบไปยังอีเมลของคุณ"
               img={message}
               closePopup={closePopup}
-              textButton="กลับไปยังหน้าล็อคอิน"
+              textButton="กลับไปยังหน้าเข้าสู่ระบบ"
             />
           )}
         </form>

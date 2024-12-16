@@ -1,11 +1,11 @@
-import logo from "../../assets/logo-rmuti.png";
+import logo from "../../assets/Cassia-flowers-rmuti.png";
 import { Link } from "react-router-dom";
 import "./header.css";
 function Header() {
   return (
     <div className="contrainer-header">
       <div className="logo">
-        <Link to="/">
+        <Link to="/login">
           <img src={logo} alt="logo" width={65} />
         </Link>
       </div>

@@ -5,7 +5,12 @@
   padding: 0.5rem 0.5rem 0.5rem 2rem;
 }
 .contrainer-header .logo {
-    width: 3rem;
+  width: 3rem;
+}
+.contrainer-header .logo img {
+  position: relative;
+  top: 15px;
+
 }
 .contrainer-header .info {
   color: white;

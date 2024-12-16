@@ -26,20 +26,22 @@ function ForgetPassword() {
   };
 
   const handleSendCode = async () => {
-    if (loading) return; 
+    if (loading) return;
     toast.dismiss();
     setLoading(true);
     if (validateForm()) {
       try {
-        const response = await axios.post(
-          "http://localhost:3000/password-reset/request-reset",
-          {
+        const response = await toast.promise(
+          axios.post("http://localhost:3000/password-reset/request-reset", {
             email: emailForget,
+          }),
+          {
+            pending: "กำลังตรวจสอบข้อมูล...",
           }
         );
-  
+
         toast.success("รหัสรีเซ็ตได้ถูกส่งไปที่อีเมลของคุณแล้ว");
-        setLoading(false); 
+        setLoading(false);
         navigate("/ForgetPasswordCode", { state: { email: emailForget } });
       } catch (error) {
         if (error.response?.status === 404) {
@@ -47,10 +49,10 @@ function ForgetPassword() {
         } else {
           toast.error("ไม่สามารถส่งรหัสได้ โปรดลองใหม่อีกครั้ง");
         }
-        setLoading(false); 
+        setLoading(false);
       }
     } else {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
