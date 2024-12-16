@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import AgencyApproveTable from "../../hooks/AgencyApproveTable/AgencyApproveTable.jsx";
 
 function HomepagesOfficer() {
   const [officer, setOfficer] = useState(null);
@@ -19,7 +20,7 @@ function HomepagesOfficer() {
       } catch (error) {
         console.error("Failed to fetch officer data:", error);
         alert("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
-        navigate("/");
+        navigate("/LoginOfficer");
       }
     };
 
@@ -42,7 +43,6 @@ function HomepagesOfficer() {
     fetchAgencyAll();
   }, []);
 
-  // ฟังก์ชันสำหรับอัปเดตสถานะของ agency
   const updateStatus = async (agencyId, newStatus) => {
     try {
       await axios.put(
@@ -51,7 +51,6 @@ function HomepagesOfficer() {
         { withCredentials: true }
       );
 
-      // อัปเดต state ของ agency หลังจากอัปเดตสถานะสำเร็จ
       setAgency((prevAgency) =>
         prevAgency.map((agencyItem) =>
           agencyItem.id === agencyId
@@ -86,37 +85,10 @@ function HomepagesOfficer() {
 
       <h3>Pending Agencies</h3>
       {pendingAgencies.length > 0 ? (
-        <table border="1">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Agency Name</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pendingAgencies.map((agencyItem, index) => (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{agencyItem.agency_name}</td>
-                <td>{agencyItem.status_approve}</td>
-                <td>
-                  <button
-                    onClick={() => updateStatus(agencyItem.id, "approved")}
-                  >
-                    Approved
-                  </button>
-                  <button
-                    onClick={() => updateStatus(agencyItem.id, "rejected")}
-                  >
-                    Rejected
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <AgencyApproveTable
+          agencies={pendingAgencies}
+          onUpdateStatus={updateStatus}
+        />
       ) : (
         <p>ไม่มี Agency ที่อยู่ในสถานะ Pending</p>
       )}

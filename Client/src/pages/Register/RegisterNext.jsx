@@ -86,7 +86,7 @@ function RegisterNext() {
           }
         );
     
-        navigate("/");
+        navigate("/login");
       } catch (error) {
         if (error.response) {
           console.error("Error response:", error.response.data);

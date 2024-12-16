@@ -54,7 +54,7 @@ function ForgetPasswordReset() {
           }
         );
         toast.success("รีเซ็ตรหัสผ่านสำเร็จ");
-        navigate("/");
+        navigate("/login");
       } catch (error) {
         console.error(error);
         toast.error("ไม่สามารถรีเซ็ตรหัสผ่านได้");

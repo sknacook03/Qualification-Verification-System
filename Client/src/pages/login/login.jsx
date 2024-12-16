@@ -15,7 +15,6 @@ function App() {
   const handleSubmit = async ({ email, password }) => {
     toast.dismiss();
     try {
-      // Step 1: ส่งคำขอ Login
       const loginResponse = await toast.promise(
         axios.post(
           "http://localhost:3000/auth/login",
@@ -28,7 +27,6 @@ function App() {
       );
 
       if (loginResponse.status === 200) {
-        // Step 2: ตรวจสอบ status_approve
         try {
           const statusResponse = await toast.promise(
             axios.get("http://localhost:3000/agency/logged-in", {
@@ -42,7 +40,7 @@ function App() {
 
           if (status_approve === "approved") {
             toast.success("ล็อกอินสำเร็จ!");
-            navigate("/Homepages");
+            navigate("/");
           } else {
             toast.error(
               "บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ"

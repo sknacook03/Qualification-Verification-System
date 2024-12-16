@@ -22,7 +22,7 @@ function Homepages() {
       );
         if (res.data.data.status_approve !== "approved") {
           alert("บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ");
-          navigate("/");
+          navigate("/login");
           return;
         }
         setAgency(res.data.data);
@@ -30,7 +30,7 @@ function Homepages() {
       } catch (error) {
         console.error("Failed to fetch agency data:", error);
         alert("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
-        navigate("/");
+        navigate("/login");
         return;
       }
     };
