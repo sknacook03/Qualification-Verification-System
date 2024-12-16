@@ -8,10 +8,13 @@ import Button from "../../components/button/Button";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "./RegisterNext.module.css";
+import Popup from "../../components/Popup/Popup";
+import message from "../../assets/message.png";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 
 function RegisterNext() {
   const navigate = useNavigate();
+  const [showPopup, setShowPopup] = useState(false);
   const location = useLocation();
   const formData = location.state || {};
   const [password, setPassword] = useState("");
@@ -38,7 +41,10 @@ function RegisterNext() {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
+  const closePopup = (e) => {
+    setShowPopup(false);
+    navigate("/login");
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -57,12 +63,11 @@ function RegisterNext() {
     });
 
     if (validateForm()) {
-
       if (password !== confirmPassword) {
         toast.error("รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน!");
         return;
       }
-  
+
       if (!isPasswordStrong(password)) {
         toast.error("รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร");
         return;
@@ -70,28 +75,25 @@ function RegisterNext() {
 
       try {
         await toast.promise(
-          axios.post(
-            "http://localhost:3000/agency",
-            finalData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          ),
+          axios.post("http://localhost:3000/agency", finalData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }),
           {
-            pending: 'กำลังสมัครสมาชิก...',
-            success: 'สมัครสมาชิกสำเร็จ!',
-            error: 'เกิดข้อผิดพลาดในการสมัครสมาชิก!',
+            pending: "กำลังสมัครสมาชิก...",
+            success: "สมัครสมาชิกสำเร็จ!",
+            error: "เกิดข้อผิดพลาดในการสมัครสมาชิก!",
           }
         );
-    
-        navigate("/login");
+
+        setShowPopup(true)
       } catch (error) {
         if (error.response) {
           console.error("Error response:", error.response.data);
           toast.error(
-            "เกิดข้อผิดพลาด: " + (error.response.data.message || "ไม่สามารถสมัครสมาชิกได้")
+            "เกิดข้อผิดพลาด: " +
+              (error.response.data.message || "ไม่สามารถสมัครสมาชิกได้")
           );
         } else if (error.request) {
           console.error("Error request:", error.request);
@@ -146,13 +148,27 @@ function RegisterNext() {
             <p>อัพโหลดหนังสือรับรองเพื่อเข้าใช้งานระบบ</p>
             <p>(รองรับไฟล์ .pdf .png .jpg ขนาดไม่เกิน 10 MB)</p>
           </div>
-          <Input type="file" onChange={(e) => setFile(e.target.files[0])} error={errors.file} />
+          <Input
+            type="file"
+            onChange={(e) => setFile(e.target.files[0])}
+            error={errors.file}
+          />
           <div className={styles.buttonSubmit}>
             <Button text="ยืนยันการสมัครสมาชิก" styleType="third" />
             <Link to="/Register" style={{ textDecoration: "none" }}>
               <Button text="ย้อนกลับ" styleType="back" />
             </Link>
           </div>
+          {showPopup && (
+            <Popup
+              topic="สมัครสมาชิกสำเร็จ"
+              info="รอการตรวจสอบจากเจ้าหน้าที่ เมื่อตรวจสอบสำเร็จแล้ว
+              จะส่งผลการตรวจสอบไปยังอีเมลของคุณ"
+              img={message}
+              closePopup={closePopup}
+              textButton="กลับไปยังหน้าล็อคอิน"
+            />
+          )}
         </form>
       </div>
       <ToastContainer position="top-center" />
