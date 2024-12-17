@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AgencyApproveTable from "../../hooks/AgencyApproveTable/AgencyApproveTable.jsx";
+import styles from './HomepagesOfficer.module.css'; // Import the CSS module
 
 function HomepagesOfficer() {
   const [officer, setOfficer] = useState(null);
@@ -66,11 +67,16 @@ function HomepagesOfficer() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className={styles['loading-container']}>
+        <div className={styles.spinner}></div>
+        <p>กำลังโหลดข้อมูล...</p>
+      </div>
+    );
   }
 
   if (!officer) {
-    return <div>ไม่พบข้อมูล Officer</div>;
+    return <div className={styles['error-message']}>ไม่พบข้อมูล Officer</div>;
   }
 
   const pendingAgencies = agency.filter(
@@ -78,20 +84,24 @@ function HomepagesOfficer() {
   );
 
   return (
-    <div>
-      <h1>Welcome, {officer.first_name}</h1>
-      <p>Email: {officer.email}</p>
-      <p>Role: {officer.role}</p>
+    <div className={styles.container}>
+      <header className={styles.header}>
+        <h1>Welcome, {officer.first_name}</h1>
+        <p>Email: {officer.email}</p>
+        <p>Role: {officer.role}</p>
+      </header>
 
-      <h3>Pending Agencies</h3>
-      {pendingAgencies.length > 0 ? (
-        <AgencyApproveTable
-          agencies={pendingAgencies}
-          onUpdateStatus={updateStatus}
-        />
-      ) : (
-        <p>ไม่มี Agency ที่อยู่ในสถานะ Pending</p>
-      )}
+      <section className={styles.content}>
+        <h3>Pending Agencies</h3>
+        {pendingAgencies.length > 0 ? (
+          <AgencyApproveTable
+            agencies={pendingAgencies}
+            onUpdateStatus={updateStatus}
+          />
+        ) : (
+          <p>ไม่มี Agency ที่อยู่ในสถานะ Pending</p>
+        )}
+      </section>
     </div>
   );
 }
