@@ -5,7 +5,7 @@ function Header() {
   return (
     <div className="contrainer-header">
       <div className="logo">
-        <Link to="/login">
+        <Link to="/">
           <img src={logo} alt="logo" width={65} />
         </Link>
       </div>

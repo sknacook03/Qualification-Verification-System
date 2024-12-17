@@ -7,7 +7,7 @@ import Register from "../pages/Register/Register.jsx";
 import RegisterNext from "../pages/Register/RegisterNext.jsx";
 
 const authRoutes = [
-  { path: "/login", element: <Login /> },
+  { path: "/", element: <Login /> },
   { path: "/register", element: <Register /> },
   { path: "/RegisterNext", element: <RegisterNext /> },
   { path: "/ForgetPassword", element: <ForgetPassword /> },

@@ -87,7 +87,7 @@ function ForgetPassword() {
               error={errors.email}
             />
             <div className={styles.arrowButton}>
-              <Link to="/login" style={{ textDecoration: "none" }}>
+              <Link to="/" style={{ textDecoration: "none" }}>
                 <ArrowButton direction="left" color="grey" />
               </Link>
               <div

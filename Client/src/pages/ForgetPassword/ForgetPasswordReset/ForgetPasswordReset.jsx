@@ -35,7 +35,7 @@ function ForgetPasswordReset() {
 
   const closePopup = (e) => {
     setShowPopup(false);
-    navigate("/login");
+    navigate("/");
   };
 
   const handleResetPassword = async () => {

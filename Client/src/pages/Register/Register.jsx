@@ -252,7 +252,7 @@ function Register() {
           </div>
         </form>
         <div className={styles.arrowButton}>
-          <Link to="/login" style={{ textDecoration: "none" }}>
+          <Link to="/" style={{ textDecoration: "none" }}>
             <ArrowButton direction="left" color="grey" />
           </Link>
           <button type="button" onClick={handleNext} style={{ border: "none" }}>

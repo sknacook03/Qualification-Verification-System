@@ -43,7 +43,7 @@ function RegisterNext() {
   };
   const closePopup = (e) => {
     setShowPopup(false);
-    navigate("/login");
+    navigate("/");
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
