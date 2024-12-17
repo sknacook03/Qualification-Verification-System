@@ -45,5 +45,20 @@ const AuthController = {
   loginOfficerController: (req, res) => {
     loginHandler(req, res, AuthService.loginOfficer);
   },
+  logoutController: (req, res) => {
+    try {
+      res.clearCookie("token", {
+        httpOnly: true,
+        secure: process.env.JWT_SECRET === "production",
+        sameSite: "strict",
+      });
+
+      const response = AuthService.logout();
+      res.status(200).json(response);
+    } catch (error) {
+      console.error("Failed to logout:", error);
+      res.status(500).json({ error: "Failed to logout" });
+    }
+  },
 };
 export default AuthController;

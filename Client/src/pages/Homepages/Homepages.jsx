@@ -42,13 +42,34 @@ function Homepages() {
     return <div>ไม่พบข้อมูล Agency</div>;
   }
 
+  const logout = async () => {
+    try {
+      await axios.post(
+        "http://localhost:3000/auth/logout",
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to logout:", error);
+      alert("เกิดข้อผิดพลาดในการออกจากระบบ");
+    }
+  };
+
   return (
     <div>
       <h1>Welcome, {agency.agency_name}</h1>
       <p>Email: {agency.email}</p>
       <p>Department: {agency.department}</p>
       <p>Role: {agency.role}</p>
+      <button onClick={logout}>
+          ออกจากระบบ
+        </button>
     </div>
+    
   );
 }
 

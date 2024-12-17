@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AgencyApproveTable from "../../hooks/AgencyApproveTable/AgencyApproveTable.jsx";
-import styles from '../HomepageOfficer/HomepageOfficer.module.css'; 
+import Button from "../../components/button/Button.jsx";
+import styles from "../HomepageOfficer/HomepageOfficer.module.css";
 
 function HomepagesOfficer() {
   const [officer, setOfficer] = useState(null);
@@ -66,9 +67,26 @@ function HomepagesOfficer() {
     }
   };
 
+  const logout = async () => {
+    try {
+      await axios.post(
+        "http://localhost:3000/auth/logout",
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+
+      navigate("/LoginOfficer");
+    } catch (error) {
+      console.error("Failed to logout:", error);
+      alert("เกิดข้อผิดพลาดในการออกจากระบบ");
+    }
+  };
+
   if (loading) {
     return (
-      <div className={styles['loading-container']}>
+      <div className={styles["loading-container"]}>
         <div className={styles.spinner}></div>
         <p>กำลังโหลดข้อมูล...</p>
       </div>
@@ -76,7 +94,7 @@ function HomepagesOfficer() {
   }
 
   if (!officer) {
-    return <div className={styles['error-message']}>ไม่พบข้อมูล Officer</div>;
+    return <div className={styles["error-message"]}>ไม่พบข้อมูล Officer</div>;
   }
 
   const pendingAgencies = agency.filter(
@@ -89,6 +107,9 @@ function HomepagesOfficer() {
         <h1>Welcome, {officer.first_name}</h1>
         <p>Email: {officer.email}</p>
         <p>Role: {officer.role}</p>
+        <button className={styles.logoutButton} onClick={logout}>
+          ออกจากระบบ
+        </button>
       </header>
 
       <section className={styles.content}>

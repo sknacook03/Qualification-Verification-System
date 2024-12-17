@@ -72,5 +72,8 @@ const AuthService = {
       throw error; 
     }
   },
+  logout: async () => {
+    return { message: "Logout successful" };
+  },
 };
 export default AuthService;
