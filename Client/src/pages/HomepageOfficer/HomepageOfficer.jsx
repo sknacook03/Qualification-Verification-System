@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AgencyApproveTable from "../../hooks/AgencyApproveTable/AgencyApproveTable.jsx";
-import styles from './HomepagesOfficer.module.css'; // Import the CSS module
+import styles from '../HomepageOfficer/HomepageOfficer.module.css'; 
 
 function HomepagesOfficer() {
   const [officer, setOfficer] = useState(null);
