@@ -3,7 +3,7 @@ import Homepages from "../pages/Homepages/Homepages.jsx";
 import Contact from "../layout/contact/contact.jsx";
 
 const appRoutes = [
-  { path: "/Homepage", element: <Homepages /> },
+  { path: "/Homepages", element: <Homepages /> },
   { path: "/contact", element: <Contact /> },
 ];
 
