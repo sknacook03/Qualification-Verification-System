@@ -40,7 +40,7 @@ function App() {
 
           if (status_approve === "approved") {
             toast.success("ล็อกอินสำเร็จ!");
-            navigate("/Homepage");
+            navigate("/Homepages");
           } else {
             toast.error(
               "บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ"
