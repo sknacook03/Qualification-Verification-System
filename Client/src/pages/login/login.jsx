@@ -22,7 +22,7 @@ function App() {
           { withCredentials: true }
         ),
         {
-          pending: "กำลังตรวจสอบข้อมูล..."
+          pending: "กำลังตรวจสอบข้อมูล...",
         }
       );
 
@@ -41,9 +41,13 @@ function App() {
           if (status_approve === "approved") {
             toast.success("ล็อกอินสำเร็จ!");
             navigate("/Homepages");
+          } else if (status_approve === "rejected") {
+            toast.error(
+              "บัญชีของคุณถูกปฎิเสธการเข้าใช้งาน โปรดติดต่อเจ้าหน้าที่"
+            );
           } else {
             toast.error(
-              "บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ"
+              "บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อเจ้าหน้าที่"
             );
           }
         } catch (statusError) {
