@@ -72,7 +72,7 @@ const OfficerService = {
   updateOfficer: async (id, DataOfficer) => {
     try {
       const existOfficer = await prisma.officer.findUnique({
-        where: { id: BigInt(id) }
+        where: { id: BigInt(id) },
       });
 
       if (!existOfficer) {
@@ -83,7 +83,7 @@ const OfficerService = {
         where: { id: BigInt(id) },
         data: DataOfficer,
       });
-  
+
       return updatedOfficer;
     } catch (error) {
       console.error("Failed to update officer:", error);
@@ -129,7 +129,7 @@ const OfficerService = {
       const officer = await prisma.officer.findUnique({
         where: { id: BigInt(id) },
       });
-  
+
       if (!officer) {
         console.error("No officer found for ID:", id);
       }
@@ -137,6 +137,18 @@ const OfficerService = {
     } catch (error) {
       console.error("Error in getOfficerById:", error.message);
       throw error;
+    }
+  },
+  findUserByEmail: async (email) => {
+    try {
+      const agency = await prisma.agency.findUnique({ where: { email } });
+      if (!agency) {
+        console.error("Agency not found for email:", email);
+      }
+      return agency;
+    } catch (error) {
+      console.error("Error finding user by email:", error);
+      throw new Error("Database error");
     }
   },
 };

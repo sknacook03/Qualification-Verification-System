@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AgencyApproveTable from "../../hooks/AgencyApproveTable/AgencyApproveTable.jsx";
-import Button from "../../components/button/Button.jsx";
 import styles from "../HomepageOfficer/HomepageOfficer.module.css";
 
 function HomepagesOfficer() {
@@ -44,9 +43,24 @@ function HomepagesOfficer() {
 
     fetchAgencyAll();
   }, []);
-
+  const sendEmailAgency = async (email, message) => {
+    try{
+      const res = await axios.post("http://localhost:3000/officer/send-email",
+        { email, message },
+        { withCredentials: true } 
+      )
+      console.log("Email sent successfully");
+    }catch (error) {
+      console.error("Failed to send Email:", error);
+    }
+  }
   const updateStatus = async (agencyId, newStatus) => {
     try {
+      const agencyToUpdate = agency.find((item) => item.id === agencyId);
+      if (!agencyToUpdate) {
+        alert("Agency not found");
+        return;
+      }
       await axios.put(
         `http://localhost:3000/agency/update-agency/${agencyId}`,
         { status_approve: newStatus },
@@ -60,6 +74,15 @@ function HomepagesOfficer() {
             : agencyItem
         )
       );
+      let emailMessage;
+    if (newStatus === "approved") {
+      emailMessage =
+        "อีเมลของคุณสามารถใช้งานระบบตรวจสอบคุณวุฒิ มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน ได้แล้ว";
+    } else if (newStatus === "rejected") {
+      emailMessage =
+        "อีเมลของคุณถูกปฎิเสธโดยเจ้าหน้าที่ จากระบบตรวจสอบคุณวุฒิ มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน กรุณาติดต่อเจ้าหน้าที่";
+    }
+      await sendEmailAgency(agencyToUpdate.email, emailMessage);
       alert(`สถานะถูกเปลี่ยนเป็น ${newStatus}`);
     } catch (error) {
       console.error("Failed to update agency status:", error);

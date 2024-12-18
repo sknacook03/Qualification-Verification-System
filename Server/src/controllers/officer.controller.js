@@ -1,4 +1,5 @@
 import OfficerService from "../services/officer.service.js";
+import { sendEmail } from "../utils/senderEmail.util.js";
 
 const replacer = (key, value) => {
   if (typeof value === "bigint") {
@@ -103,23 +104,51 @@ const OfficerController = {
     try {
       const { id } = req.params;
       const updateData = req.body;
-  
+
       if (Object.keys(updateData).length === 0) {
-        return res.status(400).json({ error: "There is no information for updates." });
+        return res
+          .status(400)
+          .json({ error: "There is no information for updates." });
       }
-  
-      const updateOfficerData = await OfficerService.updateOfficer(id, updateData);
-  
-      const responseData = JSON.parse(JSON.stringify(updateOfficerData, replacer));
-  
+
+      const updateOfficerData = await OfficerService.updateOfficer(
+        id,
+        updateData
+      );
+
+      const responseData = JSON.parse(
+        JSON.stringify(updateOfficerData, replacer)
+      );
+
       res.status(200).json({
         success: true,
         message: "Successfully updated officer.",
         data: responseData,
       });
     } catch (error) {
-      console.error("An error occurred while updating the unit:", error.message);
-      res.status(500).json({ error: error.message || "Unable to update officer" });
+      console.error(
+        "An error occurred while updating the unit:",
+        error.message
+      );
+      res
+        .status(500)
+        .json({ error: error.message || "Unable to update officer" });
+    }
+  },
+  sendAgency: async (req, res) => {
+    try {
+      const { email, message } = req.body;
+
+      if (!email) return res.status(400).json({ message: "Email is required" });
+
+      const agency = await OfficerService.findUserByEmail(email);
+      if (!agency) return res.status(404).json({ message: "Agency not found" });
+
+      await sendEmail(email, message);
+      res.status(200).json({ message: "Email sent successfully" });
+    } catch (error) {
+      console.error("Error in sendAgency:", error);
+      res.status(500).json({ message: "Internal Server Error" });
     }
   },
 };

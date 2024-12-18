@@ -62,7 +62,7 @@ function AgencyApproveTable({ agencies, onUpdateStatus }) {
 
   const viewImage = (url) => {
     if (url) {
-      window.open(url, "_blank"); // Opens the image in a new tab
+      window.open(url, "_blank");
     } else {
       alert("No certificate available for this agency.");
     }
