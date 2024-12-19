@@ -119,32 +119,6 @@ function Register() {
           return;
         }
 
-        if (orgType === "other") {
-          const otherTypeInput = document.getElementById("otherType");
-          if (otherTypeInput && otherTypeInput.value.trim()) {
-            const otherValue = otherTypeInput.value.trim();
-
-            const response = await axios.post(
-              "http://localhost:3000/typeagency/create-type",
-              {
-                type_name: otherValue,
-              }
-            );
-
-            if (response.status === 201) {
-              const newType = response.data.data;
-              if (newType && newType.id) {
-                setOrgType(newType.id);
-              } else {
-                throw new Error("Failed to save new agency type");
-              }
-            }
-          } else {
-            toast.error("กรุณาระบุประเภทหน่วยงานในช่อง 'อื่นๆ'");
-            return;
-          }
-        }
-
         navigate("/RegisterNext", {
           state: {
             email,

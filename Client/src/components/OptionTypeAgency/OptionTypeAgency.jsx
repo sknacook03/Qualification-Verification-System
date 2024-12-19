@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./OptionTypeAgency.css";
+import { API_BASE_URL,APIEndpoints } from "../../services/api";
 
 const OptionTypeAgency = ({ label, id, name, value, onChange, placeholder, error }) => {
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showOtherInput, setShowOtherInput] = useState(false);
-  const [otherValue, setOtherValue] = useState("");
   const [selectedValue, setSelectedValue] = useState(value || "");
 
   useEffect(() => {
     const fetchOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/typeagency");
+        const response = await axios.get(API_BASE_URL + APIEndpoints.agency.typeAgency);
         const result = response.data;
         if (result.success) {
           setOptions(result.data);
@@ -34,12 +33,7 @@ const OptionTypeAgency = ({ label, id, name, value, onChange, placeholder, error
   const handleSelectChange = (e) => {
     const newValue = e.target.value;
     setSelectedValue(newValue);
-    setShowOtherInput(newValue === "other");
     if (onChange) onChange({ target: { name, value: newValue } });
-  };
-
-  const handleOtherInputChange = (e) => {
-    setOtherValue(e.target.value);
   };
 
   return (
@@ -63,21 +57,8 @@ const OptionTypeAgency = ({ label, id, name, value, onChange, placeholder, error
             </option>
           ))
         )}
-        <option value="other">อื่นๆ</option>
       </select>
-      {error && <div className="error-message">{error}</div>}
-      {showOtherInput && (
-        <input
-          type="text"
-          name="otherType"
-          id="otherType"
-          value={otherValue}
-          onChange={handleOtherInputChange}
-          placeholder="กรุณาระบุประเภทหน่วยงาน"
-          className={`input-text ${error ? 'input-error' : ''}`}
-        />
-        
-      )}
+      {error && <div className="error-message">{error}</div>}      
     </div>
   );
 };
