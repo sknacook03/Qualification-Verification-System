@@ -8,7 +8,7 @@ import Footer from "../../components/footer/footer";
 import HeaderLogin from "../../components/headerLogin/headerLogin";
 import LoginForm from "../../hooks/LoginForm/LoginForm";
 import styles from "./login.module.css";
-
+import { API_BASE_URL, APIEndpoints } from "../../services/api";
 function App() {
   const navigate = useNavigate();
 
@@ -17,7 +17,7 @@ function App() {
     try {
       const loginResponse = await toast.promise(
         axios.post(
-          "http://localhost:3000/auth/login",
+          API_BASE_URL + APIEndpoints.auth.login,
           { email, password },
           { withCredentials: true }
         ),
@@ -29,7 +29,7 @@ function App() {
       if (loginResponse.status === 200) {
         try {
           const statusResponse = await toast.promise(
-            axios.get("http://localhost:3000/agency/logged-in", {
+            axios.get(API_BASE_URL + APIEndpoints.agency.logged, {
               withCredentials: true,
             }),
             {

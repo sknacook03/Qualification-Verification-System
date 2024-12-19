@@ -10,6 +10,7 @@ import styles from "./Register.module.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link, useNavigate } from "react-router-dom";
+import { API_BASE_URL, APIEndpoints } from "../../services/api";
 import axios from "axios";
 
 function Register() {
@@ -94,7 +95,7 @@ function Register() {
         }
 
         const checkEmailResponse = await toast.promise( axios.post(
-          "http://localhost:3000/agency/check-email",
+          API_BASE_URL + APIEndpoints.agency.checkEmail,
           { email }
         ),
       {
@@ -107,7 +108,7 @@ function Register() {
         }
 
         const checkTelResponse = await toast.promise( axios.post(
-          "http://localhost:3000/agency/check-telphone",
+          API_BASE_URL + APIEndpoints.agency.checkTelphone,
           { telephone_number: telphone }
         ),
       {

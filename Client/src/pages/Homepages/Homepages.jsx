@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-
+import { API_BASE_URL, APIEndpoints } from "../../services/api";
 function Homepages() {
   const [agency, setAgency] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -13,7 +13,7 @@ function Homepages() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await toast.promise( axios.get("http://localhost:3000/agency/logged-in", {
+        const res = await toast.promise( axios.get(API_BASE_URL + APIEndpoints.agency.logged, {
           withCredentials: true,
         }),
         {

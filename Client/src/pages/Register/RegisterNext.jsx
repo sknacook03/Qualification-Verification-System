@@ -11,6 +11,7 @@ import styles from "./RegisterNext.module.css";
 import Popup from "../../components/Popup/Popup";
 import message from "../../assets/message.png";
 import { useLocation, Link, useNavigate } from "react-router-dom";
+import { API_BASE_URL, APIEndpoints } from "../../services/api";
 
 function RegisterNext() {
   const navigate = useNavigate();
@@ -75,7 +76,7 @@ function RegisterNext() {
 
       try {
         await toast.promise(
-          axios.post("http://localhost:3000/agency", finalData, {
+          axios.post(API_BASE_URL + APIEndpoints.agency.createAgency, finalData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },

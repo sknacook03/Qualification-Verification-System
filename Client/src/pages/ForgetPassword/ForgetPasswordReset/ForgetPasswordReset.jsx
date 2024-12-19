@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Popup from "../../../components/Popup/Popup";
 import KeySuccess from "../../../assets/verify.png";
 import { useLocation, useNavigate } from "react-router-dom";
+import { API_BASE_URL, APIEndpoints } from "../../../services/api.jsx";
 
 function ForgetPasswordReset() {
   const navigate = useNavigate();
@@ -56,7 +57,7 @@ function ForgetPasswordReset() {
       }
       try {
         await axios.post(
-          "http://localhost:3000/password-reset/reset-password",
+          API_BASE_URL + APIEndpoints.passwordReset.reset,
           {
             email,
             newPassword: password,

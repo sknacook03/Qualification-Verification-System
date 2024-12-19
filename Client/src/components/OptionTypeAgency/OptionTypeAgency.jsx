@@ -11,7 +11,7 @@ const OptionTypeAgency = ({ label, id, name, value, onChange, placeholder, error
   useEffect(() => {
     const fetchOptions = async () => {
       try {
-        const response = await axios.get(API_BASE_URL + APIEndpoints.agency.typeAgency);
+        const response = await axios.get(API_BASE_URL + APIEndpoints.typeAgency.fetchAll);
         const result = response.data;
         if (result.success) {
           setOptions(result.data);

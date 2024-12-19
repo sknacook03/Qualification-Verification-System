@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AgencyApproveTable from "../../hooks/AgencyApproveTable/AgencyApproveTable.jsx";
 import styles from "../HomepageOfficer/HomepageOfficer.module.css";
+import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
 
 function HomepagesOfficer() {
   const [officer, setOfficer] = useState(null);
@@ -13,7 +14,7 @@ function HomepagesOfficer() {
   useEffect(() => {
     const fetchOfficerData = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/officer/logged-in", {
+        const res = await axios.get(API_BASE_URL + APIEndpoints.officer.logged, {
           withCredentials: true,
         });
         setOfficer(res.data.data);
@@ -31,7 +32,7 @@ function HomepagesOfficer() {
   useEffect(() => {
     const fetchAgencyAll = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/agency/agencies", {
+        const res = await axios.get(API_BASE_URL + APIEndpoints.agency.fetchAll, {
           withCredentials: true,
         });
         setAgency(res.data.data);
@@ -45,7 +46,7 @@ function HomepagesOfficer() {
   }, []);
   const sendEmailAgency = async (email, message) => {
     try{
-      const res = await axios.post("http://localhost:3000/officer/send-email",
+      const res = await axios.post(API_BASE_URL + APIEndpoints.officer.sendEmail,
         { email, message },
         { withCredentials: true } 
       )
@@ -62,7 +63,7 @@ function HomepagesOfficer() {
         return;
       }
       await axios.put(
-        `http://localhost:3000/agency/update-agency/${agencyId}`,
+        API_BASE_URL + APIEndpoints.agency.updateStatus(agencyId),
         { status_approve: newStatus },
         { withCredentials: true }
       );

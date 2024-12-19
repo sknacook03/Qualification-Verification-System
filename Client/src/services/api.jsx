@@ -9,17 +9,28 @@ export const APIEndpoints = {
     agency: {
       checkEmail: "/agency/check-email",
       checkTelphone: "/agency/check-telphone",
-      register: "/agency",
+      createAgency: "/agency",
       fetchAll: "/agency/agencies",
-      typeAgency: "/typeagency",
+      logged: "/agency/logged-in",
       updateStatus: (agencyId) => `/agency/update-agency/${agencyId}`,
+      deleteAgency: (agencyId) => `/agency/delete-agency/${agencyId}`,
     },
     passwordReset: {
       request: "/password-reset/request-reset",
       verifyCode: "/password-reset/verify-code",
       reset: "/password-reset/reset-password",
     },
-    officerEmail: {
-      send: "/officer/send-email",
+    officer: {
+      fetchAll: "/officer/officers",
+      logged: "/officer/logged-in",
+      createOfficer: "/officer",
+      updateStatus: (officerId) => `/officer/update-officer/${officerId}`,
+      deleteOfficer: (officerId) => `/officer/delete-officer/${officerId}`,
+      sendEmail: "/officer/send-email",
     },
+    typeAgency: {
+      fetchAll: "/typeagency",
+      createType: "/typeagency/create-type",
+    }
+    
 };

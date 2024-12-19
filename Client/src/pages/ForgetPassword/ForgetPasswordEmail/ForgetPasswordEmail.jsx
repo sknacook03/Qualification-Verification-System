@@ -9,6 +9,7 @@ import styles from "./ForgetPasswordEmail.module.css";
 import Input from "../../../components/Input/Input.jsx";
 import ArrowButton from "../../../components/ArrowButton/ArrowButton.jsx";
 import { Link, useNavigate } from "react-router-dom";
+import { API_BASE_URL, APIEndpoints } from "../../../services/api.jsx";
 
 function ForgetPassword() {
   const [emailForget, setEmailForget] = useState("");
@@ -32,7 +33,7 @@ function ForgetPassword() {
     if (validateForm()) {
       try {
         const response = await toast.promise(
-          axios.post("http://localhost:3000/password-reset/request-reset", {
+          axios.post( API_BASE_URL + APIEndpoints.passwordReset.request, {
             email: emailForget,
           }),
           {

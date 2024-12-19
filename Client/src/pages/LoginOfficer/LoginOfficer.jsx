@@ -7,6 +7,7 @@ import LoginForm from "../../hooks/LoginForm/LoginForm";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "./LoginOfficer.module.css";
+import { API_BASE_URL, APIEndpoints } from "../../services/api";
 
 function LoginAdmin() {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ function LoginAdmin() {
     try {
       const response = await toast.promise(
         axios.post(
-          "http://localhost:3000/auth/login-officer",
+          API_BASE_URL + APIEndpoints.auth.loginOfficer,
           { email, password },
           { withCredentials: true }
         ),

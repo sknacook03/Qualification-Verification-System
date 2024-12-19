@@ -8,6 +8,7 @@ import ArrowButton from "../../../components/ArrowButton/ArrowButton.jsx";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useLocation, Link, useNavigate } from "react-router-dom";
+import { API_BASE_URL, APIEndpoints } from "../../../services/api.jsx";
 
 function ForgetPasswordCode() {
   const location = useLocation();
@@ -33,7 +34,7 @@ function ForgetPasswordCode() {
     if (validateForm()) {
       try {
         await toast.promise(
-          axios.post("http://localhost:3000/password-reset/verify-code", {
+          axios.post( API_BASE_URL + APIEndpoints.passwordReset.verifyCode, {
             email,
             code: CodeReset,
           }),
@@ -57,7 +58,7 @@ function ForgetPasswordCode() {
     setLoading(true);
     try {
       await toast.promise(
-        axios.post("http://localhost:3000/password-reset/request-reset", {
+        axios.post( API_BASE_URL + APIEndpoints.passwordReset.request, {
           email,
         }),
         {
