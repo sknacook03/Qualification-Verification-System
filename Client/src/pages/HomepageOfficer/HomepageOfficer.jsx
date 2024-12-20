@@ -63,7 +63,7 @@ function HomepagesOfficer() {
         return;
       }
       await axios.put(
-        API_BASE_URL + APIEndpoints.agency.updateStatus(agencyId),
+        API_BASE_URL + APIEndpoints.agency.updateAgency(agencyId),
         { status_approve: newStatus },
         { withCredentials: true }
       );
@@ -94,7 +94,7 @@ function HomepagesOfficer() {
   const logout = async () => {
     try {
       await axios.post(
-        "http://localhost:3000/auth/logout",
+        API_BASE_URL + APIEndpoints.auth.logout,
         {},
         {
           withCredentials: true,

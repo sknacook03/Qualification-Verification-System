@@ -12,7 +12,7 @@ export const APIEndpoints = {
       createAgency: "/agency",
       fetchAll: "/agency/agencies",
       logged: "/agency/logged-in",
-      updateStatus: (agencyId) => `/agency/update-agency/${agencyId}`,
+      updateAgency: (agencyId) => `/agency/update-agency/${agencyId}`,
       deleteAgency: (agencyId) => `/agency/delete-agency/${agencyId}`,
     },
     passwordReset: {
