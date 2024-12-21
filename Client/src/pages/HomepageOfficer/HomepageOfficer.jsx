@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AgencyApproveTable from "../../hooks/AgencyApproveTable/AgencyApproveTable.jsx";
-import styles from "../HomepageOfficer/HomepageOfficer.module.css";
 import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
+import styles from "./HomepageOfficer.module.css";
+import { useNavigate } from "react-router-dom";
 
 function HomepagesOfficer() {
   const [officer, setOfficer] = useState(null);
   const [agency, setAgency] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showPopup, setShowPopup] = useState(false);
+  const [rejectedAgency, setRejectedAgency] = useState(null);
+  const [rejectionReason, setRejectionReason] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,9 +35,10 @@ function HomepagesOfficer() {
   useEffect(() => {
     const fetchAgencyAll = async () => {
       try {
-        const res = await axios.get(API_BASE_URL + APIEndpoints.agency.fetchAll, {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          API_BASE_URL + APIEndpoints.agency.fetchAll,
+          { withCredentials: true }
+        );
         setAgency(res.data.data);
         setLoading(false);
       } catch (error) {
@@ -44,109 +48,151 @@ function HomepagesOfficer() {
 
     fetchAgencyAll();
   }, []);
-  const sendEmailAgency = async (email, message) => {
-    try{
-      const res = await axios.post(API_BASE_URL + APIEndpoints.officer.sendEmail,
-        { email, message },
-        { withCredentials: true } 
-      )
-      console.log("Email sent successfully");
-    }catch (error) {
-      console.error("Failed to send Email:", error);
-    }
-  }
-  const updateStatus = async (agencyId, newStatus) => {
+
+  const handleApprove = async (agencyId) => {
     try {
       const agencyToUpdate = agency.find((item) => item.id === agencyId);
       if (!agencyToUpdate) {
         alert("Agency not found");
         return;
       }
+
       await axios.put(
         API_BASE_URL + APIEndpoints.agency.updateAgency(agencyId),
-        { status_approve: newStatus },
+        { status_approve: "approved",
+          approve_by: officer.id,
+         },
+        { withCredentials: true }
+      );
+
+      await axios.post(
+        API_BASE_URL + APIEndpoints.approvalog.createLogs,
+        {
+          agency_id: agencyId,
+          officer_id: officer.id,
+          status_approve: "approved",
+          reason: "N/A",
+        },
+        { withCredentials: true }
+      );
+
+      await axios.post(
+        API_BASE_URL + APIEndpoints.officer.sendEmail,
+        {
+          email: agencyToUpdate.email,
+          message: "Your request has been approved. Welcome!",
+        },
         { withCredentials: true }
       );
 
       setAgency((prevAgency) =>
         prevAgency.map((agencyItem) =>
           agencyItem.id === agencyId
-            ? { ...agencyItem, status_approve: newStatus }
+            ? { ...agencyItem, status_approve: "approved" }
             : agencyItem
         )
       );
-      let emailMessage;
-    if (newStatus === "approved") {
-      emailMessage =
-        "อีเมลของคุณสามารถใช้งานระบบตรวจสอบคุณวุฒิ มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน ได้แล้ว";
-    } else if (newStatus === "rejected") {
-      emailMessage =
-        "อีเมลของคุณถูกปฎิเสธโดยเจ้าหน้าที่ จากระบบตรวจสอบคุณวุฒิ มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน กรุณาติดต่อเจ้าหน้าที่";
-    }
-      await sendEmailAgency(agencyToUpdate.email, emailMessage);
-      alert(`สถานะถูกเปลี่ยนเป็น ${newStatus}`);
+
+      alert("Approval recorded and email sent.");
     } catch (error) {
-      console.error("Failed to update agency status:", error);
-      alert("ไม่สามารถอัปเดตสถานะได้");
+      console.error("Failed to approve agency:", error);
+      alert("Error while approving agency.");
     }
   };
 
-  const logout = async () => {
+  const handleReject = (agencyId) => {
+    setRejectedAgency(agencyId);
+    setShowPopup(true);
+  };
+
+  const submitRejection = async () => {
     try {
-      await axios.post(
-        API_BASE_URL + APIEndpoints.auth.logout,
-        {},
-        {
-          withCredentials: true,
-        }
+      const agencyToUpdate = agency.find((item) => item.id === rejectedAgency);
+      if (!agencyToUpdate) {
+        alert("Agency not found");
+        return;
+      }
+
+      await axios.put(
+        API_BASE_URL + APIEndpoints.agency.updateAgency(rejectedAgency),
+        { status_approve: "rejected",
+          approve_by: officer.id,
+         },
+        { withCredentials: true }
       );
 
-      navigate("/LoginOfficer");
+      await axios.post(
+        API_BASE_URL + APIEndpoints.approvalog.createLogs,
+        {
+          agency_id: rejectedAgency,
+          officer_id: officer.id,
+          status_approve: "rejected",
+          reason: rejectionReason,
+        },
+        { withCredentials: true }
+      );
+
+      await axios.post(
+        API_BASE_URL + APIEndpoints.officer.sendEmail,
+        {
+          email: agencyToUpdate.email,
+          message: `Your request has been rejected for the following reason: ${rejectionReason}`,
+          formAttachment: "url_to_form",
+        },
+        { withCredentials: true }
+      );
+
+      setAgency((prevAgency) =>
+        prevAgency.map((agencyItem) =>
+          agencyItem.id === rejectedAgency
+            ? { ...agencyItem, status_approve: "rejected" }
+            : agencyItem
+        )
+      );
+
+      setShowPopup(false);
+      setRejectionReason("");
+      alert("Rejection recorded and email sent.");
     } catch (error) {
-      console.error("Failed to logout:", error);
-      alert("เกิดข้อผิดพลาดในการออกจากระบบ");
+      console.error("Failed to reject agency:", error);
+      alert("Error while rejecting agency.");
     }
   };
 
-  if (loading) {
-    return (
-      <div className={styles["loading-container"]}>
-        <div className={styles.spinner}></div>
-        <p>กำลังโหลดข้อมูล...</p>
-      </div>
-    );
-  }
-
-  if (!officer) {
-    return <div className={styles["error-message"]}>ไม่พบข้อมูล Officer</div>;
-  }
-
-  const pendingAgencies = agency.filter(
-    (agencyItem) => agencyItem.status_approve === "pending"
-  );
+  const pendingAgencies = agency.filter((agencyItem) => agencyItem.status_approve === "pending");
 
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
-        <h1>Welcome, {officer.first_name}</h1>
-        <p>Email: {officer.email}</p>
-        <p>Role: {officer.role}</p>
-        <button className={styles.logoutButton} onClick={logout}>
-          ออกจากระบบ
-        </button>
-      </header>
+      {loading && <p className={styles.loading}>Loading...</p>}
+      {!loading && (
+        <AgencyApproveTable
+          agencies={pendingAgencies}
+          onApprove={handleApprove}
+          onReject={handleReject}
+        />
+      )}
 
-      <section className={styles.content}>
-        <h3>Pending Agencies</h3>
-        {pendingAgencies.length > 0 ? (
-          <AgencyApproveTable
-            agencies={pendingAgencies}
-            onUpdateStatus={updateStatus}
-          />
-        ) : (
-          <p>ไม่มี Agency ที่อยู่ในสถานะ Pending</p>
-        )}
-      </section>
+      {showPopup && (
+        <div className={styles.popupOverlay}>
+          <div className={styles.popupContent}>
+            <h3>Reason for Rejection</h3>
+            <textarea
+              className={styles.textarea}
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+              placeholder="Enter rejection reason"
+            />
+            <div className={styles.popupButtons}>
+              <button className={styles.submitButton} onClick={submitRejection}>
+                Submit
+              </button>
+              <button className={styles.cancelButton} onClick={() => setShowPopup(false)}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

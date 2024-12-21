@@ -24,13 +24,19 @@ export const APIEndpoints = {
       fetchAll: "/officer/officers",
       logged: "/officer/logged-in",
       createOfficer: "/officer",
+      sendEmail: "/officer/send-email",
       updateStatus: (officerId) => `/officer/update-officer/${officerId}`,
       deleteOfficer: (officerId) => `/officer/delete-officer/${officerId}`,
-      sendEmail: "/officer/send-email",
     },
     typeAgency: {
       fetchAll: "/typeagency",
       createType: "/typeagency/create-type",
+    },
+    approvalog:{
+      fetchAll: "/approvedlog/logs",
+      createLogs: "/approvedlog/logs",
+      fetchById:  (logsId) => `/approvedlog/logs/${logsId}`,
+      updateById: (logsId) => `/approvedlog/logs/${logsId}`,
+      deleteById: (logsId) => `/approvedlog/logs/${logsId}`,
     }
-    
 };

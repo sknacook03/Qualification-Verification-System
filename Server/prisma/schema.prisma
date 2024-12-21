@@ -49,8 +49,9 @@ model ApprovalLog {
   agency_id      BigInt
   officer_id     BigInt?
   status_approve StatusApprove
-  comment        String?       @db.VarChar(255)
-  created_at     DateTime      @default(now())
+  reason         String?       @db.VarChar(255)
+  created_at     DateTime     @default(now())
+  updated_at     DateTime     @updatedAt
 
   // Relations
   agency  Agency   @relation(fields: [agency_id], references: [id])
