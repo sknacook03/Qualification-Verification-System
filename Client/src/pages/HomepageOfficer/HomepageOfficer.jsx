@@ -94,7 +94,7 @@ function HomepagesOfficer() {
   const logout = async () => {
     try {
       await axios.post(
-        "http://localhost:3000/auth/logout",
+        API_BASE_URL + APIEndpoints.auth.logout,
         {},
         {
           withCredentials: true,
