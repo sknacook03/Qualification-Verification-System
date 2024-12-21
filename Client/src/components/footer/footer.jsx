@@ -1,13 +1,13 @@
 import "./footer.css";
 import { Link } from "react-router-dom";
-function Footer() {
+function Footer({ color }) {
   return (
     <>
       <footer className="contrainer-footer">
         <div className="copy">
-          <h5>
-            © Rajamangala University of Technology Isan 2024 -
-             ระบบตรวจสอบคุณวุฒิ
+        <h5 style={{ color: color }}>
+            Developed by Khon Rak Khrop Khrua and Khon Chao Choo © Rajamangala
+            University of Technology Isan 2024 -  ระบบตรวจสอบคุณวุฒิ
           </h5>
         </div>
         <div className="option">

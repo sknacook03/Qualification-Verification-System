@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import HeaderHomePage from "../../components/HeaderHomePage/HeaderHomePage";
+import Footer from "../../components/footer/footer.jsx";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { API_BASE_URL, APIEndpoints } from "../../services/api";
@@ -70,6 +71,8 @@ function Homepages() {
       <button onClick={logout}>
           ออกจากระบบ
         </button>
+      <Footer
+      color="#6D6D6D" />    
     </div>
     
   );

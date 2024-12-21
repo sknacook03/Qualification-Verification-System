@@ -54,6 +54,10 @@ body {
   justify-content: flex-end;
   gap: 0.5rem;
 }
+.arrowButton button {
+  margin: 0;
+  padding: 0;
+}
 @media screen and (min-width: 1440px) {
   .appContent {
     width: 500px;
