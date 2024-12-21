@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import HeaderHomePage from "../../components/HeaderHomePage/HeaderHomePage";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { API_BASE_URL, APIEndpoints } from "../../services/api";
@@ -61,6 +62,7 @@ function Homepages() {
 
   return (
     <div>
+      <HeaderHomePage />
       <h1>Welcome, {agency.agency_name}</h1>
       <p>Email: {agency.email}</p>
       <p>Department: {agency.department}</p>

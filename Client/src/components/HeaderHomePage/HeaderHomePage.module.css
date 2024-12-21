@@ -1,0 +1,43 @@
+.container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 75px;
+    background-color: #FF7100;
+    padding: 1rem;
+}
+.logo{
+    display: none;
+}
+.user{
+    display: flex;
+    gap: 0.3rem;
+    align-items: center;
+    padding-left: 2rem;
+    border-left: 2px solid white;
+}
+.userImage{
+    display: flex;
+}
+.nameUser{
+    color: white;
+}
+@media screen and (min-width: 1024px) {
+    .container{
+        padding: 0 10rem;
+        height: 90px;
+    }
+    .logo{
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    .info h2{
+        color: white;
+        font-size: 14px;
+    }
+    .hamberger{
+        display: none;
+    }
+  }
