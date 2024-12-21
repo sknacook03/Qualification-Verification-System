@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "./AgencyApproveTable.module.css"
 
 function AgencyApproveTable({ agencies, onUpdateStatus }) {
 
@@ -6,59 +7,6 @@ function AgencyApproveTable({ agencies, onUpdateStatus }) {
     if (!path) return null;
     return path.replace(/\\/g, "/");
   };  
-
-  const styles = {
-    table: {
-      width: "100%",
-      borderCollapse: "collapse",
-      marginTop: "20px",
-      fontSize: "16px",
-    },
-    th: {
-      backgroundColor: "#f9f9f9",
-      color: "#333",
-      padding: "12px",
-      borderBottom: "2px solid #ddd",
-      textAlign: "left",
-    },
-    td: {
-      padding: "10px",
-      borderBottom: "1px solid #ddd",
-      verticalAlign: "middle",
-    },
-    button: {
-      padding: "5px 10px",
-      border: "none",
-      borderRadius: "4px",
-      cursor: "pointer",
-      marginTop: "5px",
-    },
-    approveButton: {
-      backgroundColor: "#4CAF50",
-      color: "white",
-    },
-    rejectButton: {
-      backgroundColor: "#f44336",
-      color: "white",
-    },
-    viewButton: {
-      backgroundColor: "#008CBA",
-      color: "white",
-    },
-    image: {
-      width: "50px",
-      height: "50px",
-      objectFit: "cover",
-      borderRadius: "4px",
-      display: "block",
-      marginBottom: "5px",
-    },
-    imageContainer: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "flex-start",
-    },
-  };
 
   const viewImage = (url) => {
     if (url) {
