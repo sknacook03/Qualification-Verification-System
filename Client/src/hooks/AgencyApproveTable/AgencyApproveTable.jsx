@@ -1,12 +1,11 @@
 import React from "react";
-import styles from "./AgencyApproveTable.module.css"
+import styles from "./AgencyApproveTable.module.css";
 
 function AgencyApproveTable({ agencies, onUpdateStatus }) {
-
   const normalizeImagePath = (path) => {
     if (!path) return null;
     return path.replace(/\\/g, "/");
-  };  
+  };
 
   const viewImage = (url) => {
     if (url) {
@@ -17,30 +16,33 @@ function AgencyApproveTable({ agencies, onUpdateStatus }) {
   };
 
   return (
-    <table style={styles.table}>
+    <table className={styles.table}>
       <thead>
         <tr>
-          <th style={styles.th}>#</th>
-          <th style={styles.th}>Agency Name</th>
-          <th style={styles.th}>Certificate</th>
-          <th style={styles.th}>Status</th>
-          <th style={styles.th}>Actions</th>
+          <th className={styles.th}>#</th>
+          <th className={styles.th}>Agency Name</th>
+          <th className={styles.th}>Certificate</th>
+          <th className={styles.th}>Status</th>
+          <th className={styles.th}>Actions</th>
         </tr>
       </thead>
       <tbody>
         {agencies.map((agencyItem, index) => (
           <tr key={index}>
-            <td style={styles.td}>{index + 1}</td>
-            <td style={styles.td}>{agencyItem.agency_name}</td>
-            <td style={styles.td}>
-              <div style={styles.imageContainer}>
+            <td className={styles.td}>{index + 1}</td>
+            <td className={styles.td}>{agencyItem.agency_name}</td>
+            <td className={styles.td}>
+              <div className={styles.imageContainer}>
                 {agencyItem.certificate ? (
                   <button
-                    style={{ ...styles.button, ...styles.viewButton }}
+                    className={`${styles.button} ${styles.viewButton}`}
                     onClick={() =>
-                      viewImage(`http://localhost:3000/${normalizeImagePath(agencyItem.certificate)}`)
-                    }                    
-                    
+                      viewImage(
+                        `http://localhost:3000/${normalizeImagePath(
+                          agencyItem.certificate
+                        )}`
+                      )
+                    }
                   >
                     View
                   </button>
@@ -49,16 +51,16 @@ function AgencyApproveTable({ agencies, onUpdateStatus }) {
                 )}
               </div>
             </td>
-            <td style={styles.td}>{agencyItem.status_approve}</td>
-            <td style={styles.td}>
+            <td className={styles.td}>{agencyItem.status_approve}</td>
+            <td className={styles.td}>
               <button
-                style={{ ...styles.button, ...styles.approveButton }}
+                className={`${styles.button} ${styles.approveButton}`}
                 onClick={() => onUpdateStatus(agencyItem.id, "approved")}
               >
                 Approve
               </button>
               <button
-                style={{ ...styles.button, ...styles.rejectButton }}
+                className={`${styles.button} ${styles.rejectButton}`}
                 onClick={() => onUpdateStatus(agencyItem.id, "rejected")}
               >
                 Reject

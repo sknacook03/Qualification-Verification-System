@@ -63,7 +63,7 @@ function HomepagesOfficer() {
         return;
       }
       await axios.put(
-        API_BASE_URL + APIEndpoints.agency.updateAgency(agencyId),
+        API_BASE_URL + APIEndpoints.agency.updateStatus(agencyId),
         { status_approve: newStatus },
         { withCredentials: true }
       );
