@@ -78,7 +78,7 @@ function ForgetPasswordReset() {
     <>
       <div className={styles.appContainer}>
         <Header />
-        <div className={styles.boxContact}>
+        <div className={styles.boxContent}>
           <div className={styles.boxIn}>
             <div className={styles.topBar}>
               {["#09FF3E", "#09FF3E", "#09FF3E"].map((color, index) => (

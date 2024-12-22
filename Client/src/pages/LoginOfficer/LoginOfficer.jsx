@@ -47,7 +47,7 @@ function LoginAdmin() {
     <>
       <div className={styles.appContainer}>
         <Header />
-        <div className={styles.boxContact}>
+        <div className={styles.boxContent}>
           <div className={styles.boxIn}>
             <h2>เจ้าหน้าที่ทะเบียน</h2>
             <LoginForm onSubmit={handleSubmit} />
