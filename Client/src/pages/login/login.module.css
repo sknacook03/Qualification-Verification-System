@@ -37,12 +37,14 @@ body {
 .boxLogin {
   display: flex;
   justify-content: center;
-  height: 700px;
+  margin-top: 1rem;
+  height: fit-content;
+  flex-grow: 1;
 }
 .boxLogin .login {
   border-radius: 0.5rem;
   width: 400px;
-  height: 655px;
+  height: fit-content;
   padding: 1rem;
   align-self: center;
   background-color: white;
@@ -76,11 +78,12 @@ body {
 footer {
   align-items: center;
   text-align: center;
+  margin-top: auto;
 }
 @media screen and (min-width: 768px) {
   .boxLogin .login {
     width: 700px;
-    height: 655px;
+    height: fit-content;
   }
 }
 @media screen and (min-width: 1024px) {
