@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-.overlay {
+.overlayPopup {
   position: fixed;
   top: 0;
   left: 0;
@@ -10,8 +10,10 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  font-family: "Prompt", sans-serif;
 }
-.overlay .content {
+.overlayPopup .contentPopup {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -25,9 +27,9 @@
   max-width: 400px;
   width: 90%;
 }
-.overlay .content button {
+.overlayPopup .contentPopup button {
   font-family: "Prompt", sans-serif;
-  width: 350px;
+  width: 100%;
   cursor: pointer;
   background-color: #ff7700;
   color: white;
@@ -36,6 +38,27 @@
   border-radius: 5px;
   transition: background-color 0.3s;
 }
-.overlay .content button:hover {
- background-color: #e65c00;
+.overlayPopup .contentPopup button:hover {
+  background-color: #e65c00;
+}
+.overlayPopup .contentPopup .closePopup{
+  position: absolute;
+  top: 10px;
+  right:10px;
+  align-self: end;
+  cursor: pointer;
+}
+.overlayPopup .contentPopup textarea {
+  resize: vertical;
+  overflow: auto;
+  width: 100%;
+  border-radius: 0.5rem;
+  border: solid #d9d9d9;
+  padding: 8px;
+  font-family: "Prompt", sans-serif;
+  margin-bottom: -7px;
+}
+.overlayPopup .contentPopup textarea:focus {
+  box-shadow: 0 0 4px #c8c8c8;
+  outline: none;
 }

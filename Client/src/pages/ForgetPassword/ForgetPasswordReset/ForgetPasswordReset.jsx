@@ -124,8 +124,8 @@ function ForgetPasswordReset() {
                   topic="รีเซ็ตรหัสผ่านสำเร็จ!"
                   info="คุณสามารถเข้าสู่ระบบโดยกรอกรหัสผ่านใหม่ได้แล้ว"
                   img={KeySuccess}
-                  closePopup={closePopup}
-                  textButton="กลับไปยังหน้าเข้าสู่ระบบ"
+                  successPopup={closePopup}
+                  textButtonSuccess="กลับไปยังหน้าเข้าสู่ระบบ"
                 />
               )}
             </div>

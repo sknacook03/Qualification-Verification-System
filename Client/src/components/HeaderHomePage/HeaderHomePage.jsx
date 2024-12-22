@@ -4,7 +4,7 @@ import logoUser from "../../assets/user.png";
 import styles from "../HeaderHomePage/HeaderHomePage.module.css";
 import { Squash as Hamburger } from "hamburger-react";
 
-const HeaderHomePage = (user) => {
+const HeaderHomePage = ({ user }) => {
   return (
     <>
       <div className={styles.container}>
@@ -25,7 +25,7 @@ const HeaderHomePage = (user) => {
         </div>
         <div className={styles.user}>
           <div className={styles.nameUser}>
-            <p>User</p>
+            <p>{user}</p>
           </div>
           <div className={styles.userImage}>
             <img src={logoUser} alt="logo-user" width={30} />

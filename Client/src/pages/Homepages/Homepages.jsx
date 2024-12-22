@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import HeaderHomePage from "../../components/HeaderHomePage/HeaderHomePage";
 import Footer from "../../components/footer/footer.jsx";
 import "react-toastify/dist/ReactToastify.css";
+import styles from "./Homepages.module.css";
 import axios from "axios";
 import { API_BASE_URL, APIEndpoints } from "../../services/api";
 function Homepages() {
@@ -11,17 +12,17 @@ function Homepages() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await toast.promise( axios.get(API_BASE_URL + APIEndpoints.agency.logged, {
-          withCredentials: true,
-        }),
-        {
-          pending: "กำลังตรวจสอบสถานะ...",
-        }
-      );
+        const res = await toast.promise(
+          axios.get(API_BASE_URL + APIEndpoints.agency.logged, {
+            withCredentials: true,
+          }),
+          {
+            pending: "กำลังตรวจสอบสถานะ...",
+          }
+        );
         if (res.data.data.status_approve !== "approved") {
           alert("บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ");
           navigate("/");
@@ -62,19 +63,33 @@ function Homepages() {
   };
 
   return (
-    <div>
-      <HeaderHomePage />
-      <h1>Welcome, {agency.agency_name}</h1>
-      <p>Email: {agency.email}</p>
-      <p>Department: {agency.department}</p>
-      <p>Role: {agency.role}</p>
-      <button onClick={logout}>
-          ออกจากระบบ
-        </button>
-      <Footer
-      color="#6D6D6D" />    
-    </div>
-    
+    <>
+      <div className={styles.container}>
+        <div className={styles.boxContainer}>
+          <div className={styles.nav}>
+            <HeaderHomePage user={agency.agency_name} />
+          </div>
+          <div className={styles.boxContainerInfo}>
+            <div className={styles.info}>
+              <h4 className={styles.topic}>ข้อมูลของท่าน</h4>
+              <div className={styles.boxInfoAgency}>
+                <p>Email: {agency.email}</p>
+                <p>Department: {agency.department}</p>
+                <p>Role: {agency.role}</p>
+                <button onClick={logout}>ออกจากระบบ</button>
+              </div>
+              <h4 className={styles.topic}>ข้อมูลของนักศึกษาที่เคยตรวจสอบ</h4>
+              <div className={styles.boxHistory}>
+                
+              </div>
+            </div>
+            <div className={styles.footer}>
+              <Footer color="#6D6D6D" disableMenu />
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 
