@@ -146,7 +146,7 @@ export const sendApprovalEmail = async (email, agencyName) => {
                 <p>เรียนคุณ ${agencyName},</p>
                 <p>เรามีความยินดีที่จะแจ้งให้คุณทราบว่า คำขอของคุณได้รับการอนุมัติเรียบร้อยแล้ว</p>
                 <p>คุณสามารถเข้าสู่ระบบได้โดยใช้ลิงก์ด้านล่าง:</p>
-                <p><a href="https://yourwebsite.com/login">https://yourwebsite.com/login</a></p>
+                <p><a href="http://localhost:5173/">http://localhost:5173/</a></p>
             </div>
             <div class="footer">
                 <p>© 2024 มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน</p>
