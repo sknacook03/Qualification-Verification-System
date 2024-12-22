@@ -79,13 +79,11 @@ function Homepages() {
                 <button onClick={logout}>ออกจากระบบ</button>
               </div>
               <h4 className={styles.topic}>ข้อมูลของนักศึกษาที่เคยตรวจสอบ</h4>
-              <div className={styles.boxHistory}>
-                
-              </div>
+              <div className={styles.boxHistory}></div>
             </div>
-            <div className={styles.footer}>
-              <Footer color="#6D6D6D" disableMenu />
-            </div>
+          </div>
+          <div className={styles.footer}>
+            <Footer color="#6D6D6D" disableMenu />
           </div>
         </div>
       </div>
