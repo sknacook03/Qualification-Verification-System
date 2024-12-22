@@ -1,24 +1,27 @@
 import bcrypt from "bcrypt";
 import ResetServices from "../services/resetPassword.service.js";
-import { sendEmail } from "../utils/senderEmail.util.js";
+import { sendResetPasswordEmail } from "../services/email.service.js"
 
 const ResetController = {
     requestResetPassword: async (req, res) => {
         try {
-            const { email } = req.body;
-
-            const user = await ResetServices.findUserByEmail(email);
-            if (!user) return res.status(404).json({ message: "Email not found" });
-
-            const resetCode = await ResetServices.createOrUpdateResetCode(email);
-            await sendEmail(email, "Password Reset Code", `Your code is: ${resetCode}`);
-
-            res.status(200).json({ message: "Code sent to email!" });
+          const { email } = req.body;
+    
+          const user = await ResetServices.findUserByEmail(email);
+          if (!user) {
+            return res.status(404).json({ message: "Email not found" });
+          }
+    
+          const resetCode = await ResetServices.createOrUpdateResetCode(email);
+    
+          await sendResetPasswordEmail(email, resetCode);
+    
+          return res.status(200).json({ message: "Code sent to email!" });
         } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: "Internal Server Error" });
+          console.error('Error in requestResetPassword:', error);
+          return res.status(500).json({ message: "Internal Server Error" });
         }
-    },
+      },
 
     verifyResetCode: async (req, res) => {
         try {

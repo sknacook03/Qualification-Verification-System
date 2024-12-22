@@ -1,5 +1,5 @@
 import OfficerService from "../services/officer.service.js";
-import { sendEmail } from "../utils/senderEmail.util.js";
+import { sendApprovalEmail, sendRejectionEmail } from "../services/email.service.js"
 
 const replacer = (key, value) => {
   if (typeof value === "bigint") {
@@ -137,14 +137,24 @@ const OfficerController = {
   },
   sendAgency: async (req, res) => {
     try {
-      const { email, message } = req.body;
-
+      const { email, agency, status_approved, reason } = req.body;
+  
       if (!email) return res.status(400).json({ message: "Email is required" });
-
-      const agency = await OfficerService.findUserByEmail(email);
-      if (!agency) return res.status(404).json({ message: "Agency not found" });
-
-      await sendEmail(email, message);
+      if (!agency) return res.status(400).json({ message: "Agency name is required" });
+      if (!status_approved) return res.status(400).json({ message: "Approval status is required" });
+  
+      const agencyEmail = await OfficerService.findUserByEmail(email);
+      if (!agencyEmail) return res.status(404).json({ message: "Agency not found" });
+  
+      if (status_approved === "approved") {
+        await sendApprovalEmail(email, agency); 
+      } else if (status_approved === "rejected") {
+        if (!reason) return res.status(400).json({ message: "Rejection reason is required" });
+        await sendRejectionEmail(email, agency, reason); 
+      } else {
+        return res.status(400).json({ message: "Invalid approval status" });
+      }
+  
       res.status(200).json({ message: "Email sent successfully" });
     } catch (error) {
       console.error("Error in sendAgency:", error);

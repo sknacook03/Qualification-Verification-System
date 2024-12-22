@@ -80,7 +80,8 @@ function HomepagesOfficer() {
         API_BASE_URL + APIEndpoints.officer.sendEmail,
         {
           email: agencyToUpdate.email,
-          message: "Your request has been approved. Welcome!",
+          agency: agencyToUpdate.agency_name,
+          status_approved: "approved",
         },
         { withCredentials: true }
       );
@@ -136,8 +137,9 @@ function HomepagesOfficer() {
         API_BASE_URL + APIEndpoints.officer.sendEmail,
         {
           email: agencyToUpdate.email,
-          message: `Your request has been rejected for the following reason: ${rejectionReason}`,
-          formAttachment: "url_to_form",
+          agency: agencyToUpdate.agency_name,
+          status_approved: "rejected",
+          reason: rejectionReason,
         },
         { withCredentials: true }
       );
