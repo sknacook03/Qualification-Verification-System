@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AgencyApproveTable from "../../hooks/AgencyApproveTable/AgencyApproveTable.jsx";
+import Popup from "../../components/Popup/Popup.jsx";
 import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
 import styles from "./HomepageOfficer.module.css";
 import { useNavigate } from "react-router-dom";
@@ -80,7 +81,7 @@ function HomepagesOfficer() {
         API_BASE_URL + APIEndpoints.officer.sendEmail,
         {
           email: agencyToUpdate.email,
-          message: "Your request has been approved. Welcome!",
+          message: "คำขอของคุณในการเข้าใช้งานระบบตรวจสอบคุณวุฒิของมหาวิทยาลัยเทคโนโลยีอีสานได้รับการอนุมัติแล้ว ยินดีต้อนรับ!",
         },
         { withCredentials: true }
       );
@@ -136,7 +137,7 @@ function HomepagesOfficer() {
         API_BASE_URL + APIEndpoints.officer.sendEmail,
         {
           email: agencyToUpdate.email,
-          message: `Your request has been rejected for the following reason: ${rejectionReason}`,
+          message: `คำขอของคุณในการเข้าใช้งานระบบตรวจสอบคุณวุฒิของมหาวิทยาลัยเทคโนโลยีอีสานถูกปฏิเสธด้วยเหตุผลดังต่อไปนี้: ${rejectionReason}`,
           formAttachment: "url_to_form",
         },
         { withCredentials: true }
@@ -173,25 +174,17 @@ function HomepagesOfficer() {
       )}
 
       {showPopup && (
-        <div className={styles.popupOverlay}>
-          <div className={styles.popupContent}>
-            <h3>Reason for Rejection</h3>
-            <textarea
-              className={styles.textarea}
-              value={rejectionReason}
-              onChange={(e) => setRejectionReason(e.target.value)}
-              placeholder="Enter rejection reason"
-            />
-            <div className={styles.popupButtons}>
-              <button className={styles.submitButton} onClick={submitRejection}>
-                Submit
-              </button>
-              <button className={styles.cancelButton} onClick={() => setShowPopup(false)}>
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
+        <Popup 
+        topic="หมายเหตุ"
+        info="โปรดระบุเหตุผลในการปฏิเสธหน่วยงาน"
+        textarea
+        valueTextarea={rejectionReason}
+        onChangeTextarea={(e) => setRejectionReason(e.target.value)}
+        placeholderTextarea="กรุณากรอกหมายเหตุ"
+        successPopup={submitRejection}
+        textButtonSuccess="ยืนยัน"
+        closePopup={() => setShowPopup(false)}
+        />
       )}
     </div>
   );
