@@ -64,10 +64,13 @@ function Homepages() {
       alert("เกิดข้อผิดพลาดในการออกจากระบบ");
     }
   };
-  const menuItems = [
+  const topMenuItems = [
     { label: "หน้าหลัก", route: "/Homepages" },
     { label: "ตรวจสอบคุณวุฒินักศึกษา", route: "/" },
     { label: "สถิติการเข้าถึง", route: "/" },
+  ];
+  
+  const bottomMenuItems = [
     { label: "ตั้งค่าความเป็นส่วนตัว", route: "/" },
     { label: "ออกจากระบบ", route: "/" },
   ];
@@ -80,7 +83,7 @@ function Homepages() {
           </div>
           <div className={styles.dashboardLayout}>
             <div className={styles.sideBar}>
-              <SidebarMenu menuItems={menuItems} />
+            <SidebarMenu topMenuItems={topMenuItems} bottomMenuItems={bottomMenuItems} />
             </div>
             <div className={styles.mainContent}>
               <div className={styles.menuShow}>

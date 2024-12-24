@@ -2,11 +2,26 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import styles from './SidebarMenu.module.css';
 
-const SidebarMenu = ({ menuItems }) => {
+const SidebarMenu = ({ topMenuItems, bottomMenuItems }) => {
   return (
     <div className={styles.sidebar}>
       <ul className={styles.menuList}>
-      {menuItems.map((item, index) => (
+        {topMenuItems.map((item, index) => (
+          <li key={index} className={styles.menuItem}>
+            <NavLink
+              to={item.route}
+              className={({ isActive }) =>
+                isActive ? `${styles.label} ${styles.active}` : styles.label
+              }
+            >
+              {item.label}
+            </NavLink>
+          </li>
+        ))}
+      </ul>
+
+      <ul className={styles.menuList}>
+        {bottomMenuItems.map((item, index) => (
           <li key={index} className={styles.menuItem}>
             <NavLink
               to={item.route}
