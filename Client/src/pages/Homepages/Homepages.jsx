@@ -72,7 +72,7 @@ function Homepages() {
   
   const bottomMenuItems = [
     { label: "ตั้งค่าความเป็นส่วนตัว", route: "/" },
-    { label: "ออกจากระบบ", route: "/" },
+    { label: "ออกจากระบบ", onClick: logout },
   ];
   return (
     <>
@@ -95,7 +95,6 @@ function Homepages() {
                   <p>Email: {agency.email}</p>
                   <p>Department: {agency.department}</p>
                   <p>Role: {agency.role}</p>
-                  <button onClick={logout}>ออกจากระบบ</button>
                 </div>
                 <h4 className={styles.topic}>ข้อมูลของนักศึกษาที่เคยตรวจสอบ</h4>
                 <div className={styles.boxHistory}></div>
