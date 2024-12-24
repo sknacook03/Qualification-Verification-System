@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import HeaderHomePage from "../../components/HeaderHomePage/HeaderHomePage";
+import IconPage from "../../components/IconPage/IconPage.jsx";
+import Icon from "../../assets/homepage.png";
+import SidebarMenu from "../../components/SidebarMenu/SidebarMenu.jsx";
 import Footer from "../../components/footer/footer.jsx";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "./Homepages.module.css";
@@ -61,29 +64,41 @@ function Homepages() {
       alert("เกิดข้อผิดพลาดในการออกจากระบบ");
     }
   };
-
+  const menuItems = [
+    { label: "หน้าหลัก", route: "/Homepages" },
+    { label: "ตรวจสอบคุณวุฒินักศึกษา", route: "/" },
+    { label: "สถิติการเข้าถึง", route: "/" },
+    { label: "ตั้งค่าความเป็นส่วนตัว", route: "/" },
+    { label: "ออกจากระบบ", route: "/" },
+  ];
   return (
     <>
-      <div className={styles.container}>
+      <div className={styles.appContainer}>
         <div className={styles.boxContainer}>
-          <div className={styles.nav}>
+          <div className={styles.contentHeader}>
             <HeaderHomePage user={agency.agency_name} />
           </div>
-          <div className={styles.boxContainerInfo}>
-            <div className={styles.info}>
-              <h4 className={styles.topic}>ข้อมูลของท่าน</h4>
-              <div className={styles.boxInfoAgency}>
-                <p>Email: {agency.email}</p>
-                <p>Department: {agency.department}</p>
-                <p>Role: {agency.role}</p>
-                <button onClick={logout}>ออกจากระบบ</button>
-              </div>
-              <h4 className={styles.topic}>ข้อมูลของนักศึกษาที่เคยตรวจสอบ</h4>
-              <div className={styles.boxHistory}></div>
+          <div className={styles.dashboardLayout}>
+            <div className={styles.sideBar}>
+              <SidebarMenu menuItems={menuItems} />
             </div>
-          </div>
-          <div className={styles.footer}>
-            <Footer color="#6D6D6D" disableMenu />
+            <div className={styles.mainContent}>
+              <div className={styles.menuShow}>
+                <IconPage icon={Icon} label="หน้าหลัก" />
+              </div>
+              <div className={styles.info}>
+                <h4 className={styles.topic}>ข้อมูลของท่าน</h4>
+                <div className={styles.boxInfoAgency}>
+                  <p>Email: {agency.email}</p>
+                  <p>Department: {agency.department}</p>
+                  <p>Role: {agency.role}</p>
+                  <button onClick={logout}>ออกจากระบบ</button>
+                </div>
+                <h4 className={styles.topic}>ข้อมูลของนักศึกษาที่เคยตรวจสอบ</h4>
+                <div className={styles.boxHistory}></div>
+              </div>
+              <Footer color="#6D6D6D" disableMenu />
+            </div>
           </div>
         </div>
       </div>

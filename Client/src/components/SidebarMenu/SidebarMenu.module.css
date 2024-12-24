@@ -1,0 +1,30 @@
+.sidebar{
+    height: 100%;
+    width: 13rem;
+}
+.menuList{
+    list-style-type: none;
+    padding: 0;
+}
+.menuItem {
+
+}
+.label{
+    display: block;
+    width: 100%;
+    font-size: 15px;
+    color: #6D6D6D;
+    text-decoration: none;
+    padding: 1rem 0.5rem;
+    border-radius: 0.2rem;
+    transition: .3s ease-in-out;
+}
+.label:hover{
+    transition: .3s ease-in-out;
+    background-color: white;
+}
+.active {
+    border-left: 0.4rem solid #FF7710;
+    background-color: white;
+    color: #FF7710;
+  }

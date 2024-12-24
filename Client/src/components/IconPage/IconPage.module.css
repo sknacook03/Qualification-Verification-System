@@ -1,0 +1,10 @@
+.containerIconPage{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+.containerIconPage h3{
+    color: #3B3B3B;
+    font-weight: 600;
+}
