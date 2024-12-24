@@ -137,7 +137,7 @@ const OfficerController = {
   },
   sendAgency: async (req, res) => {
     try {
-      const { email, agency, status_approved, reason } = req.body;
+      const { agencyId, email, agency, status_approved, reason } = req.body;
   
       if (!email) return res.status(400).json({ message: "Email is required" });
       if (!agency) return res.status(400).json({ message: "Agency name is required" });
@@ -150,7 +150,7 @@ const OfficerController = {
         await sendApprovalEmail(email, agency); 
       } else if (status_approved === "rejected") {
         if (!reason) return res.status(400).json({ message: "Rejection reason is required" });
-        await sendRejectionEmail(email, agency, reason); 
+        await sendRejectionEmail(email, agency, reason, agencyId); 
       } else {
         return res.status(400).json({ message: "Invalid approval status" });
       }

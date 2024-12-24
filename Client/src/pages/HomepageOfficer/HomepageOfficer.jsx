@@ -137,6 +137,7 @@ function HomepagesOfficer() {
       await axios.post(
         API_BASE_URL + APIEndpoints.officer.sendEmail,
         {
+          agencyId: agencyToUpdate.id,
           email: agencyToUpdate.email,
           agency: agencyToUpdate.agency_name,
           status_approved: "rejected",

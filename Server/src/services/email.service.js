@@ -161,7 +161,7 @@ export const sendApprovalEmail = async (email, agencyName) => {
   await sendEmail(email, subject, null, htmlContent);
 };
 
-export const sendRejectionEmail = async (email, agencyName, reason) => {
+export const sendRejectionEmail = async (email, agencyName, reason, agencyId) => {
     const subject = "Request Rejection Notification";
     const htmlContent = `
         <!DOCTYPE html>
@@ -234,7 +234,7 @@ export const sendRejectionEmail = async (email, agencyName, reason) => {
                     <p>เราขอแจ้งให้ทราบว่า คำขอของคุณไม่ได้รับการอนุมัติด้วยเหตุผลดังต่อไปนี้:</p>
                     <p class="reason">${reason}</p>
                     <p>กรุณาคลิกลิงก์ด้านล่างเพื่อเข้าสู่ระบบและแก้ไขข้อมูลที่ผิดพลาด:</p>
-                    <p><a href="https://yourwebsite.com/edit-information">https://yourwebsite.com/edit-information</a></p>
+                    <p><a href="https://yourwebsite.com/edit-information/${agencyId}">https://yourwebsite.com/edit-information/${agencyId}</a></p>
                     <p>หากคุณมีข้อสงสัยเพิ่มเติม กรุณาติดต่อฝ่ายสนับสนุนของเรา</p>
                 </div>
                 <div class="footer">
