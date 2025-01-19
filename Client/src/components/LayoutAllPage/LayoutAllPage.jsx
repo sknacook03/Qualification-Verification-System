@@ -5,7 +5,14 @@ import IconPage from "../IconPage/IconPage";
 import Footer from "../footer/footer";
 import styles from "./LayoutAllPage.module.css";
 
-const LayoutAllPage = ({ user, topMenuItems, bottomMenuItems, icon, label, children }) => {
+const LayoutAllPage = ({
+  user,
+  topMenuItems,
+  bottomMenuItems,
+  icon,
+  label,
+  children,
+}) => {
   return (
     <>
       <div className={styles.appContainer}>
@@ -25,10 +32,10 @@ const LayoutAllPage = ({ user, topMenuItems, bottomMenuItems, icon, label, child
                 <IconPage icon={icon} label={label} />
               </div>
               <div className={styles.info}>{children}</div>
-              <Footer color="#6D6D6D" disableMenu />
             </div>
           </div>
         </div>
+          <Footer color="#6D6D6D" disableMenu className={styles.footer}/>
       </div>
     </>
   );

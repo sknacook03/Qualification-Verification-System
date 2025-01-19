@@ -25,6 +25,9 @@
     gap: 0;
     justify-content: space-between;
   }
+  .contrainer-footer.center-content {
+    justify-content: center;
+  }
   .contrainer-footer .option {
     flex-direction: row;
     gap: 0.5rem;

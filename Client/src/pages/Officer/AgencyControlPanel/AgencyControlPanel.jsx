@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import LayoutAllpage from "../../../components/LayoutAllPage/LayoutAllPage.jsx";
 import TabNavigation from "../../../components/TabNavigation/TabNavigation.jsx";
+import AgencyApproval from "../../../hooks/AgencyApproval/AgencyApproval.jsx";
 import Icon from "../../../assets/manage.png";
 import { API_BASE_URL, APIEndpoints } from "../../../services/api.jsx";
 import styles from "./AgencyControlPanel.module.css";
@@ -9,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 
 function AgencyControlPanel() {
   const [officer, setOfficer] = useState(null);
-  const [agency, setAgency] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -34,23 +34,6 @@ function AgencyControlPanel() {
 
     fetchOfficerData();
   }, [navigate]);
-
-  useEffect(() => {
-    const fetchAgencyAll = async () => {
-      try {
-        const res = await axios.get(
-          API_BASE_URL + APIEndpoints.agency.fetchAll,
-          { withCredentials: true }
-        );
-        setAgency(res.data.data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch agency data:", error);
-      }
-    };
-
-    fetchAgencyAll();
-  }, []);
 
   const logout = async () => {
     try {
@@ -91,7 +74,11 @@ function AgencyControlPanel() {
       case 0:
         return <div>เนื้อหาสำหรับ "หน่วยงานทั้งหมด"</div>;
       case 1:
-        return <div>เนื้อหาสำหรับ "คำอธิบายหน่วยงาน"</div>;
+        return (
+          <div>
+            <AgencyApproval officer={officer} />
+          </div>
+        );
       case 2:
         return <div>เนื้อหาสำหรับ "หน่วยงานที่ปฏิเสธ"</div>;
       case 3:
@@ -111,12 +98,14 @@ function AgencyControlPanel() {
       icon={Icon}
       label="จัดการหน่วยงาน"
     >
-      <TabNavigation
-        tabs={tabs}
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-      />
-      <div>{renderContent()}</div>
+      <div className={styles.container}>
+        <TabNavigation
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
+        <div>{renderContent()}</div>
+      </div>
     </LayoutAllpage>
   );
 }
