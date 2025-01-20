@@ -3,6 +3,8 @@ import axios from "axios";
 import LayoutAllpage from "../../../components/LayoutAllPage/LayoutAllPage.jsx";
 import TabNavigation from "../../../components/TabNavigation/TabNavigation.jsx";
 import AgencyApproval from "../../../hooks/AgencyApproval/AgencyApproval.jsx";
+import AllAgency from "../../../hooks/AllAgency/AllAgency.jsx";
+import AgencyReject from "../../../hooks/AgencyReject/AgencyReject.jsx";
 import Icon from "../../../assets/manage.png";
 import { API_BASE_URL, APIEndpoints } from "../../../services/api.jsx";
 import styles from "./AgencyControlPanel.module.css";
@@ -72,7 +74,11 @@ function AgencyControlPanel() {
   const renderContent = () => {
     switch (activeTab) {
       case 0:
-        return <div>เนื้อหาสำหรับ "หน่วยงานทั้งหมด"</div>;
+        return (
+          <div>
+            <AllAgency officer={officer} />
+          </div>
+        );
       case 1:
         return (
           <div>
@@ -80,7 +86,11 @@ function AgencyControlPanel() {
           </div>
         );
       case 2:
-        return <div>เนื้อหาสำหรับ "หน่วยงานที่ปฏิเสธ"</div>;
+        return (
+          <div>
+            <AgencyReject officer={officer} />
+          </div>
+        );
       case 3:
         return <div>เนื้อหาสำหรับ "เพิ่มหน่วยงาน"</div>;
       default:

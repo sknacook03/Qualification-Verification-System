@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./AgencyApproveTable.module.css";
 
-function AgencyApproveTable({ agencies, onApprove, onReject }) {
+function AgencyApproveTable({ agencies, onApprove, onReject, disableApprove, disableReject }) {
   const normalizeImagePath = (path) => {
     if (!path) return null;
     return path.replace(/\\/g, "/");
@@ -53,18 +53,22 @@ function AgencyApproveTable({ agencies, onApprove, onReject }) {
             </td>
             <td className={styles.td}>{agencyItem.status_approve}</td>
             <td className={styles.td}>
-              <button
-                className={`${styles.button} ${styles.approveButton}`}
-                onClick={() => onApprove(agencyItem.id)}
-              >
-                Approve
-              </button>
-              <button
-                className={`${styles.button} ${styles.rejectButton}`}
-                onClick={() => onReject(agencyItem.id)}
-              >
-                Reject
-              </button>
+              {!disableApprove && (
+                <button
+                  className={`${styles.button} ${styles.approveButton}`}
+                  onClick={() => onApprove(agencyItem.id)}
+                >
+                  Approve
+                </button>
+              )}
+              {!disableReject && (
+                <button
+                  className={`${styles.button} ${styles.rejectButton}`}
+                  onClick={() => onReject(agencyItem.id)}
+                >
+                  Reject
+                </button>
+              )}
             </td>
           </tr>
         ))}
