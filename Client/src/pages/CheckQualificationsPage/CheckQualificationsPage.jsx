@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import Icon from "../../assets/homepage.png";
-import LayoutAllPage from "../../components/LayoutAllPage/LayoutAllPage";
-import "react-toastify/dist/ReactToastify.css";
-import styles from "./Homepages.module.css";
+import Icon from "../../assets/examine.png";
 import axios from "axios";
+import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL, APIEndpoints } from "../../services/api";
-function Homepages() {
+import LayoutAllPage from "../../components/LayoutAllPage/LayoutAllPage";
+function CheckQualificationsPage() {
   const [agency, setAgency] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -78,19 +77,9 @@ function Homepages() {
         topMenuItems={topMenuItems}
         bottomMenuItems={bottomMenuItems}
         icon={Icon}
-        label="หน้าหลัก"
-      >
-        <h4 className={styles.topic}>ข้อมูลของท่าน</h4>
-        <div className={styles.boxInfoAgency}>
-          <p>Email: {agency.email}</p>
-          <p>Department: {agency.department}</p>
-          <p>Role: {agency.role}</p>
-        </div>
-        <h4 className={styles.topic}>ข้อมูลของนักศึกษาที่เคยตรวจสอบ</h4>
-        <div className={styles.boxHistory}></div>
-      </LayoutAllPage>
+        label="ตรวจสอบคุณวุฒินักศึกษา"
+      ></LayoutAllPage>
     </>
   );
 }
-
-export default Homepages;
+export default CheckQualificationsPage;

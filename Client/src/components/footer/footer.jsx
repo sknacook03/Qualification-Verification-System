@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 function Footer({ color, disableMenu }) {
   return (
     <>
-      <footer className="contrainer-footer">
+       <footer className={`contrainer-footer ${disableMenu ? "center-content" : ""}`}>
         <div className="copy">
           <h5 style={{ color: color }}>
             Developed by Khon Rak Khrop Khrua and Khon Chao Choo © Rajamangala

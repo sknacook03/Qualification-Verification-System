@@ -3,35 +3,14 @@ import axios from "axios";
 import AgencyApproveTable from "../../hooks/AgencyApproveTable/AgencyApproveTable.jsx";
 import Popup from "../../components/Popup/Popup.jsx";
 import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
-import styles from "./HomepageOfficer.module.css";
-import { useNavigate } from "react-router-dom";
+import styles from "./AgencyApproval.module.css";
 
-function HomepagesOfficer() {
-  const [officer, setOfficer] = useState(null);
+const AgencyApproval = ({ officer }) => {
   const [agency, setAgency] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
   const [rejectedAgency, setRejectedAgency] = useState(null);
   const [rejectionReason, setRejectionReason] = useState("");
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchOfficerData = async () => {
-      try {
-        const res = await axios.get(API_BASE_URL + APIEndpoints.officer.logged, {
-          withCredentials: true,
-        });
-        setOfficer(res.data.data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch officer data:", error);
-        alert("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
-        navigate("/LoginOfficer");
-      }
-    };
-
-    fetchOfficerData();
-  }, [navigate]);
 
   useEffect(() => {
     const fetchAgencyAll = async () => {
@@ -60,9 +39,7 @@ function HomepagesOfficer() {
 
       await axios.put(
         API_BASE_URL + APIEndpoints.agency.updateAgency(agencyId),
-        { status_approve: "approved",
-          approve_by: officer.id,
-         },
+        { status_approve: "approved", approve_by: officer.id },
         { withCredentials: true }
       );
 
@@ -117,9 +94,7 @@ function HomepagesOfficer() {
 
       await axios.put(
         API_BASE_URL + APIEndpoints.agency.updateAgency(rejectedAgency),
-        { status_approve: "rejected",
-          approve_by: officer.id,
-         },
+        { status_approve: "rejected", approve_by: officer.id },
         { withCredentials: true }
       );
 
@@ -137,7 +112,7 @@ function HomepagesOfficer() {
       await axios.post(
         API_BASE_URL + APIEndpoints.officer.sendEmail,
         {
-          agencyId: agencyToUpdate.id,
+          agency_id: agencyToUpdate.id,
           email: agencyToUpdate.email,
           agency: agencyToUpdate.agency_name,
           status_approved: "rejected",
@@ -163,7 +138,9 @@ function HomepagesOfficer() {
     }
   };
 
-  const pendingAgencies = agency.filter((agencyItem) => agencyItem.status_approve === "pending");
+  const pendingAgencies = agency.filter(
+    (agencyItem) => agencyItem.status_approve === "pending"
+  );
 
   return (
     <div className={styles.container}>
@@ -175,22 +152,21 @@ function HomepagesOfficer() {
           onReject={handleReject}
         />
       )}
-
       {showPopup && (
-        <Popup 
-        topic="หมายเหตุ"
-        info="โปรดระบุเหตุผลในการปฏิเสธหน่วยงาน"
-        textarea
-        valueTextarea={rejectionReason}
-        onChangeTextarea={(e) => setRejectionReason(e.target.value)}
-        placeholderTextarea="กรุณากรอกหมายเหตุ"
-        successPopup={submitRejection}
-        textButtonSuccess="ยืนยัน"
-        closePopup={() => setShowPopup(false)}
+        <Popup
+          topic="หมายเหตุ"
+          info="โปรดระบุเหตุผลในการปฏิเสธหน่วยงาน"
+          textarea
+          valueTextarea={rejectionReason}
+          onChangeTextarea={(e) => setRejectionReason(e.target.value)}
+          placeholderTextarea="กรุณากรอกหมายเหตุ"
+          successPopup={submitRejection}
+          textButtonSuccess="ยืนยัน"
+          closePopup={() => setShowPopup(false)}
         />
       )}
     </div>
   );
-}
+};
 
-export default HomepagesOfficer;
+export default AgencyApproval;
