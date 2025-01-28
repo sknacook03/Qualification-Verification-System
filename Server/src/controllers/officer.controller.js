@@ -1,5 +1,6 @@
 import OfficerService from "../services/officer.service.js";
 import { sendApprovalEmail, sendRejectionEmail } from "../services/email.service.js"
+import agencyService from "../services/agency.service.js"; 
 
 const replacer = (key, value) => {
   if (typeof value === "bigint") {
@@ -161,5 +162,33 @@ const OfficerController = {
       res.status(500).json({ message: "Internal Server Error" });
     }
   },
+  rejectVerifyToken: async (req, res) => {
+    try {
+        console.log("🔹 User ที่ถอดรหัสจาก Token:", req.user); 
+        if (!req.user || !req.user.id) {
+            console.error("ไม่พบ ID จาก Token");
+            return res.status(400).json({ success: false, message: "ไม่พบ ID จาก Token" });
+        }
+
+        console.log("🔹 Fetching agency by ID:", req.user.id);
+        const rejectedData = await agencyService.getAgencyById(req.user.id);
+
+        if (!rejectedData) {
+            console.error("ไม่พบข้อมูลของ Agency:", req.user.id);
+            return res.status(404).json({ success: false, message: "ไม่พบข้อมูลที่ถูก Reject" });
+        }
+
+        const responseData = JSON.parse(
+            JSON.stringify(rejectedData, (key, value) =>
+                typeof value === "bigint" ? value.toString() : value
+            )
+        );
+
+        res.json({ success: true, data: responseData });
+    } catch (error) {
+        console.error("Error verifying token:", error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+}
 };
 export default OfficerController;

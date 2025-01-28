@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./OptionTypeAgency.css";
-import { API_BASE_URL,APIEndpoints } from "../../services/api";
+import { API_BASE_URL, APIEndpoints } from "../../services/api";
 
 const OptionTypeAgency = ({ label, id, name, value, onChange, placeholder, error }) => {
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedValue, setSelectedValue] = useState(value || "");
+  const [selectedValue, setSelectedValue] = useState(value || ""); // ใช้ค่าเริ่มต้นจาก props
 
   useEffect(() => {
     const fetchOptions = async () => {
@@ -30,6 +30,12 @@ const OptionTypeAgency = ({ label, id, name, value, onChange, placeholder, error
     fetchOptions();
   }, []);
 
+  useEffect(() => {
+    if (!loading && value) {
+      setSelectedValue(value);
+    }
+  }, [value, options, loading]);
+
   const handleSelectChange = (e) => {
     const newValue = e.target.value;
     setSelectedValue(newValue);
@@ -38,14 +44,14 @@ const OptionTypeAgency = ({ label, id, name, value, onChange, placeholder, error
 
   return (
     <div className="input-container">
-      <label className="input-label" htmlFor={id} >{label}</label>
+      <label className="input-label" htmlFor={id}>{label}</label>
       <select
         name={name}
         id={id}
         value={selectedValue}
         onChange={handleSelectChange}
         placeholder={placeholder}
-        className={`input-select ${error ? 'input-error' : ''}`}
+        className={`input-select ${error ? "input-error" : ""}`}
       >
         <option value="">กรุณาเลือกประเภทหน่วยงาน</option>
         {loading ? (
@@ -58,7 +64,7 @@ const OptionTypeAgency = ({ label, id, name, value, onChange, placeholder, error
           ))
         )}
       </select>
-      {error && <div className="error-message">{error}</div>}      
+      {error && <div className="error-message">{error}</div>}
     </div>
   );
 };

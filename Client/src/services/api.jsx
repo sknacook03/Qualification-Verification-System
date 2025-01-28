@@ -13,6 +13,7 @@ export const APIEndpoints = {
       fetchAll: "/agency/agencies",
       logged: "/agency/logged-in",
       updateAgency: (agencyId) => `/agency/update-agency/${agencyId}`,
+      updateRejectAgency: (agencyId) => `/agency/update-reject-agency/${agencyId}`,
       deleteAgency: (agencyId) => `/agency/delete-agency/${agencyId}`,
     },
     passwordReset: {
@@ -25,6 +26,7 @@ export const APIEndpoints = {
       logged: "/officer/logged-in",
       createOfficer: "/officer",
       sendEmail: "/officer/send-email",
+      verifyToken: "/officer/verify-token",
       updateStatus: (officerId) => `/officer/update-officer/${officerId}`,
       deleteOfficer: (officerId) => `/officer/delete-officer/${officerId}`,
     },

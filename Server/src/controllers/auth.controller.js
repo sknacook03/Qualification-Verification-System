@@ -31,7 +31,6 @@ const loginHandler = async (req, res, loginFunction) => {
       return res.status(401).json({ error: "รหัสผ่านไม่ถูกต้อง" });
     }
 
-    // ข้อผิดพลาดอื่น ๆ
     console.error("Unexpected error in loginHandler:", error);
     return res.status(500).json({ error: "Failed to login" });
   }

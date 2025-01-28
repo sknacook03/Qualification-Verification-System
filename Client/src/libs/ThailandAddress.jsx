@@ -1,17 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ThailandAddressTypeahead,
   ThailandAddressValue,
 } from 'react-thailand-address-typeahead';
 import './ThailandAddress.css'; 
 
-function ThailandAddress({ onAddressChange, error = {} }) {
+function ThailandAddress({ onAddressChange, error = {}, value }) {
   const [val, setVal] = useState(ThailandAddressValue.empty() || {
     subdistrict: '',
     district: '',
     province: '',
     postalCode: ''
   });
+
+  useEffect(() => {
+    if (value) {
+      setVal(value);
+    }
+  }, [value]);
 
   const handleValueChange = (updatedVal) => {
     setVal(updatedVal);

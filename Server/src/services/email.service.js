@@ -1,4 +1,9 @@
+import jwt from "jsonwebtoken";
 import { sendEmail } from "../utils/senderEmail.util.js";
+import dotenv from "dotenv";
+dotenv.config();
+
+const SECRET_KEY = process.env.JWT_SECRET;
 
 export const sendResetPasswordEmail = async (email, resetCode) => {
   const subject = "Password Reset Code";
@@ -162,6 +167,8 @@ export const sendApprovalEmail = async (email, agencyName) => {
 };
 
 export const sendRejectionEmail = async (email, agencyName, reason, agencyId) => {
+    const token = jwt.sign({ id: agencyId }, SECRET_KEY, { expiresIn: "1h" });
+    const editLink = `http://localhost:5173/Editregister?token=${token}`;
     const subject = "Request Rejection Notification";
     const htmlContent = `
         <!DOCTYPE html>
@@ -234,7 +241,7 @@ export const sendRejectionEmail = async (email, agencyName, reason, agencyId) =>
                     <p>เราขอแจ้งให้ทราบว่า คำขอของคุณไม่ได้รับการอนุมัติด้วยเหตุผลดังต่อไปนี้:</p>
                     <p class="reason">${reason}</p>
                     <p>กรุณาคลิกลิงก์ด้านล่างเพื่อเข้าสู่ระบบและแก้ไขข้อมูลที่ผิดพลาด:</p>
-                    <p><a href="https://yourwebsite.com/edit-information/${agencyId}">https://yourwebsite.com/edit-information/${agencyId}</a></p>
+                    <p><p><a href="${editLink}">http://localhost:5173/Editregister</a></p></p>
                     <p>หากคุณมีข้อสงสัยเพิ่มเติม กรุณาติดต่อฝ่ายสนับสนุนของเรา</p>
                 </div>
                 <div class="footer">

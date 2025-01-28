@@ -11,17 +11,17 @@ const replacer = (key, value) => {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // กำหนดโฟลเดอร์สำหรับเก็บไฟล์
+    cb(null, "uploads/"); 
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
-    cb(null, `${Date.now()}${ext}`); // กำหนดชื่อไฟล์ใหม่
+    cb(null, `${Date.now()}${ext}`); 
   },
 });
 
 const upload = multer({
   storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // ขนาดไฟล์ไม่เกิน 10 MB
+  limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const allowedTypes = [".pdf", ".png", ".jpg"];
     const ext = path.extname(file.originalname).toLowerCase();
@@ -53,22 +53,18 @@ const AgencyController = {
   },
   getLoggedInController: async (req, res) => {
     try {
-      const agencyId = req.agency.id; // ข้อมูลที่มาจาก middleware
+      const agencyId = req.agency.id;
       
       const agencyData = await AgencyService.getAgencyById(agencyId);
   
       if (!agencyData) {
-        // ถ้าไม่พบข้อมูล agency
         return res.status(404).json({ error: "Agency data not found" });
       }
-  
-      // ตรวจสอบและแปลงค่า BigInt เป็น string ก่อนส่งกลับ
+
       if (agencyData.id) {
-        agencyData.id = agencyData.id.toString(); // แปลง BigInt เป็น string
+        agencyData.id = agencyData.id.toString(); 
       }
-  
-      // ตรวจสอบว่า `agencyData` มี field ที่เป็น BigInt อื่นๆ หรือไม่
-      // ใช้ฟังก์ชันในการแปลงค่าทั้งหมดเป็น string
+
       const agencyDataStringified = JSON.parse(
         JSON.stringify(agencyData, (key, value) =>
           typeof value === 'bigint' ? value.toString() : value
@@ -154,6 +150,54 @@ const AgencyController = {
       res.status(500).json({ error: "Failed to delete agency" });
     }
   },
+  updateRejectionAgencyController: async (req, res) => {
+    upload(req, res, async (err) => {
+        if (err) {
+            return res.status(400).json({ error: err.message });
+        }
+
+        try {
+            const { id } = req.params;
+            let updateData = req.body;
+
+            console.log("Received Body Data:", updateData);
+            console.log("Received File Data:", req.file);
+
+            if (!req.file) {
+                return res.status(400).json({ error: "No certificate file uploaded." });
+            }
+
+            updateData.certificate = req.file.path;
+
+            const updatedAgency = await AgencyService.updateRejectionAgency(id, updateData);
+
+            const responseData = JSON.parse(JSON.stringify(updatedAgency, (key, value) =>
+                typeof value === 'bigint' ? value.toString() : value
+            ));
+
+            res.status(200).json({
+                success: true,
+                message: "Successfully updated agency.",
+                data: responseData,
+            });
+
+        } catch (error) {
+            console.error("An error occurred while updating the unit:", error.message);
+            res.status(500).json({ error: error.message || "Unable to update agency" });
+        }
+    });
+},
+  checkEmailController: async (req, res) => {
+    const { email } = req.body;
+  
+    try {
+      const exists = await AgencyService.checkEmailExists(email);
+      res.status(200).json({ exists });
+    } catch (error) {
+      console.error('Error checking email:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
   updateAgencyController: async (req, res) => {
     try {
       const { id } = req.params;
@@ -175,17 +219,6 @@ const AgencyController = {
     } catch (error) {
       console.error("An error occurred while updating the unit:", error.message);
       res.status(500).json({ error: error.message || "Unable to update agency" });
-    }
-  },
-  checkEmailController: async (req, res) => {
-    const { email } = req.body;
-  
-    try {
-      const exists = await AgencyService.checkEmailExists(email);
-      res.status(200).json({ exists });
-    } catch (error) {
-      console.error('Error checking email:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
     }
   },
   checkTelephoneController: async (req, res) => {

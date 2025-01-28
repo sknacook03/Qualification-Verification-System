@@ -120,28 +120,70 @@ const AgencyService = {
       throw error;
     }
   },
-  updateAgency: async (id, updateData) => {
+  updateRejectionAgency: async (id, updateData) => {
     try {
-      const existAgency = await prisma.agency.findUnique({
-        where: { id: BigInt(id) }
-      });
-      
-      if (!existAgency) {
-        throw new Error(`Agency with ID ${id} does not exist.`);
-      }
+        const existAgency = await prisma.agency.findUnique({
+            where: { id: BigInt(id) }
+        });
 
-      const updatedAgency = await prisma.agency.update({
-        where: { id: BigInt(id) },
-        data: updateData,
-      });
-  
-      return updatedAgency;
-      
+        if (!existAgency) {
+            throw new Error(`Agency with ID ${id} does not exist.`);
+        }
+
+        let updatePayload = { ...updateData };
+
+        if (updateData.password) {
+            updatePayload.password = await bcrypt.hash(updateData.password, 10);
+        } else {
+            delete updatePayload.password;
+        }
+
+        if (updateData.postalCode) {
+            updatePayload.postal_code = updateData.postalCode;
+            delete updatePayload.postalCode;
+        }
+
+        if (updateData.type_id) {
+            updatePayload.typeAgency = {
+                connect: { id: parseInt(updateData.type_id) }
+            };
+            delete updatePayload.type_id;
+        }
+
+        const updatedAgency = await prisma.agency.update({
+            where: { id: BigInt(id) },
+            data: updatePayload,
+        });
+
+        return updatedAgency;
+
     } catch (error) {
-      console.error("Failed to update agency:", error);
-      throw error;
+        console.error("Failed to update agency:", error);
+        throw error;
     }
-  },
+},
+updateAgency: async (id, updateData) => {
+  try {
+    const existAgency = await prisma.agency.findUnique({
+      where: { id: BigInt(id) }
+    });
+    
+    if (!existAgency) {
+      throw new Error(`Agency with ID ${id} does not exist.`);
+    }
+
+    const updatedAgency = await prisma.agency.update({
+      where: { id: BigInt(id) },
+      data: updateData,
+    });
+
+    return updatedAgency;
+    
+  } catch (error) {
+    console.error("Failed to update agency:", error);
+    throw error;
+  }
+},
   getLastAgency: async () => {
     try {
       const agency = await prisma.agency.findFirst({
