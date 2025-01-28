@@ -138,15 +138,18 @@ const OfficerController = {
   },
   sendAgency: async (req, res) => {
     try {
-      const { agencyId, email, agency, status_approved, reason } = req.body;
-  
+      console.log("🔹 Data ที่ได้รับจาก Frontend:", req.body);
+      const { agency_id, email, agency, status_approved, reason } = req.body;
       if (!email) return res.status(400).json({ message: "Email is required" });
       if (!agency) return res.status(400).json({ message: "Agency name is required" });
       if (!status_approved) return res.status(400).json({ message: "Approval status is required" });
   
       const agencyEmail = await OfficerService.findUserByEmail(email);
+      console.log("🔹 ข้อมูลจากฐานข้อมูล:", agencyEmail);
       if (!agencyEmail) return res.status(404).json({ message: "Agency not found" });
-  
+      const agencyId = agency_id ? Number(agency_id) : Number(agencyEmail.id);
+      console.log("🔹 agencyId ที่ใช้:", agencyId);
+      
       if (status_approved === "approved") {
         await sendApprovalEmail(email, agency); 
       } else if (status_approved === "rejected") {
@@ -164,7 +167,7 @@ const OfficerController = {
   },
   rejectVerifyToken: async (req, res) => {
     try {
-        console.log("🔹 User ที่ถอดรหัสจาก Token:", req.user); 
+        console.log("🔹 User ที่ถอดรหัสจาก Token:", req.user.id); 
         if (!req.user || !req.user.id) {
             console.error("ไม่พบ ID จาก Token");
             return res.status(400).json({ success: false, message: "ไม่พบ ID จาก Token" });

@@ -167,7 +167,11 @@ export const sendApprovalEmail = async (email, agencyName) => {
 };
 
 export const sendRejectionEmail = async (email, agencyName, reason, agencyId) => {
-    const token = jwt.sign({ id: agencyId }, SECRET_KEY, { expiresIn: "1h" });
+    console.log("🔹 agencyId ที่ได้รับ:", agencyId); 
+    console.log("🔹 reason ที่ได้รับ:", reason); 
+    console.log("🔹 email:", email);
+    console.log("🔹 agencyName:", agencyName);
+    const token = jwt.sign({ id: agencyId, email }, process.env.JWT_SECRET, { expiresIn: "1h" });
     const editLink = `http://localhost:5173/Editregister?token=${token}`;
     const subject = "Request Rejection Notification";
     const htmlContent = `
