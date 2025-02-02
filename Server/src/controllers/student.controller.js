@@ -30,24 +30,19 @@ const StudentController = {
   },
   searchStudents: async (req, res) => {
     try {
-      const filterParams = req.body; // รับค่าทั้งหมดจาก Body ตรงๆ
+      const filterParams = req.body;
 
       console.log("📥 Received Search Parameters:", filterParams);
 
-      // ตรวจสอบว่ามีพารามิเตอร์ที่ใช้ค้นหาหรือไม่
       if (!filterParams || Object.keys(filterParams).length === 0) {
         return res.status(400).json({ error: "At least one search parameter is required" });
       }
-
-      // เรียกใช้งาน Service พร้อมส่งค่าที่ได้รับจาก req.body
       const students = await StudentService.getStudentByFilters(filterParams);
 
-      // ถ้าผลลัพธ์เป็นอาเรย์ว่าง แสดงว่าไม่มีข้อมูลที่ตรงกัน
       if (students.length === 0) {
-        return res.status(404).json({ error: "No students found" });
+        return res.status(404).json({ error: "ไม่พบข้อมูลนักศึกษา" });
       }
 
-      // แปลง BigInt เป็น string เพื่อให้ JSON.stringify ทำงานได้
       const responseData = JSON.parse(
         JSON.stringify(students, (key, value) =>
           typeof value === "bigint" ? value.toString() : value

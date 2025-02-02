@@ -40,5 +40,8 @@ export const APIEndpoints = {
       fetchById:  (logsId) => `/approvedlog/logs/${logsId}`,
       updateById: (logsId) => `/approvedlog/logs/${logsId}`,
       deleteById: (logsId) => `/approvedlog/logs/${logsId}`,
+    },
+    student: {
+      search: "/student/search",
     }
 };

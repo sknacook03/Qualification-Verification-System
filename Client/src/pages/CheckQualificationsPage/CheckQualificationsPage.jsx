@@ -6,6 +6,7 @@ import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL, APIEndpoints } from "../../services/api";
 import LayoutAllPage from "../../components/LayoutAllPage/LayoutAllPage";
+import StudentSearch from "../../hooks/StudentSearch/StudentSearch";
 function CheckQualificationsPage() {
   const [agency, setAgency] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -78,7 +79,9 @@ function CheckQualificationsPage() {
         bottomMenuItems={bottomMenuItems}
         icon={Icon}
         label="ตรวจสอบคุณวุฒินักศึกษา"
-      ></LayoutAllPage>
+      >
+        <StudentSearch />
+      </LayoutAllPage>
     </>
   );
 }
