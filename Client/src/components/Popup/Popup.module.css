@@ -27,7 +27,7 @@
   max-width: 400px;
   width: 90%;
 }
-.overlayPopup .contentPopup button {
+.overlayPopup .contentPopup .buttonPopup {
   font-family: "Prompt", sans-serif;
   width: 100%;
   cursor: pointer;
@@ -38,7 +38,7 @@
   border-radius: 5px;
   transition: background-color 0.3s;
 }
-.overlayPopup .contentPopup button:hover {
+.overlayPopup .contentPopup .buttonPopup:hover {
   background-color: #e65c00;
 }
 .overlayPopup .contentPopup .closePopup{

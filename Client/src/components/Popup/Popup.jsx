@@ -28,7 +28,7 @@ const Popup = ({
             onChange={onChangeTextarea}
           ></textarea>
         )}
-          <button onClick={successPopup}>{textButtonSuccess}</button>
+          <button onClick={successPopup} className={styles.buttonPopup}>{textButtonSuccess}</button>
       </div>
     </div>
   );

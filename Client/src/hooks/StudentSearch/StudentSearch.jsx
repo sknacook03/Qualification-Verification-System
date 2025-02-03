@@ -1,11 +1,18 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
+import Input from "../../components/Input/Input.jsx";
+import Button from "../../components/button/Button.jsx";
 import styles from "./StudentSearch.module.css";
 
 const StudentSearch = () => {
-  const [filters, setFilters] = useState({ name: "", lname: "", student_no: "" });
+  const [filters, setFilters] = useState({
+    name: "",
+    lname: "",
+    student_no: "",
+  });
   const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleChange = (e) => {
@@ -14,14 +21,20 @@ const StudentSearch = () => {
 
   const handleSearch = async () => {
     try {
+      setLoading(true); 
       setError(null);
-      const response = await axios.post(API_BASE_URL + APIEndpoints.student.search, filters,
+      setStudents([]); 
+      const response = await axios.post(
+        API_BASE_URL + APIEndpoints.student.search,
+        filters,
         { withCredentials: true }
       );
       setStudents(response.data.data);
     } catch (err) {
       setError(err.response?.data?.error || "เกิดข้อผิดพลาดในการค้นหา");
       setStudents([]);
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -29,15 +42,32 @@ const StudentSearch = () => {
     <div className={styles.containerSearch}>
       <h2>ค้นหานักศึกษา</h2>
       <div className={styles.searchForm}>
-        <input type="text" name="name" placeholder="ชื่อ" onChange={handleChange} />
-        <input type="text" name="lname" placeholder="นามสกุล" onChange={handleChange} />
-        <input type="text" name="student_no" placeholder="รหัสนักศึกษา" onChange={handleChange} />
-        <button onClick={handleSearch}>ค้นหา</button>
+        <Input
+          type="text"
+          name="name"
+          placeholder="ชื่อ"
+          onChange={handleChange}
+        />
+        <Input
+          type="text"
+          name="lname"
+          placeholder="นามสกุล"
+          onChange={handleChange}
+        />
+        <Input
+          type="text"
+          name="student_no"
+          placeholder="รหัสนักศึกษา"
+          onChange={handleChange}
+        />
+        <Button onClick={handleSearch} text="ค้นหา" styleType="primary"/>
       </div>
 
       {error && <p className={styles.errorMessage}>{error}</p>}
 
-      {students.length > 0 && (
+      {loading && <p>Loading...</p>}
+
+      {!loading && students.length > 0 && (
         <table className={styles.studentTable}>
           <thead>
             <tr>
