@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import ArrowButton from "../../components/ArrowButton/ArrowButton";
 import Header from "../../components/header/header";
 import Footer from "../../components/footer/footer";
 import ThailandAddress from "../../libs/ThailandAddress";
@@ -74,7 +73,11 @@ function Editregister() {
   
     if (token) {
       axios
-        .post(API_BASE_URL + APIEndpoints.officer.verifyToken, { token })
+        .post(API_BASE_URL + APIEndpoints.officer.verifyToken, {}, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
         .then((response) => {
           if (response.data.success) {
             const data = response.data.data;
@@ -98,6 +101,7 @@ function Editregister() {
         })
         .catch((error) => {
           console.error("Error fetching rejected data:", error);
+          console.log(error.response);
           toast.error("เกิดข้อผิดพลาด");
           navigate("/");
         });

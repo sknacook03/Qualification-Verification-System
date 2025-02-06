@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./AgencyApproveTable.module.css";
 
-function AgencyApproveTable({ agencies, onApprove, onReject, disableApprove, disableReject }) {
+function AgencyApproveTable({ agencies, onApprove, onPending, onReject, disableApprove, disablePending, disableReject }) {
   const normalizeImagePath = (path) => {
     if (!path) return null;
     return path.replace(/\\/g, "/");
@@ -59,6 +59,14 @@ function AgencyApproveTable({ agencies, onApprove, onReject, disableApprove, dis
                   onClick={() => onApprove(agencyItem.id)}
                 >
                   Approve
+                </button>
+              )}
+              {!disablePending && (
+                <button
+                  className={`${styles.button} ${styles.pendingButton}`}
+                  onClick={() => onPending(agencyItem.id)}
+                >
+                  Pending
                 </button>
               )}
               {!disableReject && (

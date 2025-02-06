@@ -150,6 +150,7 @@ const AgencyApproval = ({ officer }) => {
           agencies={pendingAgencies}
           onApprove={handleApprove}
           onReject={handleReject}
+          disablePending
         />
       )}
       {showPopup && (

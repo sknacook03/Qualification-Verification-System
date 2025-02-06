@@ -32,6 +32,11 @@ button.approveButton {
     color: white;
 }
 
+button.pendingButton {
+    background-color: #ffd000;
+    color: rgb(0, 0, 0);
+}
+
 button.rejectButton {
     background-color: #f44336;
     color: white;

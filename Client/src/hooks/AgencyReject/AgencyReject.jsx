@@ -85,6 +85,7 @@ const AgencyReject = ({ officer }) => {
           agencies={RejectAgencies}
           onApprove={handleApprove}
           disableReject
+          disablePending
         />
       )}
     </div>

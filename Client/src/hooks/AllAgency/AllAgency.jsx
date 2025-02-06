@@ -29,6 +29,28 @@ const AllAgency = ({ officer }) => {
     fetchAgencyAll();
   }, []);
 
+  const handlePending = async (agencyId) => {
+    try {
+      await axios.put(
+        API_BASE_URL + APIEndpoints.agency.updateAgency(agencyId),
+        { status_approve: "pending", approve_by: officer.id },
+        { withCredentials: true }
+      );
+
+      setAgency((prevAgency) =>
+        prevAgency.map((agencyItem) =>
+          agencyItem.id === agencyId
+            ? { ...agencyItem, status_approve: "pending" }
+            : agencyItem
+        )
+      );
+
+      alert("Agency status updated to pending.");
+    } catch (error) {
+      console.error("Failed to update agency status to pending:", error);
+      alert("Error while updating agency status.");
+    }
+  };
 
   const handleReject = (agencyId) => {
     setRejectedAgency(agencyId);
@@ -89,6 +111,7 @@ const AllAgency = ({ officer }) => {
     }
   };
 
+
   const ApprovedAgencies = agency.filter(
     (agencyItem) => agencyItem.status_approve === "approved"
   );
@@ -101,6 +124,7 @@ const AllAgency = ({ officer }) => {
           agencies={ApprovedAgencies}
           disableApprove
           onReject={handleReject}
+          onPending={handlePending}
         />
       )}
       {showPopup && (
