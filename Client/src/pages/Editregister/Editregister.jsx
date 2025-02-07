@@ -27,7 +27,7 @@ function Editregister() {
   const [orgaddress, setOrgaddress] = useState("");
   const [telphone, setTelphone] = useState("");
   const [orgType, setOrgType] = useState("");
-  const [orgTypeName, setOrgTypeName] = useState(""); 
+  const [orgTypeName, setOrgTypeName] = useState("");
   const [orgTypeList, setOrgTypeList] = useState([]);
   const [address, setAddress] = useState({
     subdistrict: "",
@@ -42,7 +42,8 @@ function Editregister() {
   const isPasswordStrong = (password) => password.length >= 8;
 
   useEffect(() => {
-    axios.get(API_BASE_URL + APIEndpoints.typeAgency.fetchAll)
+    axios
+      .get(API_BASE_URL + APIEndpoints.typeAgency.fetchAll)
       .then((response) => {
         if (response.data.success) {
           setOrgTypeList(response.data.data);
@@ -52,14 +53,16 @@ function Editregister() {
         console.error("Error fetching type agency list:", error);
       });
   }, []);
-  
+
   useEffect(() => {
     if (orgTypeList.length > 0 && orgType) {
-      const type = orgTypeList.find((item) => String(item.id) === String(orgType)); 
+      const type = orgTypeList.find(
+        (item) => String(item.id) === String(orgType)
+      );
       setOrgTypeName(type ? type.type_name : "ไม่พบข้อมูล");
     }
   }, [orgType, orgTypeList]);
-  
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
@@ -70,10 +73,10 @@ function Editregister() {
       navigate("/");
       return;
     }
-  
+
     if (token) {
       axios
-      .post(API_BASE_URL + APIEndpoints.officer.verifyToken, { token })
+        .post(API_BASE_URL + APIEndpoints.officer.verifyToken, { token })
         .then((response) => {
           if (response.data.success) {
             const data = response.data.data;
@@ -88,7 +91,7 @@ function Editregister() {
               subdistrict: data.subdistrict,
               district: data.district,
               province: data.province,
-              postalCode: data.postal_code, 
+              postalCode: data.postal_code,
             });
           } else {
             toast.error("ไม่สามารถโหลดข้อมูลได้");
@@ -138,22 +141,22 @@ function Editregister() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    if (!validateForm()) { 
+
+    if (!validateForm()) {
       toast.error("กรุณากรอกข้อมูลให้ครบถ้วน!");
-      return; 
+      return;
     }
-  
+
     if (password !== confirmPassword) {
       toast.error("รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน!");
       return;
     }
-  
+
     if (!isPasswordStrong(password)) {
       toast.error("รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร");
       return;
     }
-  
+
     try {
       const formData = new FormData();
       formData.append("email", email);
@@ -164,27 +167,34 @@ function Editregister() {
       formData.append("type_id", orgType);
       formData.append("password", password);
       formData.append("certificate", file);
-      formData.append("status_approve", "pending")
+      formData.append("status_approve", "pending");
       Object.keys(address).forEach((key) => formData.append(key, address[key]));
-  
+
       console.log("FormData Entries:", Object.fromEntries(formData.entries()));
       await toast.promise(
-        axios.put( API_BASE_URL + APIEndpoints.agency.updateRejectAgency(agencyId), formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }),
+        axios.put(
+          API_BASE_URL + APIEndpoints.agency.updateRejectAgency(agencyId),
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        ),
         {
           pending: "กำลังอัปเดตข้อมูล...",
           success: "อัปเดตข้อมูลสำเร็จ!",
           error: "เกิดข้อผิดพลาดในการอัปเดตข้อมูล!",
         }
       );
-  
+
       setShowPopup(true);
     } catch (error) {
       console.error("Error updating data:", error);
-      toast.error("เกิดข้อผิดพลาด: " + (error.response?.data?.message || "ไม่สามารถอัปเดตข้อมูลได้"));
+      toast.error(
+        "เกิดข้อผิดพลาด: " +
+          (error.response?.data?.message || "ไม่สามารถอัปเดตข้อมูลได้")
+      );
     }
   };
 
@@ -208,31 +218,100 @@ function Editregister() {
         <form action="">
           <div className={styles.inputForm}>
             <div className={styles.inputRegister}>
-              <Input label="อีเมล*" type="email" value={email} onChange={(e) => setEmail(e.target.value)} error={errors.email} />
-              <Input label="ชื่อหน่วยงาน*" type="text" value={orgname} onChange={(e) => setOrgname(e.target.value)} error={errors.orgname} />
-              <Input label="แผนกงานที่รับผิดชอบ*" type="text" value={department} onChange={(e) => setDepartment(e.target.value)} error={errors.department} />
-              <Input label="เบอร์โทรศัพท์*" type="text" value={telphone} onChange={(e) => setTelphone(e.target.value)} error={errors.telphone} />
-              <Textfield label="ที่อยู่ของหน่วยงาน*" type="text" value={orgaddress} onChange={(e) => setOrgaddress(e.target.value)} error={errors.orgaddress} />
+              <Input
+                label="อีเมล*"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                error={errors.email}
+              />
+              <Input
+                label="ชื่อหน่วยงาน*"
+                type="text"
+                value={orgname}
+                onChange={(e) => setOrgname(e.target.value)}
+                error={errors.orgname}
+              />
+              <Input
+                label="แผนกงานที่รับผิดชอบ*"
+                type="text"
+                value={department}
+                onChange={(e) => setDepartment(e.target.value)}
+                error={errors.department}
+              />
+              <Input
+                label="เบอร์โทรศัพท์*"
+                type="text"
+                value={telphone}
+                onChange={(e) => setTelphone(e.target.value)}
+                error={errors.telphone}
+              />
+              <Textfield
+                label="ที่อยู่ของหน่วยงาน*"
+                type="text"
+                value={orgaddress}
+                onChange={(e) => setOrgaddress(e.target.value)}
+                error={errors.orgaddress}
+              />
             </div>
             <div className={styles.inputRegister}>
-              <ThailandAddress value={address} onAddressChange={handleAddressChange} error={errors} />
-              <OptionTypeAgency label="ประเภทหน่วยงาน*" value={orgType} onChange={(e) => setOrgType(e.target.value)} error={errors.orgType} />
+              <ThailandAddress
+                value={address}
+                onAddressChange={handleAddressChange}
+                error={errors}
+              />
+              <OptionTypeAgency
+                label="ประเภทหน่วยงาน*"
+                value={orgType}
+                onChange={(e) => setOrgType(e.target.value)}
+                error={errors.orgType}
+              />
             </div>
-              <PasswordInput label="รหัสผ่านใหม่" id="password" value={password} onChange={(e) => setPassword(e.target.value)} error={errors.password} />
-              <PasswordInput label="ยืนยันรหัสผ่าน" id="confirmPassword" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} error={errors.confirmPassword} />
+            <PasswordInput
+              label="รหัสผ่านใหม่"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              error={errors.password}
+            />
+            <PasswordInput
+              label="ยืนยันรหัสผ่าน"
+              id="confirmPassword"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              error={errors.confirmPassword}
+            />
             <div className={styles.infoInput}>
               <p>อัปโหลดหนังสือรับรองเพื่อเข้าใช้งานระบบ</p>
               <p>(รองรับไฟล์ .pdf .png .jpg ขนาดไม่เกิน 10 MB)</p>
             </div>
-              <Input type="file" onChange={(e) => setFile(e.target.files[0])} error={errors.file} />  
+            <Input
+              type="file"
+              onChange={(e) => setFile(e.target.files[0])}
+              error={errors.file}
+            />
           </div>
           <div className={styles.buttonSubmit}>
-            <Button text="ยืนยันการแก้ไขข้อมูล" styleType="third" onClick={handleSubmit} disabled={Object.keys(errors).length > 0}/>
+            <Button
+              text="ยืนยันการแก้ไขข้อมูล"
+              styleType="third"
+              onClick={handleSubmit}
+              disabled={Object.keys(errors).length > 0}
+            />
             <Link to="/" style={{ textDecoration: "none" }}>
               <Button text="ย้อนกลับ" styleType="back" />
             </Link>
           </div>
-          {showPopup && <Popup topic="สำเร็จ!" info="ข้อมูลของคุณถูกอัปเดตแล้ว" img={message} successPopup={() => navigate("/")} textButtonSuccess="กลับสู่หน้าหลัก" />}
+          {showPopup && (
+            <Popup
+              topic="แก้ไขข้อมูลสำเร็จ!"
+              info="รอการตรวจสอบจากเจ้าหน้าที่ เมื่อตรวจสอบสำเร็จแล้ว
+              จะส่งผลการตรวจสอบไปยังอีเมลของคุณ"
+              img={message}
+              successPopup={() => navigate("/")}
+              textButtonSuccess="กลับสู่หน้าหลัก"
+            />
+          )}
         </form>
       </div>
       <Footer />
