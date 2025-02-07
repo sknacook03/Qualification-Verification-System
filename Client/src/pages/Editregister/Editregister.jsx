@@ -73,11 +73,7 @@ function Editregister() {
   
     if (token) {
       axios
-        .post(API_BASE_URL + APIEndpoints.officer.verifyToken, {}, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
+      .post(API_BASE_URL + APIEndpoints.officer.verifyToken, { token })
         .then((response) => {
           if (response.data.success) {
             const data = response.data.data;
@@ -168,6 +164,7 @@ function Editregister() {
       formData.append("type_id", orgType);
       formData.append("password", password);
       formData.append("certificate", file);
+      formData.append("status_approve", "pending")
       Object.keys(address).forEach((key) => formData.append(key, address[key]));
   
       console.log("FormData Entries:", Object.fromEntries(formData.entries()));
