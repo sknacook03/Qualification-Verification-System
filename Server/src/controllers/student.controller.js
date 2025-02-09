@@ -40,7 +40,7 @@ const StudentController = {
       const students = await StudentService.getStudentByFilters(filterParams);
 
       if (students.length === 0) {
-        return res.status(404).json({ error: "ไม่พบข้อมูลนักศึกษา" });
+        return res.status(404).json({ error: "Not found" });
       }
 
       const responseData = JSON.parse(
