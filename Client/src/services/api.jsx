@@ -43,5 +43,8 @@ export const APIEndpoints = {
     },
     student: {
       search: "/student/search",
+    },
+    pageview: {
+      create: "/pageview/create"
     }
 };

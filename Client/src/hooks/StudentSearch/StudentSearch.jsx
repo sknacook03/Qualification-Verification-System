@@ -6,7 +6,7 @@ import PopupStudent from "../../components/PopupStudent/PopupStudent.jsx";
 import Button from "../../components/button/Button.jsx";
 import styles from "./StudentSearch.module.css";
 
-const StudentSearch = () => {
+const StudentSearch = ({agency}) => {
   const [filters, setFilters] = useState({
     name: "",
     lname: "",
@@ -39,8 +39,26 @@ const StudentSearch = () => {
       setLoading(false); 
     }
   };
-  const handleShowPopup = (student) => {
+  const handleShowPopup = async (student) => {
     setSelectedStudent(student); 
+
+    try {
+      
+      await axios.post(
+        API_BASE_URL + APIEndpoints.pageview.create, 
+        {
+          student_id: student.id,
+          faculty: student.curr_name.split("(")[0].trim() || "Unknown",
+          department: student.curr_name.match(/\((.*?)\)/)?.[1] || "Unknown",
+          action_type: "VIEW", 
+        },
+        { 
+          withCredentials: true, 
+        }
+      );
+    } catch (error) {
+      console.error("Error logging page view:", error);
+    }
   };
 
   const handleClosePopup = () => {

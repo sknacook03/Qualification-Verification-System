@@ -6,6 +6,7 @@ import AuthRouter from "./routes/auth.routes.js";
 import ResetPasswordRouter from "./routes/resetPassword.routes.js"
 import ApprovalLogRouter from "./routes/approvallog.routes.js";
 import StudentRouter from "./routes/student.routes.js";
+import PageViewRouter from "./routes/pageview.routes.js";
 const IndexRouter = express();
 
 IndexRouter.use("/agency", AgencyRouter);
@@ -15,5 +16,6 @@ IndexRouter.use("/officer", OfficerRouter);
 IndexRouter.use("/password-reset", ResetPasswordRouter);
 IndexRouter.use("/approvedlog", ApprovalLogRouter);
 IndexRouter.use("/student", StudentRouter);
+IndexRouter.use("/pageview", PageViewRouter);
 
 export default IndexRouter;

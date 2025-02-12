@@ -93,6 +93,8 @@ model PageView {
   // Relations
   agency  Agency  @relation(fields: [agency_id], references: [id])
   student Student @relation(fields: [student_id], references: [id])
+
+  @@unique([agency_id, student_id])
 }
 
 model Student {
