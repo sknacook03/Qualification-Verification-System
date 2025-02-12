@@ -5,6 +5,7 @@ import TabNavigation from "../../../components/TabNavigation/TabNavigation.jsx";
 import AgencyApproval from "../../../hooks/AgencyApproval/AgencyApproval.jsx";
 import AllAgency from "../../../hooks/AllAgency/AllAgency.jsx";
 import AgencyReject from "../../../hooks/AgencyReject/AgencyReject.jsx";
+import AddAgencyByOfficer from "../../../hooks/AddAgencyByOfficer/AddAgencyByOfficer.jsx";
 import Icon from "../../../assets/manage.png";
 import { API_BASE_URL, APIEndpoints } from "../../../services/api.jsx";
 import styles from "./AgencyControlPanel.module.css";
@@ -92,7 +93,11 @@ function AgencyControlPanel() {
           </div>
         );
       case 3:
-        return <div>เนื้อหาสำหรับ "เพิ่มหน่วยงาน"</div>;
+        return (
+          <div>
+            <AddAgencyByOfficer officer={officer} />
+          </div>
+        )
       default:
         return null;
     }
