@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
 import Input from "../../components/Input/Input.jsx";
+import PopupStudent from "../../components/PopupStudent/PopupStudent.jsx";
 import Button from "../../components/button/Button.jsx";
 import styles from "./StudentSearch.module.css";
 
@@ -14,6 +15,7 @@ const StudentSearch = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedStudent, setSelectedStudent] = useState(null);
 
   const handleChange = (e) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
@@ -37,7 +39,13 @@ const StudentSearch = () => {
       setLoading(false); 
     }
   };
+  const handleShowPopup = (student) => {
+    setSelectedStudent(student); 
+  };
 
+  const handleClosePopup = () => {
+    setSelectedStudent(null); 
+  };
   return (
     <div className={styles.containerSearch}>
       <h2>ค้นหานักศึกษา</h2>
@@ -74,7 +82,8 @@ const StudentSearch = () => {
               <th>รหัสนักศึกษา</th>
               <th>ชื่อ</th>
               <th>นามสกุล</th>
-              <th>เกรดเฉลี่ย</th>
+              <th>สถานะการศึกษา</th>
+              <th>เพิ่มเติม</th>
             </tr>
           </thead>
           <tbody>
@@ -83,12 +92,18 @@ const StudentSearch = () => {
                 <td>{student.student_no}</td>
                 <td>{student.name}</td>
                 <td>{student.lname}</td>
-                <td>{student.gpa}</td>
+                <td style={{ color: student.status_graduate == 1 ? "green" : "red"}}>
+                                   {student.status_graduate == 1 ? "สำเร็จการศึกษาแล้ว" : "ยังไม่สำเร็จการศึกษา"}
+                </td>
+                <td>
+                <button onClick={() => handleShowPopup(student)} className={styles.btnInfo}>Info</button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       )}
+       {selectedStudent && <PopupStudent student={selectedStudent} onClose={handleClosePopup} />}
     </div>
   );
 };
