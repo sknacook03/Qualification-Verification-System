@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+body {
+  margin: 0;
+}
+
+.appContainer {
+    margin-left: 3rem;
+}
+
+.appContent {
+  border-radius: 0.5rem;
+  width: 400px;
+  height: auto;
+  margin: 1rem 0 5rem 0;
+  padding: 1rem;
+  align-self: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.appContent h3 {
+  font-size: 26px;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.inputForm .inputRegister {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  margin-bottom: 1rem;
+}
+
+.infoInput {
+    margin-top: 1rem;
+    padding-left: 0.5rem;
+    font-size: 14px;
+}
+
+.buttonSubmit{
+  margin: 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+@media screen and (min-width: 1440px) {
+  .appContent {
+    width: 500px;
+  }
+}
