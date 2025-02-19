@@ -32,6 +32,8 @@ const AgencyService = {
   },
   createAgency: async (agency) => {
     try {
+      const now = new Date();
+      const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
       const existingAgency = await prisma.agency.findUnique({
         where: {
           email: agency.email,
@@ -93,6 +95,8 @@ const AgencyService = {
           certificate,
           role,
           status_approve,
+          created_at: bangkokTime,
+          updated_at: bangkokTime,
         },
       });
     } catch (error) {
@@ -129,8 +133,9 @@ const AgencyService = {
         if (!existAgency) {
             throw new Error(`Agency with ID ${id} does not exist.`);
         }
-
-        let updatePayload = { ...updateData };
+        const now = new Date();
+        const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+        let updatePayload = { ...updateData, updated_at: bangkokTime };
 
         if (updateData.password) {
             updatePayload.password = await bcrypt.hash(updateData.password, 10);
@@ -164,6 +169,8 @@ const AgencyService = {
 },
 updateAgency: async (id, updateData) => {
   try {
+    const now = new Date();
+    const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
     const existAgency = await prisma.agency.findUnique({
       where: { id: BigInt(id) }
     });
@@ -174,7 +181,10 @@ updateAgency: async (id, updateData) => {
 
     const updatedAgency = await prisma.agency.update({
       where: { id: BigInt(id) },
-      data: updateData,
+      data: {
+        ...updateData, 
+        updated_at: bangkokTime,
+      },
     });
 
     return updatedAgency;

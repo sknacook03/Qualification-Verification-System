@@ -16,6 +16,8 @@ const OfficerService = {
   },
   createOfficer: async (officer) => {
     try {
+      const now = new Date();
+      const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
       const existingOfficer = await prisma.officer.findUnique({
         where: {
           email: officer.email,
@@ -42,6 +44,8 @@ const OfficerService = {
           first_name,
           last_name,
           role,
+          created_at: bangkokTime,
+          updated_at: bangkokTime,
         },
       });
     } catch (error) {
@@ -71,6 +75,8 @@ const OfficerService = {
   },
   updateOfficer: async (id, DataOfficer) => {
     try {
+      const now = new Date();
+      const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
       const existOfficer = await prisma.officer.findUnique({
         where: { id: BigInt(id) },
       });
@@ -81,7 +87,10 @@ const OfficerService = {
 
       const updatedOfficer = await prisma.officer.update({
         where: { id: BigInt(id) },
-        data: DataOfficer,
+        data: {
+          ...DataOfficer,
+          updated_at: bangkokTime,
+        },
       });
 
       return updatedOfficer;

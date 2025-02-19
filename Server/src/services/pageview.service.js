@@ -4,6 +4,8 @@ const prisma = new PrismaClient();
 const PageviewService = {
   createPageview: async ({ agency_id, student_id, faculty, department, action_type }) => {
     try {
+      const now = new Date();
+      const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
       const pageView = await prisma.pageView.upsert({
         where: {
           agency_id_student_id: {
@@ -15,7 +17,7 @@ const PageviewService = {
           action_type: action_type || "VIEW",
           faculty,
           department,
-          updated_at: new Date(), 
+          updated_at: bangkokTime, 
         },
         create: {
           agency_id: Number(agency_id),
@@ -23,6 +25,8 @@ const PageviewService = {
           faculty,
           department,
           action_type: action_type || "VIEW",
+          created_at: bangkokTime,
+          updated_at: bangkokTime, 
         }
       });
 

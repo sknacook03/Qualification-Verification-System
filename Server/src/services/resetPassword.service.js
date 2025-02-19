@@ -44,9 +44,14 @@ const ResetServices = {
 
     updatePassword: async (email, hashedPassword) => {
         try {
+            const now = new Date();
+            const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
             return await prisma.agency.update({
                 where: { email },
-                data: { password: hashedPassword },
+                data: { 
+                password: hashedPassword,
+                updated_at: bangkokTime,
+            },
             });
         } catch (error) {
             console.error("Error updating password:", error);
