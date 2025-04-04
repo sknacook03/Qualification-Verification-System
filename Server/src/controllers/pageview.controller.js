@@ -3,7 +3,7 @@ import PageviewService from "../services/pageview.service.js";
 const PageviewController = {
   createPageview: async (req, res) => {
     try {
-      const { student_id, action_type, faculty = "Unknown", department = "Unknown" } = req.body;
+      const { student_id, action_type, faculty = "Unknown", department = "Unknown", student_certificate } = req.body;
       const agency_id = Number(req.agency?.id); 
       const studentId = Number(student_id); 
 
@@ -16,6 +16,7 @@ const PageviewController = {
         student_id: studentId,
         faculty,
         department,
+        student_certificate,
         action_type,
       });
 
