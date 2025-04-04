@@ -86,6 +86,7 @@ model PageView {
   student_id BigInt
   faculty    String
   department String
+  student_certificate String?
   action_type ActionType  @default(VIEW)
   created_at DateTime @default(now())
   updated_at  DateTime @updatedAt
