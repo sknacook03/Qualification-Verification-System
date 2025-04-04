@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const PageviewService = {
-  createPageview: async ({ agency_id, student_id, faculty, department, action_type }) => {
+  createPageview: async ({ agency_id, student_id, faculty, department, action_type, student_certificate }) => {
     try {
       const now = new Date();
       const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
@@ -17,6 +17,7 @@ const PageviewService = {
           action_type: action_type || "VIEW",
           faculty,
           department,
+          student_certificate,
           updated_at: bangkokTime, 
         },
         create: {
@@ -24,6 +25,7 @@ const PageviewService = {
           student_id: Number(student_id),
           faculty,
           department,
+          student_certificate,
           action_type: action_type || "VIEW",
           created_at: bangkokTime,
           updated_at: bangkokTime, 
