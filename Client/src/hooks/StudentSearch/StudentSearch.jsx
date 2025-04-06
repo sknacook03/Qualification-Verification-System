@@ -3,10 +3,11 @@ import axios from "axios";
 import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
 import Input from "../../components/Input/Input.jsx";
 import PopupStudent from "../../components/PopupStudent/PopupStudent.jsx";
+import Popup from "../../components/Popup/Popup.jsx";
 import Button from "../../components/button/Button.jsx";
 import styles from "./StudentSearch.module.css";
 
-const StudentSearch = ({agency}) => {
+const StudentSearch = ({ agency }) => {
   const [filters, setFilters] = useState({
     name: "",
     lname: "",
@@ -15,6 +16,8 @@ const StudentSearch = ({agency}) => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [popupStudentId, setPopupStudentId] = useState(null);
+  const [fileMap, setFileMap] = useState({});
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   const handleChange = (e) => {
@@ -23,9 +26,9 @@ const StudentSearch = ({agency}) => {
 
   const handleSearch = async () => {
     try {
-      setLoading(true); 
+      setLoading(true);
       setError(null);
-      setStudents([]); 
+      setStudents([]);
       const response = await axios.post(
         API_BASE_URL + APIEndpoints.student.search,
         filters,
@@ -36,33 +39,44 @@ const StudentSearch = ({agency}) => {
       setError(err.response?.data?.error || "เกิดข้อผิดพลาดในการค้นหา");
       setStudents([]);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
   const handleShowPopup = async (student) => {
-    setSelectedStudent(student); 
+    setPopupStudentId(null);
+    setSelectedStudent(student);
+
+    const formData = new FormData();
+    formData.append("student_id", student.id);
+    formData.append(
+      "faculty",
+      student.curr_name.split("(")[0].trim() || "Unknown"
+    );
+    formData.append(
+      "department",
+      student.curr_name.match(/\((.*?)\)/)?.[1] || "Unknown"
+    );
+    formData.append("action_type", "VIEW");
+
+    const selectedFile = fileMap[student.id];
+    if (selectedFile) {
+      formData.append("student_certificate", selectedFile);
+    }
 
     try {
-      
-      await axios.post(
-        API_BASE_URL + APIEndpoints.pageview.create, 
-        {
-          student_id: student.id,
-          faculty: student.curr_name.split("(")[0].trim() || "Unknown",
-          department: student.curr_name.match(/\((.*?)\)/)?.[1] || "Unknown",
-          action_type: "VIEW", 
+      await axios.post(API_BASE_URL + APIEndpoints.pageview.create, formData, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
         },
-        { 
-          withCredentials: true, 
-        }
-      );
+      });
     } catch (error) {
-      console.error("Error logging page view:", error);
+      console.error("Error uploading certificate or logging page view:", error);
     }
   };
 
   const handleClosePopup = () => {
-    setSelectedStudent(null); 
+    setSelectedStudent(null);
   };
   return (
     <div className={styles.containerSearch}>
@@ -86,7 +100,7 @@ const StudentSearch = ({agency}) => {
           placeholder="รหัสนักศึกษา"
           onChange={handleChange}
         />
-        <Button onClick={handleSearch} text="ค้นหา" styleType="primary"/>
+        <Button onClick={handleSearch} text="ค้นหา" styleType="primary" />
       </div>
 
       {error && <p className={styles.errorMessage}>{error}</p>}
@@ -110,18 +124,56 @@ const StudentSearch = ({agency}) => {
                 <td>{student.student_no}</td>
                 <td>{student.name}</td>
                 <td>{student.lname}</td>
-                <td style={{ color: student.status_graduate == 1 ? "green" : "red"}}>
-                                   {student.status_graduate == 1 ? "สำเร็จการศึกษาแล้ว" : "ยังไม่สำเร็จการศึกษา"}
+                <td
+                  style={{
+                    color: student.status_graduate == 1 ? "green" : "red",
+                  }}
+                >
+                  {student.status_graduate == 1
+                    ? "สำเร็จการศึกษาแล้ว"
+                    : "ยังไม่สำเร็จการศึกษา"}
                 </td>
                 <td>
-                <button onClick={() => handleShowPopup(student)} className={styles.btnInfo}>Info</button>
+                  <button
+                    onClick={() => setPopupStudentId(student.id)}
+                    className={styles.btnInfo}
+                  >
+                    Info
+                  </button>
+                  {popupStudentId === student.id && (
+                    <Popup
+                      topic="อัปโหลดหนังสือยิมยอม"
+                      info={
+                        <>
+                          อัพโหลดหนังสือยินยอมของนักศึกษา (ถ้ามี)
+                          <br />
+                          (รองรับไฟล์ .pdf .png .jpg ขนาดไม่เกิน 10 MB)
+                        </>
+                      }
+                      successPopup={() => handleShowPopup(student)}
+                      textButtonSuccess="ยืนยัน"
+                      closePopup={() => setPopupStudentId(null)}
+                    >
+                      <Input
+                        type="file"
+                        onChange={(e) =>
+                          setFileMap((prev) => ({
+                            ...prev,
+                            [student.id]: e.target.files[0],
+                          }))
+                        }
+                      />
+                    </Popup>
+                  )}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       )}
-       {selectedStudent && <PopupStudent student={selectedStudent} onClose={handleClosePopup} />}
+      {selectedStudent && (
+        <PopupStudent student={selectedStudent} onClose={handleClosePopup} />
+      )}
     </div>
   );
 };

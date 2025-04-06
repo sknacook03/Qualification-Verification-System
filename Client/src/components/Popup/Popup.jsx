@@ -13,6 +13,7 @@ const Popup = ({
   onChangeTextarea,
   placeholderTextarea,
   valueTextarea,
+  children,
 }) => {
   return (
     <div className={styles.overlayPopup}>
@@ -28,6 +29,7 @@ const Popup = ({
             onChange={onChangeTextarea}
           ></textarea>
         )}
+        {children}
           <button onClick={successPopup} className={styles.buttonPopup}>{textButtonSuccess}</button>
       </div>
     </div>
