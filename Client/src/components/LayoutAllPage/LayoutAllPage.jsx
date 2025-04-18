@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import HeaderHomePage from "../HeaderHomePage/HeaderHomePage";
 import SidebarMenu from "../SidebarMenu/SidebarMenu";
 import IconPage from "../IconPage/IconPage";
@@ -13,18 +13,20 @@ const LayoutAllPage = ({
   label,
   children,
 }) => {
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
   return (
     <>
       <div className={styles.appContainer}>
         <div className={styles.boxContainer}>
           <div className={styles.contentHeader}>
-            <HeaderHomePage user={user} />
+            <HeaderHomePage user={user} toggleSidebar={() => setSidebarOpen(!isSidebarOpen)}/>
           </div>
           <div className={styles.dashboardLayout}>
-            <div className={styles.sideBar}>
+            <div className={`${styles.sideBar} ${isSidebarOpen ? styles.sideBarOpen : ''}`}>
               <SidebarMenu
                 topMenuItems={topMenuItems}
                 bottomMenuItems={bottomMenuItems}
+                isOpen={isSidebarOpen}
               />
             </div>
             <div className={styles.mainContent}>

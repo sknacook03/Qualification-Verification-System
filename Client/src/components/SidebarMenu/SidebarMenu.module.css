@@ -1,33 +1,73 @@
-.sidebar{
+.open {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  height: fit-content;
+  width: 100%;
+  z-index: 1000;
+  background-color: #ff7100;
+  box-shadow: 0 5px 3px rgba(0, 0, 0, 0.3);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+}
+.openVisible {
+  transform: translateX(0%);
+}
+.open .menuList {
+  list-style-type: none;
+  padding: 0;
+}
+.open .menuList .menuItem .label {
+  display: flex;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 1rem 0.5rem 1rem 1.5rem;
+}
+@media screen and (min-width: 1024px) {
+  .open,
+  .openVisible {
+    background-color: transparent;
+    transform: none;
+    box-shadow: none;
+  }
+  .open .menuList .menuItem .label {
     display: flex;
+    color: #6d6d6d;
+  }
+  .sidebar {
+    display: flex;
+    position: relative;
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
     width: 13rem;
-}
-.menuList{
+    transform: none;
+    transition: none;
+  }
+  .menuList {
     list-style-type: none;
     padding: 0;
-}
-.menuItem span {
+  }
+  .menuItem span {
     cursor: pointer;
-}
-.label{
+  }
+  .label {
     display: block;
     width: 100%;
     font-size: 15px;
-    color: #6D6D6D;
+    color: #6d6d6d;
     text-decoration: none;
     padding: 1rem 0.5rem;
     border-radius: 0.2rem;
-    transition: .3s ease-in-out;
-}
-.label:hover{
-    transition: .3s ease-in-out;
-    background-color: white;
-}
-.active {
-    border-left: 0.4rem solid #FF7710;
-    background-color: white;
-    color: #FF7710;
+    transition: 0.3s ease-in-out;
   }
+  .label:hover {
+    transition: 0.3s ease-in-out;
+    background-color: white;
+  }
+  .active {
+    border-left: 0.4rem solid #ff7710;
+    background-color: white;
+    color: #ff7710;
+  }
+}

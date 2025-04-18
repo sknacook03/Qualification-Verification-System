@@ -11,6 +11,9 @@
 .sideBar {
   display: none;
 }
+.sideBarOpen{
+  display: flex;
+}
 .mainContent {
   display: flex;
   height: 100%;

@@ -2,13 +2,14 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import styles from './SidebarMenu.module.css';
 
-const SidebarMenu = ({ topMenuItems, bottomMenuItems }) => {
+const SidebarMenu = ({ topMenuItems, bottomMenuItems, isOpen, onClose }) => {
   const handleClick = (onClick) => {
     if (onClick) onClick();
+    if (onClose) onClose();
   };
-
+  const sidebarClass = `${styles.sidebar} ${styles.open} ${isOpen ? styles.openVisible : ''}`;
   return (
-    <div className={styles.sidebar}>
+    <div className={sidebarClass}>
       <ul className={styles.menuList}>
         {topMenuItems.map((item, index) => (
           <li key={index} className={styles.menuItem}>

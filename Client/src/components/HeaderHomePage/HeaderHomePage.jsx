@@ -4,12 +4,12 @@ import logoUser from "../../assets/user.png";
 import styles from "../HeaderHomePage/HeaderHomePage.module.css";
 import { Squash as Hamburger } from "hamburger-react";
 
-const HeaderHomePage = ({ user }) => {
+const HeaderHomePage = ({ user, toggleSidebar }) => {
   return (
     <>
       <div className={styles.container}>
         <div className={styles.hamberger}>
-          <Hamburger size={25} color="#FFF" />
+          <Hamburger size={25} color="#FFF" onToggle={toggleSidebar} />
         </div>
         <div className={styles.logo}>
           <div className={styles.imageRmuti}>
