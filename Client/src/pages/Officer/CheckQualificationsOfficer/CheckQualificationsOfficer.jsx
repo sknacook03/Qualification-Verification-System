@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import LayoutAllpage from "../../../components/LayoutAllPage/LayoutAllPage.jsx";
-import Icon from "../../../assets/homepage.png";
+import StudentSearch from "../../../hooks/StudentSearch/StudentSearch.jsx";
+import Icon from "../../../assets/examine.png";
 import { API_BASE_URL, APIEndpoints } from "../../../services/api.jsx";
-import styles from "./HomepageOfficer.module.css";
+import styles from "./CheckQualificationsOfficer.module.css";
 import { useNavigate } from "react-router-dom";
 import { topMenuItems, bottomMenuItems } from "../../../constants/officerMenuItems.jsx";
 
-function HomepagesOfficer() {
+function CheckQualificationsOfficer() {
   const [officer, setOfficer] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -60,10 +61,11 @@ function HomepagesOfficer() {
       topMenuItems={topMenuItems}
       bottomMenuItems={bottomMenuItems(logout)}
       icon={Icon}
-      label="หน้าหลัก"
+      label="ตรวจสอบคุณวุฒินักศึกษา"
     >
+    <StudentSearch forOfficer={true}/>
     </LayoutAllpage>
   );
 }
 
-export default HomepagesOfficer;
+export default CheckQualificationsOfficer;

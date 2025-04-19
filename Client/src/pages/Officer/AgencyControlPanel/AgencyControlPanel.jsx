@@ -10,6 +10,7 @@ import Icon from "../../../assets/manage.png";
 import { API_BASE_URL, APIEndpoints } from "../../../services/api.jsx";
 import styles from "./AgencyControlPanel.module.css";
 import { useNavigate } from "react-router-dom";
+import { topMenuItems, bottomMenuItems } from "../../../constants/officerMenuItems.jsx";
 
 function AgencyControlPanel() {
   const [officer, setOfficer] = useState(null);
@@ -54,18 +55,6 @@ function AgencyControlPanel() {
       alert("เกิดข้อผิดพลาดในการออกจากระบบ");
     }
   };
-  const topMenuItems = [
-    { label: "หน้าหลัก", route: "/HomepagesOfficer" },
-    { label: "ตรวจสอบคุณวุฒินักศึกษา", route: "/" },
-    { label: "สถิติการเข้าถึง", route: "/" },
-    { label: "จัดการหน่วยงาน", route: "/AgencyControlPanel" },
-    { label: "จัดการเจ้าหน้าที่", route: "/" },
-  ];
-
-  const bottomMenuItems = [
-    { label: "ตั้งค่าความเป็นส่วนตัว", route: "/" },
-    { label: "ออกจากระบบ", onClick: logout },
-  ];
   const tabs = [
     { label: "หน่วยงานทั้งหมด" },
     { label: "คำขอหน่วยงาน" },
@@ -109,7 +98,7 @@ function AgencyControlPanel() {
     <LayoutAllpage
       user={officer ? officer.first_name : "Loading..."}
       topMenuItems={topMenuItems}
-      bottomMenuItems={bottomMenuItems}
+      bottomMenuItems={bottomMenuItems(logout)}
       icon={Icon}
       label="จัดการหน่วยงาน"
     >

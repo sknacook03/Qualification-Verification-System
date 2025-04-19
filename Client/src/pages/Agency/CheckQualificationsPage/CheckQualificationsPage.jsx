@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import Icon from "../../assets/setting.png";
+import Icon from "../../../assets/examine.png";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
-import { API_BASE_URL, APIEndpoints } from "../../services/api";
-import LayoutAllPage from "../../components/LayoutAllPage/LayoutAllPage";
-function PrivacySettingsPage() {
+import { API_BASE_URL, APIEndpoints } from "../../../services/api";
+import LayoutAllPage from "../../../components/LayoutAllPage/LayoutAllPage";
+import StudentSearch from "../../../hooks/StudentSearch/StudentSearch";
+import { topMenuItems, bottomMenuItems } from "../../../constants/agencyMenuItems";
+
+function CheckQualificationsPage() {
   const [agency, setAgency] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -60,26 +63,19 @@ function PrivacySettingsPage() {
       alert("เกิดข้อผิดพลาดในการออกจากระบบ");
     }
   };
-  const topMenuItems = [
-    { label: "หน้าหลัก", route: "/Homepages" },
-    { label: "ตรวจสอบคุณวุฒินักศึกษา", route: "/CheckQualificationsPage" },
-    { label: "สถิติการเข้าถึง", route: "/AccessStatisticsPage" },
-  ];
 
-  const bottomMenuItems = [
-    { label: "ตั้งค่าความเป็นส่วนตัว", route: "/PrivacySettingsPage" },
-    { label: "ออกจากระบบ", onClick: logout },
-  ];
   return (
     <>
       <LayoutAllPage
         user={agency.agency_name}
         topMenuItems={topMenuItems}
-        bottomMenuItems={bottomMenuItems}
+        bottomMenuItems={bottomMenuItems(logout)}
         icon={Icon}
-        label="ตั้งค่าความเป็นส่วนตัว"
-      ></LayoutAllPage>
+        label="ตรวจสอบคุณวุฒินักศึกษา"
+      >
+        <StudentSearch />
+      </LayoutAllPage>
     </>
   );
 }
-export default PrivacySettingsPage;
+export default CheckQualificationsPage;

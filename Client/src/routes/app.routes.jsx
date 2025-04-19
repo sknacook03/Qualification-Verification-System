@@ -1,8 +1,8 @@
 import React from "react";
-import Homepages from "../pages/Homepages/Homepages.jsx";
-import CheckQualificationsPage from "../pages/CheckQualificationsPage/CheckQualificationsPage.jsx";
-import AccessStatisticsPage from "../pages/AccessStatisticsPage/AccessStatisticsPage.jsx";
-import PrivacySettingsPage from "../pages/PrivacySettingsPage/PrivacySettingsPage.jsx";
+import Homepages from "../pages/Agency/Homepages/Homepages.jsx";
+import CheckQualificationsPage from "../pages/Agency/CheckQualificationsPage/CheckQualificationsPage.jsx";
+import AccessStatisticsPage from "../pages/Agency/AccessStatisticsPage/AccessStatisticsPage.jsx";
+import PrivacySettingsPage from "../pages/Agency/PrivacySettingsPage/PrivacySettingsPage.jsx";
 import Contact from "../layout/contact/contact.jsx";
 
 const appRoutes = [

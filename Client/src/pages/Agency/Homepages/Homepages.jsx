@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import Icon from "../../assets/examine.png";
-import axios from "axios";
+import Icon from "../../../assets/homepage.png";
+import LayoutAllPage from "../../../components/LayoutAllPage/LayoutAllPage";
 import "react-toastify/dist/ReactToastify.css";
-import { API_BASE_URL, APIEndpoints } from "../../services/api";
-import LayoutAllPage from "../../components/LayoutAllPage/LayoutAllPage";
-import StudentSearch from "../../hooks/StudentSearch/StudentSearch";
-function CheckQualificationsPage() {
+import styles from "./Homepages.module.css";
+import axios from "axios";
+import { API_BASE_URL, APIEndpoints } from "../../../services/api";
+import { topMenuItems, bottomMenuItems } from "../../../constants/agencyMenuItems";
+function Homepages() {
   const [agency, setAgency] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -61,28 +62,27 @@ function CheckQualificationsPage() {
       alert("เกิดข้อผิดพลาดในการออกจากระบบ");
     }
   };
-  const topMenuItems = [
-    { label: "หน้าหลัก", route: "/Homepages" },
-    { label: "ตรวจสอบคุณวุฒินักศึกษา", route: "/CheckQualificationsPage" },
-    { label: "สถิติการเข้าถึง", route: "/AccessStatisticsPage" },
-  ];
 
-  const bottomMenuItems = [
-    { label: "ตั้งค่าความเป็นส่วนตัว", route: "/PrivacySettingsPage" },
-    { label: "ออกจากระบบ", onClick: logout },
-  ];
   return (
     <>
       <LayoutAllPage
         user={agency.agency_name}
         topMenuItems={topMenuItems}
-        bottomMenuItems={bottomMenuItems}
+        bottomMenuItems={bottomMenuItems(logout)}
         icon={Icon}
-        label="ตรวจสอบคุณวุฒินักศึกษา"
+        label="หน้าหลัก"
       >
-        <StudentSearch />
+        <h4 className={styles.topic}>ข้อมูลของท่าน</h4>
+        <div className={styles.boxInfoAgency}>
+          <p>Email: {agency.email}</p>
+          <p>Department: {agency.department}</p>
+          <p>Role: {agency.role}</p>
+        </div>
+        <h4 className={styles.topic}>ข้อมูลของนักศึกษาที่เคยตรวจสอบ</h4>
+        <div className={styles.boxHistory}></div>
       </LayoutAllPage>
     </>
   );
 }
-export default CheckQualificationsPage;
+
+export default Homepages;

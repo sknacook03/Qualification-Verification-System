@@ -7,7 +7,7 @@ import Popup from "../../components/Popup/Popup.jsx";
 import Button from "../../components/button/Button.jsx";
 import styles from "./StudentSearch.module.css";
 
-const StudentSearch = ({ agency }) => {
+const StudentSearch = ({ agency, forOfficer }) => {
   const [filters, setFilters] = useState({
     name: "",
     lname: "",
@@ -45,6 +45,8 @@ const StudentSearch = ({ agency }) => {
   const handleShowPopup = async (student) => {
     setPopupStudentId(null);
     setSelectedStudent(student);
+
+    if (forOfficer) return;
 
     const formData = new FormData();
     formData.append("student_id", student.id);
@@ -135,12 +137,15 @@ const StudentSearch = ({ agency }) => {
                 </td>
                 <td>
                   <button
-                    onClick={() => setPopupStudentId(student.id)}
+                    onClick={forOfficer
+                       ? () => handleShowPopup(student) 
+                       : () => setPopupStudentId(student.id)
+                      }
                     className={styles.btnInfo}
                   >
                     Info
                   </button>
-                  {popupStudentId === student.id && (
+                  {!forOfficer && popupStudentId === student.id && (
                     <Popup
                       topic="อัปโหลดหนังสือยิมยอม"
                       info={

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import Icon from "../../assets/statistics.png";
+import Icon from "../../../assets/statistics.png";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
-import { API_BASE_URL, APIEndpoints } from "../../services/api";
-import LayoutAllPage from "../../components/LayoutAllPage/LayoutAllPage";
+import { API_BASE_URL, APIEndpoints } from "../../../services/api";
+import LayoutAllPage from "../../../components/LayoutAllPage/LayoutAllPage";
+import { topMenuItems, bottomMenuItems } from "../../../constants/agencyMenuItems";
+
 function AccessStatisticsPage() {
   const [agency, setAgency] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -60,22 +62,12 @@ function AccessStatisticsPage() {
       alert("เกิดข้อผิดพลาดในการออกจากระบบ");
     }
   };
-  const topMenuItems = [
-    { label: "หน้าหลัก", route: "/Homepages" },
-    { label: "ตรวจสอบคุณวุฒินักศึกษา", route: "/CheckQualificationsPage" },
-    { label: "สถิติการเข้าถึง", route: "/AccessStatisticsPage" },
-  ];
-
-  const bottomMenuItems = [
-    { label: "ตั้งค่าความเป็นส่วนตัว", route: "/PrivacySettingsPage" },
-    { label: "ออกจากระบบ", onClick: logout },
-  ];
   return (
     <>
       <LayoutAllPage
         user={agency.agency_name}
         topMenuItems={topMenuItems}
-        bottomMenuItems={bottomMenuItems}
+        bottomMenuItems={bottomMenuItems(logout)}
         icon={Icon}
         label="สถิติการเข้าถึง"
       ></LayoutAllPage>
