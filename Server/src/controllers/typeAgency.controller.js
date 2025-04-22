@@ -49,6 +49,39 @@ const TypeAgencyController = {
         });
       }
     },
+    deleteTypeAgencyController: async (req, res) => {
+      try {
+        const { id } = req.params;
+    
+        await TypeAgencyService.deleteTypeAgency(id);
+    
+        res.status(200).json({
+          message: "ลบประเภทหน่วยงานสำเร็จ",
+        });
+      } catch (error) {
+        console.error("Error in deleteTypeAgencyController:", error);
+      }
+    },
+    updateTypeAgencyController: async (req, res) => {
+      try {
+        const { id } = req.params;
+        const updateData = req.body;
+        if (Object.keys(updateData).length === 0) {
+          return res.status(400).json({ error: "There is no information for updates." });
+        }
+        const updatedTypeAgency = await TypeAgencyService.updateTypeAgency(id, updateData);
+        const responseData = JSON.parse(JSON.stringify(updatedTypeAgency, replacer));
+        res.status(200).json({
+          success: true,
+          message: "อัปเดตประเภทหน่วยงานสำเร็จ",
+          data: responseData,
+        });
+      } catch (error) {
+        console.error("Error in updateTypeAgencyController:", error.message);
+        res.status(500).json({ error: error.message || "Unable to update TypeAgency" });
+      }
+    },
+
     
 }
 export default TypeAgencyController;

@@ -1,0 +1,88 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import LayoutAllpage from "../../../components/LayoutAllPage/LayoutAllPage.jsx";
+import Icon from "../../../assets/general.png";
+import { API_BASE_URL, APIEndpoints } from "../../../services/api.jsx";
+import styles from "./GeneralControlPanel.module.css";
+import { useNavigate } from "react-router-dom";
+import { topMenuItems, bottomMenuItems } from "../../../constants/officerMenuItems.jsx";
+import TabNavigation from "../../../components/TabNavigation/TabNavigation.jsx";
+
+function GeneralControlPanel() {
+  const [officer, setOfficer] = useState(null);
+  const [activeTab, setActiveTab] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchOfficerData = async () => {
+      try {
+        const res = await axios.get(
+          API_BASE_URL + APIEndpoints.officer.logged,
+          {
+            withCredentials: true,
+          }
+        );
+        setOfficer(res.data.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch officer data:", error);
+        alert("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
+        navigate("/LoginOfficer");
+      }
+    };
+
+    fetchOfficerData();
+  }, [navigate]);
+
+  const logout = async () => {
+    try {
+      await axios.post(
+        API_BASE_URL + APIEndpoints.auth.logout,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to logout:", error);
+      alert("เกิดข้อผิดพลาดในการออกจากระบบ");
+    }
+  };
+
+  const tabs = [{ label: "จัดการประเถทหน่วยงาน" }];
+  const renderContent = () => {
+    switch (activeTab) {
+      case 0:
+        return <div>จัดการประเถทหน่วยงาน</div>;
+      default:
+        return null;
+    }
+  };
+
+  if (loading) {
+    return <p className={styles.loading}>กำลังโหลดข้อมูล...</p>;
+  }
+  return (
+    <LayoutAllpage
+      user={officer ? officer.first_name : "Loading..."}
+      topMenuItems={topMenuItems}
+      bottomMenuItems={bottomMenuItems(logout)}
+      icon={Icon}
+      label="จัดการทั่วไป"
+    >
+      <div className={styles.container}>
+        <TabNavigation
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
+        <div>{renderContent()}</div>
+      </div>
+    </LayoutAllpage>
+  );
+}
+
+export default GeneralControlPanel;

@@ -33,6 +33,8 @@ export const APIEndpoints = {
     typeAgency: {
       fetchAll: "/typeagency",
       createType: "/typeagency/create-type",
+      updateType: "/typeagency/update-type",
+      deleteType: "/typeagency/delete-type"
     },
     approvalog:{
       fetchAll: "/approvedlog/logs",

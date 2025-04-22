@@ -7,6 +7,7 @@ import AccessStatisticsPageOfficer from "../pages/Officer/AccessStatisticsPageOf
 import OfficerControlPanel from "../pages/Officer/OfficerControlPanel/OfficerControlPanel.jsx";
 import StudentControlPanel from "../pages/Officer/StudentControlPanel/StudentControlPanel.jsx";
 import PrivacySettingsPageOfficer from "../pages/Officer/PrivacySettingsPageOfficer/PrivacySettingsPageOfficer.jsx";
+import GeneralControlPanel from "../pages/Officer/GeneralControlPanel/GeneralControlPanel.jsx";
 
 const officerRoutes = [
   { path: "/HomepagesOfficer", element: <HomepagesOfficer /> },
@@ -17,6 +18,7 @@ const officerRoutes = [
   { path: "/OfficerControlPanel", element: <OfficerControlPanel /> },
   { path: "/StudentControlPanel", element: <StudentControlPanel /> },
   { path: "/PrivacySettingsPageOfficer", element: <PrivacySettingsPageOfficer /> },
+  { path: "/GeneralControlPanel", element: <GeneralControlPanel /> },
 ];
 
 export default officerRoutes;
