@@ -42,8 +42,8 @@ function AccessStatisticsPage() {
     fetchUserData();
   }, [navigate]);
 
-  if (!agency) {
-    return <div>ไม่พบข้อมูล Agency</div>;
+  if (loading) {
+    return <div>กำลังโหลดข้อมูล...</div>;
   }
 
   const logout = async () => {
@@ -65,7 +65,7 @@ function AccessStatisticsPage() {
   return (
     <>
       <LayoutAllPage
-        user={agency.agency_name}
+        user={agency ? agency.agency_name : "Loading..."}
         topMenuItems={topMenuItems}
         bottomMenuItems={bottomMenuItems(logout)}
         icon={Icon}

@@ -189,9 +189,6 @@ const AddAgencyByOfficer = ({ officer }) => {
           </div>
           <div className={styles.buttonSubmit}>
             <Button text="เพิ่มข้อมูล" styleType="third" onClick={handleSubmit} disabled={Object.keys(errors).length > 0}/>
-            <Link to="/" style={{ textDecoration: "none" }}>
-              <Button text="ย้อนกลับ" styleType="back" />
-            </Link>
           </div>
           {showPopup && <Popup topic="สำเร็จ!" info="ข้อมูลของคุณถูกเพิ่มแล้ว" img={message} successPopup={closePopup} textButtonSuccess="ปิดหน้าต่าง" />}
         </form>
