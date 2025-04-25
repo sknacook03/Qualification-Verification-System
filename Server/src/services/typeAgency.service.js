@@ -12,6 +12,30 @@ const TypeAgencyService = {
       };
     }
   },
+  getTypeById: async (id) => {
+    try {
+      const agency = await prisma.typeAgency.findUnique({
+        where: {
+          id: BigInt(id),
+        },
+      });
+  
+      if (!agency) {
+        throw {
+          status: 404,
+          message: `ไม่พบประเภทหน่วยงานที่มี ID = ${id}`,
+        };
+      }
+  
+      return agency;
+    } catch (error) {
+      console.error("Error fetching type agency by ID:", error);
+      throw {
+        status: 500,
+        message: "ไม่สามารถดึงข้อมูลประเภทหน่วยงานได้",
+      };
+    }
+  },     
   createTypeAgency: async (data) => {
     try {
       const now = new Date();

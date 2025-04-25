@@ -21,6 +21,21 @@ const TypeAgencyController = {
         res.status(500).json({ error: "Failed to get type agency" });
       }
     },
+    getTypeAgencyByIdController: async (req, res) => {
+      try {
+        const { id } = req.params;
+        const typeAgency = await TypeAgencyService.getTypeById(id);
+        const responseData = JSON.parse(JSON.stringify(typeAgency, replacer));
+
+        res.status(200).json({
+          success: true,
+          data: responseData,
+        });
+      } catch (error) {
+        console.error(error);
+        res.status(error.status || 500).json({ error: error.message || "Failed to get type agency" });
+      }
+    },
     createAgencyController: async (req, res) => {
       try {
         const { type_name } = req.body;

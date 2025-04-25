@@ -1,0 +1,16 @@
+.btnTypeAgency{
+    display: flex;
+    gap: 0.5rem;
+}
+.btnTypeAgency button{
+    padding: 0.3rem;
+    width: 3rem;
+}
+
+.btnTypeAgency .editType{
+    background-color: #ffd000;
+}
+.btnTypeAgency .deleteType{
+    color: white;
+    background-color: #f44336;
+}
