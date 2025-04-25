@@ -38,7 +38,10 @@ const LoginForm = ({ onSubmit }) => {
         name="email"
         type="email"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={(e) => {
+          setEmail(e.target.value)
+          setErrors((prev) => ({ ...prev, email: undefined }));  
+        }}
         placeholder=" "
         error={errors.email}
       />
@@ -47,7 +50,10 @@ const LoginForm = ({ onSubmit }) => {
         id="password"
         name="password"
         value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        onChange={(e) => {
+          setPassword(e.target.value)
+          setErrors((prev) => ({ ...prev, password: undefined }));  
+        }}
         placeholder=" "
         error={errors.password}
       />

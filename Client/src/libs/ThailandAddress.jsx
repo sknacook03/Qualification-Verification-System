@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   ThailandAddressTypeahead,
   ThailandAddressValue,
-} from 'react-thailand-address-typeahead';
-import './ThailandAddress.css'; 
+} from "react-thailand-address-typeahead";
+import "./ThailandAddress.css";
 
-function ThailandAddress({ onAddressChange, error = {}, value }) {
-  const [val, setVal] = useState(ThailandAddressValue.empty() || {
-    subdistrict: '',
-    district: '',
-    province: '',
-    postalCode: ''
-  });
+function ThailandAddress({ onAddressChange, onClearError, error = {}, value }) {
+  const [val, setVal] = useState(
+    ThailandAddressValue.empty() || {
+      subdistrict: "",
+      district: "",
+      province: "",
+      postalCode: "",
+    }
+  );
 
   useEffect(() => {
     if (value) {
@@ -21,54 +23,64 @@ function ThailandAddress({ onAddressChange, error = {}, value }) {
 
   const handleValueChange = (updatedVal) => {
     setVal(updatedVal);
-    if (onAddressChange) {
-      onAddressChange(updatedVal); 
-    }
+    onAddressChange?.(updatedVal);
+
+    if (updatedVal.subdistrict) onClearError?.("subdistrict");
+    if (updatedVal.district) onClearError?.("district");
+    if (updatedVal.province) onClearError?.("province");
+    if (updatedVal.postalCode) onClearError?.("postalCode");
   };
   return (
     <div className="address-container">
-      <ThailandAddressTypeahead
-        value={val}
-        onValueChange={handleValueChange}
-      >
+      <ThailandAddressTypeahead value={val} onValueChange={handleValueChange}>
         <div>
           <label className="input-label">ตำบล / แขวง*</label>
           <ThailandAddressTypeahead.SubdistrictInput
             placeholder=""
-            className={`address-input ${error.subdistrict ? 'input-error' : ''}`}
+            className={`address-input ${
+              error.subdistrict ? "input-error" : ""
+            }`}
           />
-          {error.subdistrict && <div className="error-message">{error.subdistrict}</div>}
+          {error.subdistrict && (
+            <div className="error-message">{error.subdistrict}</div>
+          )}
         </div>
         <div>
-        <label className="input-label">อำเภอ / เขต*</label>
+          <label className="input-label">อำเภอ / เขต*</label>
           <ThailandAddressTypeahead.DistrictInput
             placeholder=""
-            className={`address-input ${error.district ? 'input-error' : ''}`}
+            className={`address-input ${error.district ? "input-error" : ""}`}
           />
-          {error.district && <div className="error-message">{error.district}</div>}
+          {error.district && (
+            <div className="error-message">{error.district}</div>
+          )}
         </div>
         <div>
-        <label className="input-label">จังหวัด*</label>
+          <label className="input-label">จังหวัด*</label>
           <ThailandAddressTypeahead.ProvinceInput
             placeholder=""
-            className={`address-input ${error.province ? 'input-error' : ''}`}
+            className={`address-input ${error.province ? "input-error" : ""}`}
           />
-          {error.province && <div className="error-message">{error.province}</div>}
+          {error.province && (
+            <div className="error-message">{error.province}</div>
+          )}
         </div>
         <div>
-        <label className="input-label">รหัสไปรษณีย์*</label>
+          <label className="input-label">รหัสไปรษณีย์*</label>
           <ThailandAddressTypeahead.PostalCodeInput
             placeholder=""
-            className={`address-input ${error.postalCode ? 'input-error' : ''}`}
+            className={`address-input ${error.postalCode ? "input-error" : ""}`}
           />
-          {error.postalCode && <div className="error-message">{error.postalCode}</div>}
+          {error.postalCode && (
+            <div className="error-message">{error.postalCode}</div>
+          )}
         </div>
         <ThailandAddressTypeahead.Suggestion
           containerProps={{
-            className: "suggestions-container" 
+            className: "suggestions-container",
           }}
           optionItemProps={{
-            className: "suggestion-item" 
+            className: "suggestion-item",
           }}
         />
       </ThailandAddressTypeahead>

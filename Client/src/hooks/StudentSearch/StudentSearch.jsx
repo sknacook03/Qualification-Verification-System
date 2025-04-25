@@ -15,19 +15,38 @@ const StudentSearch = ({ agency, forOfficer }) => {
   });
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState({});
   const [popupStudentId, setPopupStudentId] = useState(null);
   const [fileMap, setFileMap] = useState({});
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   const handleChange = (e) => {
-    setFilters({ ...filters, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+    setError((prev) => ({ ...prev, [name]: undefined }));
   };
 
   const handleSearch = async () => {
     try {
+      const newErrors = {};
+
+      if (!filters.name || filters.name.trim() === "") {
+        newErrors.name = "กรุณากรอกชื่อ";
+      }
+      if (!filters.lname || filters.lname.trim() === "") {
+        newErrors.lname = "กรุณากรอกนามสกุล";
+      }
+      if (!filters.student_no || filters.student_no.trim() === "") {
+        newErrors.student_no = "กรุณากรอกรหัสนักศึกษา";
+      }
+
+      if (Object.keys(newErrors).length > 0) {
+        setError(newErrors);
+        return;
+      }
+
       setLoading(true);
-      setError(null);
+      setError({});
       setStudents([]);
       const response = await axios.post(
         API_BASE_URL + APIEndpoints.student.search,
@@ -36,7 +55,9 @@ const StudentSearch = ({ agency, forOfficer }) => {
       );
       setStudents(response.data.data);
     } catch (err) {
-      setError(err.response?.data?.error || "เกิดข้อผิดพลาดในการค้นหา");
+      setError({
+        general: err.response?.data?.error || "เกิดข้อผิดพลาดในการค้นหา",
+      });
       setStudents([]);
     } finally {
       setLoading(false);
@@ -89,23 +110,28 @@ const StudentSearch = ({ agency, forOfficer }) => {
           name="name"
           placeholder="ชื่อ"
           onChange={handleChange}
+          error={error.name}
         />
         <Input
           type="text"
           name="lname"
           placeholder="นามสกุล"
           onChange={handleChange}
+          error={error.lname}
         />
         <Input
           type="text"
           name="student_no"
           placeholder="รหัสนักศึกษา"
           onChange={handleChange}
+          error={error.student_no}
         />
+
         <Button onClick={handleSearch} text="ค้นหา" styleType="primary" />
       </div>
 
-      {error && <p className={styles.errorMessage}>{error}</p>}
+      {error.general && <p className={styles.errorMessage}>{error.general}</p>}
+
 
       {loading && <p>Loading...</p>}
 
@@ -137,10 +163,11 @@ const StudentSearch = ({ agency, forOfficer }) => {
                 </td>
                 <td>
                   <button
-                    onClick={forOfficer
-                       ? () => handleShowPopup(student) 
-                       : () => setPopupStudentId(student.id)
-                      }
+                    onClick={
+                      forOfficer
+                        ? () => handleShowPopup(student)
+                        : () => setPopupStudentId(student.id)
+                    }
                     className={styles.btnInfo}
                   >
                     Info

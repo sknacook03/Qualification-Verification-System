@@ -65,6 +65,10 @@ function Register() {
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleClearError = (field) => {
+    setErrors((prev) => ({ ...prev, [field]: undefined }));
+  };
+
   const handleAddressChange = (newAddress) => {
     setAddress(newAddress);
     if (validateForm()) {
@@ -164,7 +168,10 @@ function Register() {
                 name="emailregister"
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setErrors((prev) => ({ ...prev, email: undefined }));     
+                }}
                 error={errors.email}
               />
               <Input
@@ -173,7 +180,10 @@ function Register() {
                 name="orgname"
                 type="text"
                 value={orgname}
-                onChange={(e) => setOrgname(e.target.value)}
+                onChange={(e) => {
+                  setOrgname(e.target.value)
+                  setErrors((prev) => ({ ...prev, orgname: undefined }));
+                }}
                 error={errors.orgname}
               />
               <Input
@@ -182,7 +192,10 @@ function Register() {
                 name="department"
                 type="text"
                 value={department}
-                onChange={(e) => setDepartment(e.target.value)}
+                onChange={(e) => {
+                  setDepartment(e.target.value)
+                  setErrors((prev) => ({ ...prev, department: undefined }));              
+                }}
                 error={errors.department}
               />
               <Input
@@ -191,7 +204,10 @@ function Register() {
                 name="telphone"
                 type="text"
                 value={telphone}
-                onChange={(e) => setTelphone(e.target.value)}
+                onChange={(e) => {
+                  setTelphone(e.target.value)
+                  setErrors((prev) => ({ ...prev, telphone: undefined }));  
+                }}
                 error={errors.telphone}
               />
               <Textfield
@@ -200,13 +216,17 @@ function Register() {
                 name="orgaddress"
                 type="text"
                 value={orgaddress}
-                onChange={(e) => setOrgaddress(e.target.value)}
+                onChange={(e) => {
+                  setOrgaddress(e.target.value)
+                  setErrors((prev) => ({ ...prev, orgaddress: undefined }));  
+                }}
                 error={errors.orgaddress}
               />
             </div>
             <div className={styles.inputRegister}>
               <ThailandAddress
                 onAddressChange={handleAddressChange}
+                onClearError={handleClearError}
                 error={{
                   subdistrict: errors.subdistrict,
                   district: errors.district,
@@ -219,7 +239,10 @@ function Register() {
                 name="optionTypeAgency"
                 id="optionTypeAgency"
                 value={orgType}
-                onChange={(e) => setOrgType(e.target.value)}
+                onChange={(e) => { 
+                  setOrgType(e.target.value)
+                  setErrors((prev) => ({ ...prev, orgType: undefined }));
+                }}
                 placeholder="กรุณาเลือกประเภทหน่วยงาน"
                 error={errors.orgType}
               />

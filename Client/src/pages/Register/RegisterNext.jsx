@@ -131,7 +131,10 @@ function RegisterNext() {
               id="password"
               name="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value)
+                setErrors((prev) => ({ ...prev, password: undefined }));
+              }}
               placeholder="รหัสผ่าน"
               error={errors.password}
             />
@@ -140,7 +143,10 @@ function RegisterNext() {
               id="confirmPassword"
               name="confirmPassword"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value)
+                setErrors((prev) => ({ ...prev, confirmPassword: undefined }))
+              }}
               placeholder="ยืนยันรหัสผ่าน"
               error={errors.confirmPassword}
             />
@@ -151,7 +157,10 @@ function RegisterNext() {
           </div>
           <Input
             type="file"
-            onChange={(e) => setFile(e.target.files[0])}
+            onChange={(e) => {
+              setFile(e.target.files[0])
+              setErrors((prev) => ({ ...prev, file: undefined }))
+            }}
             error={errors.file}
           />
           <div className={styles.buttonSubmit}>
