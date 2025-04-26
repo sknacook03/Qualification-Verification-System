@@ -1,9 +1,11 @@
 import React from "react";
 import styles from "./TypeAgencyTable.module.css";
 
-const TypeAgencyTable = ({ typeAgency, editType, deleteType }) => {
+const TypeAgencyTable = ({ typeAgency, editType, deleteType, addType }) => {
   return (
     <>
+    <div className={styles.containerTypeAgency}>
+      <button className={styles.btnAddTypeAgency} onClick={addType}><span>+</span>เพิ่มประเภทหน่วยงาน</button>
       <table className={styles.tableTypeAgency}>
         <thead>
           <tr>
@@ -25,6 +27,7 @@ const TypeAgencyTable = ({ typeAgency, editType, deleteType }) => {
           ))}
         </tbody>
       </table>
+      </div>
     </>
   );
 };

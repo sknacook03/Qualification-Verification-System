@@ -38,14 +38,16 @@ const TypeAgencyController = {
     },
     createAgencyController: async (req, res) => {
       try {
-        const { type_name } = req.body;
+        let { type_name } = req.body;
+        console.log("รับค่าจาก client:", req.body);
     
-        if (!type_name) {
+        if (!type_name || type_name.trim() === "") {
           return res.status(400).json({
             message: "กรุณาระบุชื่อประเภทหน่วยงาน",
           });
         }
-    
+        type_name = type_name.trim().normalize('NFC').toLowerCase();
+        
         const newAgency = await TypeAgencyService.createTypeAgency({ type_name });
     
         const responseData = JSON.parse(JSON.stringify(newAgency, (key, value) =>
@@ -64,7 +66,8 @@ const TypeAgencyController = {
         });
       }
     },
-    deleteTypeAgencyController: async (req, res) => {
+    
+    deleteTypeAgencyController: async (req, res) =>{
       try {
         const { id } = req.params;
     

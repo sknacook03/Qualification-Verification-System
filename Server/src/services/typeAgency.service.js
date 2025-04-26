@@ -40,6 +40,7 @@ const TypeAgencyService = {
     try {
       const now = new Date();
       const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+      
       const newAgency = await prisma.typeAgency.create({
         data: {
           ...data,

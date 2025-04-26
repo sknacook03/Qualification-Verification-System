@@ -22,6 +22,7 @@ function GeneralControlPanel() {
   const [typeAgency, setTypeAgency] = useState([]);
   const [editData, setEditData] = useState({ type_name: "" });
   const [errors, setErrors] = useState({});
+  const [isEditMode, setIsEditMode] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -89,6 +90,8 @@ function GeneralControlPanel() {
 
   const handleClosePopup = () => {
     setShowPopup(false);
+    setEditData({ type_name: "" });
+    setErrors({});
   };
 
   const editTypeAgency = async (id) => {
@@ -101,6 +104,7 @@ function GeneralControlPanel() {
         }
       );
       setEditData(res.data.data);
+      setIsEditMode(true); 
       setShowPopup(true);
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการโหลดข้อมูล:", error);
@@ -108,25 +112,39 @@ function GeneralControlPanel() {
     }
   };
 
-  const handleEditSave = async () => {
-    const newErrors = {};
+  const addTypeAgency = () => {
+    setErrors({});
+    setEditData({ type_name: "" }); 
+    setIsEditMode(false); 
+    setShowPopup(true);
+  };
 
+  const handleSave = async () => {
+    const newErrors = {};
     if (!editData.type_name || editData.type_name.trim() === "") {
       newErrors.type_name = "กรุณากรอกชื่อประเภทหน่วยงาน";
     }
-
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-
+  
     try {
-      await axios.put(
-        API_BASE_URL + APIEndpoints.typeAgency.updateType(editData.id),
-        editData,
-        { withCredentials: true }
-      );
-      alert("บันทึกข้อมูลสำเร็จ");
+      if (isEditMode) {
+        await axios.put(
+          API_BASE_URL + APIEndpoints.typeAgency.updateType(editData.id),
+          editData,
+          { withCredentials: true }
+        );
+        alert("แก้ไขข้อมูลสำเร็จ");
+      } else {
+        await axios.post(
+          API_BASE_URL + APIEndpoints.typeAgency.createType,
+          editData,
+          { withCredentials: true }
+        );
+        alert("เพิ่มข้อมูลสำเร็จ");
+      }
       setShowPopup(false);
       setErrors({});
       const res = await axios.get(
@@ -136,9 +154,18 @@ function GeneralControlPanel() {
       setTypeAgency(res.data.data);
     } catch (error) {
       console.error("บันทึกข้อมูลไม่สำเร็จ:", error);
-      alert("เกิดข้อผิดพลาดในการบันทึก");
+  
+      if (error.response && error.response.status === 409) {
+        setErrors(prev => ({
+          ...prev,
+          type_name: "ชื่อประเภทหน่วยงานนี้มีอยู่แล้ว",
+        }));
+      } else {
+        alert("เกิดข้อผิดพลาดในการบันทึก");
+      }
     }
   };
+  
 
   const logout = async () => {
     try {
@@ -167,6 +194,7 @@ function GeneralControlPanel() {
               typeAgency={typeAgency}
               editType={editTypeAgency}
               deleteType={deleteTypeAgency}
+              addType={addTypeAgency}
             />
           </div>
         );
@@ -196,9 +224,9 @@ function GeneralControlPanel() {
       </div>
       {showPopup && (
         <Popup
-          topic="แก้ไขประเภทหน่วยงาน"
+          topic={isEditMode ? "แก้ไขประเภทหน่วยงาน" : "เพิ่มประเภทหน่วยงาน"}
           closePopup={handleClosePopup}
-          successPopup={handleEditSave}
+          successPopup={handleSave}
           textButtonSuccess="บันทึก"
         >
           <Input

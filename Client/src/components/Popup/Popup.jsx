@@ -15,9 +15,13 @@ const Popup = ({
   valueTextarea,
   children,
 }) => {
+  const handleSubmit = (e) => {
+    e.preventDefault(); 
+    successPopup(); 
+  };
   return (
     <div className={styles.overlayPopup}>
-      <div className={styles.contentPopup}>
+      <form onSubmit={handleSubmit} className={styles.contentPopup}>
         {closePopup && <img src={close} onClick={closePopup} alt="close" className={styles.closePopup} width={25} height={25} />}
         <h2>{topic}</h2>
         {img && <img src={img} alt="" width={100} height={100} />}
@@ -30,8 +34,8 @@ const Popup = ({
           ></textarea>
         )}
         {children}
-          <button onClick={successPopup} className={styles.buttonPopup}>{textButtonSuccess}</button>
-      </div>
+          <button type="submit" className={styles.buttonPopup}>{textButtonSuccess}</button>
+      </form>
     </div>
   );
 };
