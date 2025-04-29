@@ -1,22 +1,94 @@
 import StudentService from "../services/student.service.js";
+import xlsx from 'xlsx';
 
 const StudentController = {
-  getStudentByIdController: async (req, res) => {
+  uploadExcel: async (req, res) => {
     try {
-      const studentId = req.params.id;
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+      const filePath = req.file.path;
+      const workbook = xlsx.readFile(filePath);
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const data = xlsx.utils.sheet_to_json(sheet);
 
-      if (isNaN(studentId)) {
-        return res.status(400).json({ error: "Invalid student ID" });
+      const success = [];
+      const failed = [];
+
+      for (const row of data) {
+        try {
+          const studentData = {
+            year_no: row.YEARNO,
+            semester_no: row.SEMESTER_ID,
+            student_no: row.STUDENT_NO?.toString().trim(),
+            std_year_no: row.STDYEARNO,
+            prefix_name: row.PREFIX_NAME?.trim(),
+            name: row.NAME?.trim(),
+            lname: row.LNAME?.trim(),
+            cca: row.CCA ? parseInt(row.CCA) : null,
+            gpa: row.GPA ? parseFloat(row.GPA) : null,
+            status_graduate: row.STATUS_GRADUATE
+              ? parseInt(row.STATUS_GRADUATE)
+              : null,
+            graduate_date: row.GRADUATED_DATE
+              ? new Date(
+                  row.GRADUATED_DATE.replace(
+                    /(\d{2})\/(\d{2})\/(\d{4})/,
+                    "$3-$2-$1"
+                  )
+                )
+              : null,
+            deg_name: row.DEG_NAME?.trim() || null,
+            honors: row.HONORS?.trim() || null,
+            thesis_topic_th: row.THESIS_TOPIC_TH?.trim() || null,
+            thesis_topic_en: row.THESIS_TOPIC_EN?.trim() || null,
+            dept_code: row.DEPT_CODE ? parseInt(row.DEPT_CODE) : null,
+            curr_name: row.CURR_NAME?.trim() || null,
+          };
+
+          if (
+            studentData.student_no &&
+            studentData.name &&
+            studentData.lname &&
+            studentData.year_no
+          ) {
+            await StudentService.createStudent(studentData);
+            success.push(studentData);
+          } else {
+            failed.push({ ...studentData, error: "Missing required fields" });
+          }
+        } catch (err) {
+          failed.push({ ...row, error: err.message });
+        }
       }
 
-      const student = await StudentService.getStudentById(studentId);
+      res.status(200).json({
+        message: "File processed",
+        successCount: success.length,
+        failedCount: failed.length,
+        failedData: failed,
+      });
+    } catch (error) {
+      console.error("Excel Upload Error:", error);
+      res
+        .status(500)
+        .json({ error: "Failed to upload and process Excel file" });
+    }
+  },
+  getStudentByIdController: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const student = await StudentService.getStudentById(id);
 
+      if (!student) {
+        return res.status(404).json({ error: "Student not found" });
+      }
       const responseData = JSON.parse(
         JSON.stringify(student, (key, value) =>
           typeof value === "bigint" ? value.toString() : value
         )
       );
-
       res.status(200).json({
         success: true,
         data: responseData,
@@ -32,10 +104,12 @@ const StudentController = {
     try {
       const filterParams = req.body;
 
-      console.log("📥 Received Search Parameters:", filterParams);
+      console.log("Received Search Parameters:", filterParams);
 
       if (!filterParams || Object.keys(filterParams).length === 0) {
-        return res.status(400).json({ error: "At least one search parameter is required" });
+        return res
+          .status(400)
+          .json({ error: "At least one search parameter is required" });
       }
       const students = await StudentService.getStudentByFilters(filterParams);
 

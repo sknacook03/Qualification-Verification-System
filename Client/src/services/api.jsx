@@ -46,6 +46,8 @@ export const APIEndpoints = {
     },
     student: {
       search: "/student/search",
+      fetchById: (studentId) => `/student/${studentId}`,
+      createStudent: "/student/upload-excel",
     },
     pageview: {
       create: "/pageview/create"
