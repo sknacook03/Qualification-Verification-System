@@ -48,11 +48,16 @@
   justify-content: center;
   font-size: 15px;
 }
-.UploadInfo :nth-child(2){
+.UploadInfo :nth-child(2) {
   color: #838383;
 }
 .btnUpload {
   background-color: #2563eb;
   color: white;
   font-family: "Prompt", sans-serif;
+}
+.selectedFile {
+  font-size: 14px;
+  color: #444;
+  margin-top: -0.5rem;
 }

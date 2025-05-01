@@ -51,8 +51,13 @@ const UploadExcelStudent = () => {
             onChange={(e) => setFile(e.target.files[0])}
             className={styles.inputUploadFile}
           />
+          {file && (
+            <p className={styles.selectedFile}>ไฟล์ที่เลือก: {file.name}</p>
+          )}
         </div>
-        <button onClick={handleUpload} className={styles.btnUpload}>Upload</button>
+        <button onClick={handleUpload} className={styles.btnUpload}>
+          Upload
+        </button>
       </div>
     </>
   );
