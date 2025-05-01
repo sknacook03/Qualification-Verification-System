@@ -1,5 +1,5 @@
 import StudentService from "../services/student.service.js";
-import xlsx from 'xlsx';
+import xlsx from "xlsx";
 
 const StudentController = {
   uploadExcel: async (req, res) => {
@@ -31,14 +31,21 @@ const StudentController = {
             status_graduate: row.STATUS_GRADUATE
               ? parseInt(row.STATUS_GRADUATE)
               : null,
-            graduate_date: row.GRADUATED_DATE
-              ? new Date(
-                  row.GRADUATED_DATE.replace(
-                    /(\d{2})\/(\d{2})\/(\d{4})/,
-                    "$3-$2-$1"
-                  )
-                )
-              : null,
+            graduate_date: (() => {
+              const raw = row.GRADUATED_DATE;
+              if (!raw) return null;
+
+              if (typeof raw === "string") {
+                const [day, month, year] = raw.split("/");
+                return new Date(`${year}-${month}-${day}`);
+              } else if (typeof raw === "number") {
+                const excelEpoch = new Date(1899, 11, 30);
+                return new Date(excelEpoch.getTime() + raw * 86400000);
+              } else {
+                return null;
+              }
+            })(),
+
             deg_name: row.DEG_NAME?.trim() || null,
             honors: row.HONORS?.trim() || null,
             thesis_topic_th: row.THESIS_TOPIC_TH?.trim() || null,
