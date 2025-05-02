@@ -102,7 +102,7 @@ model Student {
   id              BigInt    @id @default(autoincrement())
   year_no         Int
   semester_no     Int
-  student_no      String
+  student_no      String    @unique
   std_year_no     Int
   prefix_name     String
   name            String
@@ -117,6 +117,8 @@ model Student {
   thesis_topic_en String?
   dept_code       Int?
   curr_name       String?
+  created_at      DateTime  @default(now())     
+  updated_at      DateTime  @updatedAt
 
   // Relations
   pageViews PageView[]

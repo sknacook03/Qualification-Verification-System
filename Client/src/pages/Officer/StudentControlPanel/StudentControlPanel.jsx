@@ -6,6 +6,7 @@ import { API_BASE_URL, APIEndpoints } from "../../../services/api.jsx";
 import styles from "./StudentControlPanel.module.css";
 import { useNavigate } from "react-router-dom";
 import { topMenuItems, bottomMenuItems } from "../../../constants/officerMenuItems.jsx";
+import UploadExcelStudent from "../../../hooks/UploadExcelStudent/UploadExcelStudent.jsx";
 
 function StudentControlPanel() {
   const [officer, setOfficer] = useState(null);
@@ -62,6 +63,7 @@ function StudentControlPanel() {
       icon={Icon}
       label="จัดการนักศึกษา"
     >
+      <UploadExcelStudent />
     </LayoutAllpage>
   );
 }
