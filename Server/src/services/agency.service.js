@@ -106,18 +106,25 @@ const AgencyService = {
   },
   deleteAgency: async (id) => {
     try {
+      const agencyId = BigInt(id);
+  
       const existingAgency = await prisma.agency.findUnique({
-        where: { id: BigInt(id) },
+        where: { id: agencyId },
       });
-
       if (!existingAgency) {
         throw new Error(`Agency with ID ${id} does not exist.`);
       }
-
-      await prisma.agency.delete({
-        where: { id: BigInt(id) },
-      });
-
+  
+      await prisma.$transaction([
+        prisma.approvalLog.deleteMany({
+          where: { agency_id: agencyId },
+        }),
+  
+        prisma.agency.delete({
+          where: { id: agencyId },
+        }),
+      ]);
+  
       return true;
     } catch (error) {
       console.error("Failed to delete agency:", error);

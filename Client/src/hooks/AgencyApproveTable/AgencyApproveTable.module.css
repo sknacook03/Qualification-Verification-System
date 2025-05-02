@@ -24,7 +24,7 @@ button {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    margin-top: 5px;
+    margin: 5px 5px 0 0;
 }
 
 button.approveButton {
@@ -46,6 +46,18 @@ button.viewButton {
     background-color: #008CBA;
     color: white;
 }
+
+button.editButton {
+    background-color: #FF9800; 
+    color: white;
+    margin-right: 5px;          
+}
+
+button.deleteButton {
+    background-color: #9E9E9E;  
+    color: white;
+}
+
 
 .image {
     width: 50px;

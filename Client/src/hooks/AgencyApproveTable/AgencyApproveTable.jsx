@@ -1,7 +1,19 @@
 import React from "react";
 import styles from "./AgencyApproveTable.module.css";
 
-function AgencyApproveTable({ agencies, onApprove, onPending, onReject, disableApprove, disablePending, disableReject }) {
+function AgencyApproveTable({
+  agencies,
+  onApprove,
+  onPending,
+  onReject,
+  onEdit,
+  onDelete,
+  disableApprove,
+  disablePending,
+  disableReject,
+  disableEdit,
+  disableDelete,
+}) {
   const normalizeImagePath = (path) => {
     if (!path) return null;
     return path.replace(/\\/g, "/");
@@ -23,12 +35,13 @@ function AgencyApproveTable({ agencies, onApprove, onPending, onReject, disableA
           <th className={styles.th}>Agency Name</th>
           <th className={styles.th}>Certificate</th>
           <th className={styles.th}>Status</th>
-          <th className={styles.th}>Actions</th>
+          <th className={styles.th}>Actions Status</th>
+          <th className={styles.th}>Actions Agency</th>
         </tr>
       </thead>
       <tbody>
         {agencies.map((agencyItem, index) => (
-          <tr key={index}>
+          <tr key={agencyItem.id || index}>
             <td className={styles.td}>{index + 1}</td>
             <td className={styles.td}>{agencyItem.agency_name}</td>
             <td className={styles.td}>
@@ -75,6 +88,24 @@ function AgencyApproveTable({ agencies, onApprove, onPending, onReject, disableA
                   onClick={() => onReject(agencyItem.id)}
                 >
                   Reject
+                </button>
+              )}
+            </td>
+            <td className={styles.td}>
+              {!disableEdit && (
+                <button
+                  className={`${styles.button} ${styles.editButton}`}
+                  onClick={() => onEdit(agencyItem.id)}
+                >
+                  Edit
+                </button>
+              )}
+              {!disableDelete && (
+                <button
+                  className={`${styles.button} ${styles.deleteButton}`}
+                  onClick={() => onDelete(agencyItem.id)}
+                >
+                  Delete
                 </button>
               )}
             </td>

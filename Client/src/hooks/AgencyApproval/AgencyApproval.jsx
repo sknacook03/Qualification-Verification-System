@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AgencyApproveTable from "../../hooks/AgencyApproveTable/AgencyApproveTable.jsx";
+import EditAgencyPopup from "../../hooks/EditAgencyPopup/EditAgencyPopup.jsx";
 import Popup from "../../components/Popup/Popup.jsx";
 import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
 import styles from "./AgencyApproval.module.css";
@@ -11,6 +12,8 @@ const AgencyApproval = ({ officer }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [rejectedAgency, setRejectedAgency] = useState(null);
   const [rejectionReason, setRejectionReason] = useState("");
+  const [showEditPopup, setShowEditPopup] = useState(false);
+  const [editingAgency, setEditingAgency] = useState(null);
 
   useEffect(() => {
     const fetchAgencyAll = async () => {
@@ -138,6 +141,52 @@ const AgencyApproval = ({ officer }) => {
     }
   };
 
+  const handleEdit = (agencyId) => {
+    const target = agency.find((a) => a.id === agencyId);
+    if (!target) return;
+    setEditingAgency(target);
+    setShowEditPopup(true);
+  };
+  
+  const submitEdit = async (id, updatedFields) => {
+    try {
+      await axios.put(
+        API_BASE_URL + APIEndpoints.agency.updateAgency(id),
+        updatedFields,
+        { withCredentials: true }
+      );
+      setAgency((prev) =>
+        prev.map((a) =>
+          a.id === id ? { ...a, ...updatedFields } : a
+        )
+      );
+      setShowEditPopup(false);
+      alert("แก้ไขเรียบร้อย");
+    } catch (err) {
+      console.error(err);
+      alert("เกิดข้อผิดพลาด");
+    }
+  };
+
+  const handleDelete = async (agencyId) => {
+    if (!window.confirm("ยืนยันการลบ agency นี้หรือไม่?")) return;
+  
+    try {
+      const res = await axios.delete(
+        API_BASE_URL + APIEndpoints.agency.deleteAgency(agencyId),
+        { withCredentials: true }
+      );
+      if (res.status !== 200 || !res.data.success) {
+        throw new Error("Delete failed");
+      }
+      setAgency(prev => prev.filter(a => a.id !== agencyId));
+      alert("ลบหน่วยงานเรียบร้อยแล้ว");
+    } catch (error) {
+      console.error("Failed to delete agency:", error);
+      alert("เกิดข้อผิดพลาดในการลบหน่วยงาน");
+    }
+  };
+
   const pendingAgencies = agency.filter(
     (agencyItem) => agencyItem.status_approve === "pending"
   );
@@ -150,6 +199,8 @@ const AgencyApproval = ({ officer }) => {
           agencies={pendingAgencies}
           onApprove={handleApprove}
           onReject={handleReject}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
           disablePending
         />
       )}
@@ -164,6 +215,14 @@ const AgencyApproval = ({ officer }) => {
           successPopup={submitRejection}
           textButtonSuccess="ยืนยัน"
           closePopup={() => setShowPopup(false)}
+        />
+      )}
+      {showEditPopup && (
+        <EditAgencyPopup
+          isOpen={showEditPopup}
+          agency={editingAgency}
+          onCancel={() => setShowEditPopup(false)}
+          onSave={submitEdit}
         />
       )}
     </div>
