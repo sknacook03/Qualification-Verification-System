@@ -5,8 +5,11 @@ import Icon from "../../../assets/statistics.png";
 import { API_BASE_URL, APIEndpoints } from "../../../services/api.jsx";
 import styles from "./AccessStatisticsPageOfficer.module.css";
 import { useNavigate } from "react-router-dom";
-import { topMenuItems, bottomMenuItems } from "../../../constants/officerMenuItems.jsx";
-
+import {
+  topMenuItems,
+  bottomMenuItems,
+} from "../../../constants/officerMenuItems.jsx";
+import AccessStatistics from "../../../hooks/AccessStatistics/AccessStatistics.jsx";
 function AccessStatisticsPageOfficer() {
   const [officer, setOfficer] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -33,7 +36,6 @@ function AccessStatisticsPageOfficer() {
     fetchOfficerData();
   }, [navigate]);
 
-  
   const logout = async () => {
     try {
       await axios.post(
@@ -62,6 +64,7 @@ function AccessStatisticsPageOfficer() {
       icon={Icon}
       label="สถิติการเข้าถึง"
     >
+      <AccessStatistics />
     </LayoutAllpage>
   );
 }
