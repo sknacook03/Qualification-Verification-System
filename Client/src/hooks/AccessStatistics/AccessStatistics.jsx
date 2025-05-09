@@ -1,22 +1,197 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./AccessStatistics.module.css";
+import axios from "axios";
+import { APIEndpoints, API_BASE_URL } from "../../services/api";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Legend,
+  Title,
+  defaults,
+} from "chart.js";
+
+import LineChart from "./LineChart.jsx";
+import BarChart from "./BarChart.jsx";
+
+// Chart setup
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Legend,
+  Title
+);
+
+defaults.maintainAspectRatio = false;
+defaults.responsive = true;
+defaults.plugins = defaults.plugins || {};
+defaults.plugins.title = defaults.plugins.title || {};
+defaults.plugins.title.font = {
+  family: "'Prompt', sans-serif",
+  size: 16,
+  weight: "normal",
+};
 
 const AccessStatistics = () => {
+  const [totalViews, setTotalViews] = useState(0);
+  const [uniqueStudents, setUniqueStudents] = useState(0);
+  const [topAgencies, setTopAgencies] = useState([]);
+  const [trend, setTrend] = useState([]);
+
+  useEffect(() => {
+    const fetchStatistics = async () => {
+      try {
+        const res = await axios.get(API_BASE_URL + APIEndpoints.pageview.statistics);
+        setTotalViews(res.data.totalViews);
+        setUniqueStudents(res.data.uniqueStudents);
+      } catch (error) {
+        console.error("Failed to fetch statistics:", error);
+      }
+    };
+
+    const fetchTopAgencies = async () => {
+      try {
+        const res = await axios.get(API_BASE_URL + APIEndpoints.pageview.topAgency);
+        setTopAgencies(Array.isArray(res.data) ? res.data : []);
+      } catch (error) {
+        console.error("Failed to fetch top agency views:", error);
+        setTopAgencies([]);
+      }
+    };
+
+    const fetchTrend = async () => {
+      try {
+        const res = await axios.get(API_BASE_URL + APIEndpoints.pageview.trend);
+        setTrend(Array.isArray(res.data) ? res.data : []);
+      } catch (error) {
+        console.error("Failed to fetch trend:", error);
+        setTrend([]);
+      }
+    };
+
+    fetchStatistics();
+    fetchTopAgencies();
+    fetchTrend();
+  }, []);
+
+  const barChartData = {
+    labels: topAgencies.map((item) => item.agency_name),
+    datasets: [
+      {
+        label: "จำนวนการเข้าดู",
+        data: topAgencies.map((item) => item.count),
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.6)",
+          "rgba(54, 162, 235, 0.6)",
+          "rgba(255, 206, 86, 0.6)",
+          "rgba(75, 192, 192, 0.6)",
+          "rgba(153, 102, 255, 0.6)",
+        ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(153, 102, 255, 1)",
+        ],
+        borderWidth: 1,
+        borderRadius: 5,
+      },
+    ],
+  };
+
+  const barChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { enabled: true },
+      title: {
+        display: true,
+        text: "Top 5 หน่วยงานที่มีการเข้าดูมากที่สุด",
+        color: "#333",
+        padding: { top: 10, bottom: 20 },
+      },
+    },
+    scales: {
+      y: { beginAtZero: true },
+    },
+  };
+
+  const lineChartData = {
+    labels: trend.map((item) => item.date.slice(0, 10)),
+    datasets: [
+      {
+        label: "จำนวนการเข้าดูทั้งหมด",
+        data: trend.map((item) => item.totalViews),
+        borderColor: "rgba(54, 162, 235, 1)",
+        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        tension: 0.4,
+        fill: true,
+      },
+      {
+        label: "นักศึกษาที่เข้าดูไม่ซ้ำ",
+        data: trend.map((item) => item.uniqueStudents),
+        borderColor: "rgba(255, 99, 132, 1)",
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        tension: 0.4,
+        fill: true,
+      },
+    ],
+  };
+
+  const lineChartOptions = {
+    responsive: true,
+    plugins: {
+      title: {
+        display: true,
+        text: "แนวโน้มการเข้าดูรายวัน",
+        color: "#333",
+        padding: { top: 10, bottom: 20 },
+      },
+      legend: {
+        position: "top",
+      },
+    },
+    scales: {
+      y: { beginAtZero: true },
+    },
+  };
+
   return (
-    <>
-      <div className={styles.containerStatistics}>
+    <div className={styles.containerStatistics}>
+      <div className={styles.leftBoxState}>
         <div className={styles.boxState}>
           <div className={styles.totalPageView}>
             <p className={styles.titleTotalPageView}>จำนวนการเข้าดูทั้งหมด</p>
-            <h2 className={styles.numberTotalPageView}>17,358</h2>
+            <h2 className={styles.numberTotalPageView}>{totalViews.toLocaleString()}</h2>
           </div>
           <div className={styles.totalPageView}>
             <p className={styles.titleTotalPageView}>นักศึกษาที่เข้าดูไม่ซ้ำ</p>
-            <h2 className={styles.numberTotalPageView}>1,354</h2>
+            <h2 className={styles.numberTotalPageView}>{uniqueStudents.toLocaleString()}</h2>
           </div>
         </div>
+        <div className={styles.graphBoxState}>
+          <LineChart data={lineChartData} options={lineChartOptions} />
+        </div>
       </div>
-    </>
+
+      <div className={styles.rightBoxState}>
+        <div className={styles.topAgencyView}>
+          {topAgencies.length > 0 && (
+            <BarChart data={barChartData} options={barChartOptions} />
+          )}
+        </div>
+        <div className={styles.topFacultyView}></div>
+      </div>
+    </div>
   );
 };
 

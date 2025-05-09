@@ -1,28 +1,51 @@
 .containerStatistics {
-    width: 100%;
-    height: 500px;
-    background-color: #fafafa;
-    border-radius: 0.5rem;
-    padding: 1rem;
-  }
-  .boxState {
-    display: flex;
-    gap: 1rem;
-  }
-  .totalPageView{
-   width: 200px;
-   padding: 1rem;
-   border-radius: 0.5rem;
-   border: 2px solid #c6c6c6;
-  }
-  .totalPageView .titleTotalPageView{
-   font-size: 14px;
-   font-weight: bold;
-   color: #9E9E9E;
-  }
-  .totalPageView .numberTotalPageView{
-   font-size: 28px;
-   font-weight: bold;
-   color: #3B3B3B;
-  }
-  
+  display: flex;
+  width: 100%;
+  height: 500px;
+  gap: 2rem;
+  background-color: #fafafa;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+.boxState {
+  display: flex;
+  gap: 3rem;
+}
+.totalPageView {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 2px solid #c6c6c6;
+}
+.totalPageView .titleTotalPageView {
+  font-size: 14px;
+  font-weight: bold;
+  color: #9e9e9e;
+}
+.totalPageView .numberTotalPageView {
+  font-size: 28px;
+  font-weight: bold;
+  color: #3b3b3b;
+}
+.leftBoxState {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  flex: 4;
+}
+.rightBoxState {
+  display: flex;
+  flex-direction: column;
+  flex: 3.5;
+  width: 100%;
+  height: 100%;
+  gap: 2rem;
+}
+.topAgencyView ,.topFacultyView ,.graphBoxState {
+  height: 100%;
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 2px solid #c6c6c6;
+}
+

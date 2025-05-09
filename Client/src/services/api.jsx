@@ -50,6 +50,9 @@ export const APIEndpoints = {
       createStudent: "/student/upload-excel",
     },
     pageview: {
-      create: "/pageview/create"
-    }
+      create: "/pageview/create",
+      statistics: "/pageview/statistics",
+      topAgency: "/pageview/top-agencies",
+      trend: "/pageview/trend",
+    },
 };
