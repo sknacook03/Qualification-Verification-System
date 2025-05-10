@@ -53,6 +53,7 @@ export const APIEndpoints = {
       create: "/pageview/create",
       statistics: "/pageview/statistics",
       topAgency: "/pageview/top-agencies",
+      topFaculty: "/pageview/top-faculties",
       trend: "/pageview/trend",
     },
 };

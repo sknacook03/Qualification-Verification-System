@@ -17,8 +17,8 @@ import {
 
 import LineChart from "./LineChart.jsx";
 import BarChart from "./BarChart.jsx";
+import PieChart from "./PieChart.jsx";
 
-// Chart setup
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -44,12 +44,29 @@ const AccessStatistics = () => {
   const [totalViews, setTotalViews] = useState(0);
   const [uniqueStudents, setUniqueStudents] = useState(0);
   const [topAgencies, setTopAgencies] = useState([]);
+  const [topFaculties, setTopFaculties] = useState([]);
   const [trend, setTrend] = useState([]);
 
+  const backgroundColor = [
+    "rgba(255, 99, 132, 0.6)",
+    "rgba(54, 162, 235, 0.6)",
+    "rgba(255, 206, 86, 0.6)",
+    "rgba(75, 192, 192, 0.6)",
+    "rgba(153, 102, 255, 0.6)",
+  ];
+  const borderColor = [
+    "rgba(255, 99, 132, 1)",
+    "rgba(54, 162, 235, 1)",
+    "rgba(255, 206, 86, 1)",
+    "rgba(75, 192, 192, 1)",
+    "rgba(153, 102, 255, 1)",
+  ];
   useEffect(() => {
     const fetchStatistics = async () => {
       try {
-        const res = await axios.get(API_BASE_URL + APIEndpoints.pageview.statistics);
+        const res = await axios.get(
+          API_BASE_URL + APIEndpoints.pageview.statistics
+        );
         setTotalViews(res.data.totalViews);
         setUniqueStudents(res.data.uniqueStudents);
       } catch (error) {
@@ -59,14 +76,26 @@ const AccessStatistics = () => {
 
     const fetchTopAgencies = async () => {
       try {
-        const res = await axios.get(API_BASE_URL + APIEndpoints.pageview.topAgency);
+        const res = await axios.get(
+          API_BASE_URL + APIEndpoints.pageview.topAgency
+        );
         setTopAgencies(Array.isArray(res.data) ? res.data : []);
       } catch (error) {
         console.error("Failed to fetch top agency views:", error);
         setTopAgencies([]);
       }
     };
-
+    const fetchTopFaculties = async () => {
+      try {
+        const res = await axios.get(
+          API_BASE_URL + APIEndpoints.pageview.topFaculty
+        );
+        setTopFaculties(Array.isArray(res.data) ? res.data : []);
+      } catch (error) {
+        console.error("Failed to fetch top faculty views:", error);
+        setTopFaculties([]);
+      }
+    };
     const fetchTrend = async () => {
       try {
         const res = await axios.get(API_BASE_URL + APIEndpoints.pageview.trend);
@@ -76,7 +105,7 @@ const AccessStatistics = () => {
         setTrend([]);
       }
     };
-
+    fetchTopFaculties();
     fetchStatistics();
     fetchTopAgencies();
     fetchTrend();
@@ -88,20 +117,8 @@ const AccessStatistics = () => {
       {
         label: "จำนวนการเข้าดู",
         data: topAgencies.map((item) => item.count),
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.6)",
-          "rgba(54, 162, 235, 0.6)",
-          "rgba(255, 206, 86, 0.6)",
-          "rgba(75, 192, 192, 0.6)",
-          "rgba(153, 102, 255, 0.6)",
-        ],
-        borderColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-          "rgba(153, 102, 255, 1)",
-        ],
+        backgroundColor: backgroundColor,
+        borderColor: borderColor,
         borderWidth: 1,
         borderRadius: 5,
       },
@@ -124,7 +141,36 @@ const AccessStatistics = () => {
       y: { beginAtZero: true },
     },
   };
+  const pieChartData = {
+    labels: topFaculties.map((item) => item.faculty),
+    datasets: [
+      {
+        label: "จำนวนการเข้าดู",
+        data: topFaculties.map((item) => item.count),
+        backgroundColor: backgroundColor,
+        borderColor: borderColor,
+        borderWidth: 1,
+        borderRadius: 5,
+      },
+    ],
+  };
 
+  const pieChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { enabled: true },
+      title: {
+        display: true,
+        text: "Top 5 คณะที่มีการเข้าดูมากที่สุด",
+        color: "#333",
+        padding: { top: 10, bottom: 20 },
+      },
+    },
+    scales: {
+      y: { beginAtZero: true },
+    },
+  };
   const lineChartData = {
     labels: trend.map((item) => item.date.slice(0, 10)),
     datasets: [
@@ -171,11 +217,15 @@ const AccessStatistics = () => {
         <div className={styles.boxState}>
           <div className={styles.totalPageView}>
             <p className={styles.titleTotalPageView}>จำนวนการเข้าดูทั้งหมด</p>
-            <h2 className={styles.numberTotalPageView}>{totalViews.toLocaleString()}</h2>
+            <h2 className={styles.numberTotalPageView}>
+              {totalViews.toLocaleString()}
+            </h2>
           </div>
           <div className={styles.totalPageView}>
             <p className={styles.titleTotalPageView}>นักศึกษาที่เข้าดูไม่ซ้ำ</p>
-            <h2 className={styles.numberTotalPageView}>{uniqueStudents.toLocaleString()}</h2>
+            <h2 className={styles.numberTotalPageView}>
+              {uniqueStudents.toLocaleString()}
+            </h2>
           </div>
         </div>
         <div className={styles.graphBoxState}>
@@ -189,7 +239,11 @@ const AccessStatistics = () => {
             <BarChart data={barChartData} options={barChartOptions} />
           )}
         </div>
-        <div className={styles.topFacultyView}></div>
+        <div className={styles.topFacultyView}>
+          {topFaculties.length > 0 && (
+            <PieChart data={pieChartData} options={pieChartOptions} />
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,8 +1,10 @@
 import React from "react";
-import { Line } from "react-chartjs-2";
+import { Chart } from "react-chartjs-2";
 
 const LineChart = ({ data, options }) => {
-  return <Line key={JSON.stringify(data)} data={data} options={options} />;
+  const chartKey = React.useMemo(() => JSON.stringify(data), [data]);
+
+  return <Chart key={chartKey} type="line" data={data} options={options} />;
 };
 
 export default LineChart;

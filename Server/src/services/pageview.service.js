@@ -2,6 +2,34 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const PageviewService = {
+  getTopFacultyViews: async () => {
+    try {
+      const topFaculties = await prisma.pageView.groupBy({
+        by: ["faculty"],
+        _count: {
+          id: true,
+        },
+        orderBy: {
+          _count: {
+            id: "desc",
+          },
+        },
+        take: 5,
+      });
+
+      const cleaned = topFaculties.map((item) => ({
+        faculty: item.faculty,
+        count: Number(item._count.id),
+      }));
+      return {
+        success: true,
+        data: cleaned,
+      };
+    } catch (error) {
+      console.error("Error in getTopFacultyViews:", error);
+      return { success: false, error: "Failed to fetch top faculties" };
+    }
+  },
   getTopAgencyViews: async () => {
     try {
       const topAgencies = await prisma.pageView.groupBy({

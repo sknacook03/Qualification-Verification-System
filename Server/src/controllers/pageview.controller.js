@@ -28,6 +28,20 @@ const upload = multer({
 }).single("student_certificate");
 
 const PageviewController = {
+  getTopFacultyViewsController: async (req, res) => {
+    try {
+      const result = await PageviewService.getTopFacultyViews();
+
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        res.status(500).json({ error: result.error || "Failed to fetch top faculty" });
+      }
+    } catch (error) {
+      console.error("Error in getTopFacultyViewsController:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
   getTopAgencyViewsController: async (req, res) => {
     try {
       const result = await PageviewService.getTopAgencyViews();
