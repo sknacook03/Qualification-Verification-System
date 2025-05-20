@@ -1,61 +1,57 @@
-import React, { useEffect, useState } from "react";
+// src/pages/PrivacySettingsPage/PrivacySettingsPage.jsx
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import Icon from "../../../assets/setting.png";
 import axios from "axios";
+
+import LayoutAllPage from "../../../components/LayoutAllPage/LayoutAllPage";
+import AgencyPrivacy from "../../../hooks/AgencyPrivacy/AgencyPrivacy"; 
+import Icon from "../../../assets/setting.png";
 import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL, APIEndpoints } from "../../../services/api";
-import LayoutAllPage from "../../../components/LayoutAllPage/LayoutAllPage";
 import { topMenuItems, bottomMenuItems } from "../../../constants/agencyMenuItems";
 
-function PrivacySettingsPage() {
+export default function PrivacySettingsPage() {
   const [agency, setAgency] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const res = await toast.promise(
-          axios.get(API_BASE_URL + APIEndpoints.agency.logged, {
-            withCredentials: true,
-          }),
-          {
-            pending: "กำลังตรวจสอบสถานะ...",
-          }
-        );
-        if (res.data.data.status_approve !== "approved") {
-          alert("บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ");
-          navigate("/");
-          return;
-        }
-        setAgency(res.data.data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch agency data:", error);
-        alert("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
+  // ดึงข้อมูลหน่วยงาน ใช้ซ้ำได้ทั้งตอน mount และหลังอัพเดต
+  const fetchAgencyData = useCallback(async () => {
+    try {
+      const res = await toast.promise(
+        axios.get(API_BASE_URL + APIEndpoints.agency.logged, {
+          withCredentials: true,
+        }),
+        { pending: "กำลังตรวจสอบสถานะ..." }
+      );
+      const data = res.data.data;
+      if (data.status_approve !== "approved") {
+        alert("บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ");
         navigate("/");
         return;
       }
-    };
-
-    fetchUserData();
+      setAgency(data);
+    } catch (error) {
+      console.error("Failed to fetch agency data:", error);
+      alert("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
+      navigate("/");
+    } finally {
+      setLoading(false);
+    }
   }, [navigate]);
 
-  if (loading) {
-    return <div>กำลังโหลดข้อมูล...</div>;
-  }
+  useEffect(() => {
+    fetchAgencyData();
+  }, [fetchAgencyData]);
 
   const logout = async () => {
     try {
       await axios.post(
         API_BASE_URL + APIEndpoints.auth.logout,
         {},
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
-
       navigate("/");
     } catch (error) {
       console.error("Failed to logout:", error);
@@ -63,16 +59,33 @@ function PrivacySettingsPage() {
     }
   };
 
+  // callback ให้ AgencyPrivacy เรียกเมื่ออัพเดตเสร็จ
+  const handleAgencyUpdated = async () => {
+    setLoading(true);
+    await fetchAgencyData();
+  };
+
+  if (loading) {
+    return <div style={{ padding: "2rem", textAlign: "center" }}>กำลังโหลดข้อมูล...</div>;
+  }
+
   return (
     <>
       <LayoutAllPage
-        user={agency ? agency.agency_name : "Loading..."}
+        user={agency.agency_name}
         topMenuItems={topMenuItems}
         bottomMenuItems={bottomMenuItems(logout)}
         icon={Icon}
         label="ตั้งค่าความเป็นส่วนตัว"
-      ></LayoutAllPage>
+      >
+        {/* ให้ ToastContainer อยู่ใน Layout หลักหรือภายในนี้ก็ได้ */}
+        <ToastContainer position="top-right" autoClose={3000} />
+        <AgencyPrivacy
+          agency={agency}
+          loading={loading}
+          onAgencyUpdated={handleAgencyUpdated}
+        />
+      </LayoutAllPage>
     </>
   );
 }
-export default PrivacySettingsPage;

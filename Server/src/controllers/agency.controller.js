@@ -231,7 +231,22 @@ const AgencyController = {
       console.error('Error checking telephone:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
-  }
+  },
+  verifyPasswordAgencyController: async (req, res, next) => {
+    try {
+      const agencyId = req.params.id;
+      const { password } = req.body;
+      if (!password) {
+        const err = new Error("กรุณาระบุรหัสผ่าน");
+        err.status = 400;
+        throw err;
+      }
+      await AgencyService.verifyPassword(agencyId, password);
+      res.json({ success: true, message: "ยืนยันรหัสผ่านเรียบร้อย" });
+    } catch (err) {
+      next(err);
+    }
+  },
   
 };
 

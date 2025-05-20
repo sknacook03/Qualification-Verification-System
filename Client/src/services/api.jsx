@@ -12,6 +12,7 @@ export const APIEndpoints = {
       createAgency: "/agency",
       fetchAll: "/agency/agencies",
       logged: "/agency/logged-in",
+      verifyPassword: (agencyId) => `/agency/verify-password/${agencyId}`,
       updateAgency: (agencyId) => `/agency/update-agency/${agencyId}`,
       updateRejectAgency: (agencyId) => `/agency/update-reject-agency/${agencyId}`,
       deleteAgency: (agencyId) => `/agency/delete-agency/${agencyId}`,
@@ -27,7 +28,8 @@ export const APIEndpoints = {
       createOfficer: "/officer",
       sendEmail: "/officer/send-email",
       verifyToken: "/officer/verify-token",
-      updateStatus: (officerId) => `/officer/update-officer/${officerId}`,
+      verifyPassword: (officerId) => `/officer/verify-password/${officerId}`,
+      updateOfficer: (officerId) => `/officer/update-officer/${officerId}`,
       deleteOfficer: (officerId) => `/officer/delete-officer/${officerId}`,
     },
     typeAgency: {
