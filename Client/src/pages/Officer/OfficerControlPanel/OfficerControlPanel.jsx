@@ -5,11 +5,16 @@ import Icon from "../../../assets/manage.png";
 import { API_BASE_URL, APIEndpoints } from "../../../services/api.jsx";
 import styles from "./OfficerControlPanel.module.css";
 import { useNavigate } from "react-router-dom";
-import { topMenuItems, bottomMenuItems } from "../../../constants/officerMenuItems.jsx";
+import {
+  topMenuItems,
+  bottomMenuItems,
+} from "../../../constants/officerMenuItems.jsx";
+import TabNavigation from "../../../components/TabNavigation/TabNavigation.jsx";
 
 function OfficerControlPanel() {
   const [officer, setOfficer] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,7 +38,6 @@ function OfficerControlPanel() {
     fetchOfficerData();
   }, [navigate]);
 
-  
   const logout = async () => {
     try {
       await axios.post(
@@ -50,6 +54,25 @@ function OfficerControlPanel() {
       alert("เกิดข้อผิดพลาดในการออกจากระบบ");
     }
   };
+  const tabs = [{ label: "เจ้าหน้าที่ทั้งหมด" }, { label: "เพิ่มเจ้าหน้าที่" }];
+  const renderContent = () => {
+    switch (activeTab) {
+      case 0:
+        return (
+          <div>
+            <p>เจ้าหน้าที่ทั้งหมด</p>
+          </div>
+        );
+      case 1:
+        return (
+          <div>
+            <p>เพิ่มเจ้าหน้าที่</p>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
 
   if (loading) {
     return <p className={styles.loading}>กำลังโหลดข้อมูล...</p>;
@@ -62,6 +85,12 @@ function OfficerControlPanel() {
       icon={Icon}
       label="จัดการเจ้าหน้าที่"
     >
+      <TabNavigation
+        tabs={tabs}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
+      <div>{renderContent()}</div>
     </LayoutAllpage>
   );
 }
