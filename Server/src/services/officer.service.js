@@ -73,31 +73,33 @@ const OfficerService = {
       throw error;
     }
   },
-  updateOfficer: async (id, DataOfficer) => {
-    try {
-      const now = new Date();
-      const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
-      const existOfficer = await prisma.officer.findUnique({
-        where: { id: BigInt(id) },
-      });
+  updateOfficer: async (id, updateData) => {
+    const { first_name, last_name, email, password } = updateData;
 
-      if (!existOfficer) {
-        throw new Error(`Officer with ID ${id} does not exist.`);
-      }
+    const data = { first_name, last_name, email };
 
-      const updatedOfficer = await prisma.officer.update({
-        where: { id: BigInt(id) },
-        data: {
-          ...DataOfficer,
-          updated_at: bangkokTime,
-        },
-      });
-
-      return updatedOfficer;
-    } catch (error) {
-      console.error("Failed to update officer:", error);
-      throw error;
+    if (password) {
+      data.password = await bcrypt.hash(password, 10);
     }
+
+    const now = new Date();
+    data.updated_at = new Date(now.getTime() + 7 * 3600 * 1000);
+
+    const updated = await prisma.officer.update({
+      where: { id: BigInt(id) },
+      data,
+      select: {
+        id: true,
+        first_name: true,
+        last_name: true,
+        email: true,
+      },
+    });
+
+    return {
+      ...updated,
+      id: updated.id.toString(),
+    };
   },
   getLastOfficer: async () => {
     try {
@@ -159,6 +161,21 @@ const OfficerService = {
       console.error("Error finding user by email:", error);
       throw new Error("Database error");
     }
+  },
+  verifyPassword: async (id, plainPassword) => {
+    const officer = await OfficerService.getOfficerById(id);
+    if (!officer) {
+      const err = new Error("ไม่พบเจ้าหน้าที่");
+      err.status = 404;
+      throw err;
+    }
+    const match = await bcrypt.compare(plainPassword, officer.password);
+    if (!match) {
+      const err = new Error("รหัสผ่านไม่ถูกต้อง");
+      err.status = 401;
+      throw err;
+    }
+    return true;
   },
 };
 export default OfficerService;

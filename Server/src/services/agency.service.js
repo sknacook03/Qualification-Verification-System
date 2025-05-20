@@ -245,7 +245,22 @@ updateAgency: async (id, updateData) => {
       where: { telephone_number },
     });
     return !!existingTelAgency;
-  }
+  },
+  verifyPassword: async (id, plainPassword) => {
+    const agency = await AgencyService.getAgencyById(id);
+    if (!agency) {
+      const err = new Error("ไม่พบหน่วยงาน");
+      err.status = 404;
+      throw err;
+    }
+    const match = await bcrypt.compare(plainPassword, agency.password);
+    if (!match) {
+      const err = new Error("รหัสผ่านไม่ถูกต้อง");
+      err.status = 401;
+      throw err;
+    }
+    return true;
+  },
   
 };
 

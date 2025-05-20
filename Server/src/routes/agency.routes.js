@@ -9,6 +9,7 @@ AgencyRouter.get("/logged-in",authMiddleware, AgencyController.getLoggedInContro
 AgencyRouter.post("/", AgencyController.createAgencyController)
 AgencyRouter.post('/check-email', AgencyController.checkEmailController);
 AgencyRouter.post('/check-telphone', AgencyController.checkTelephoneController);
+AgencyRouter.post("/verify-password/:id", authMiddleware,AgencyController.verifyPasswordAgencyController);
 AgencyRouter.put("/update-agency/:id", authMiddleware,AgencyController.updateAgencyController);
 AgencyRouter.put("/update-reject-agency/:id",AgencyController.updateRejectionAgencyController);
 AgencyRouter.delete("/delete-agency/:id",authMiddleware, AgencyController.deleteAgencyController)
