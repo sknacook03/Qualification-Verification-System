@@ -12,6 +12,7 @@
   border: none;
   cursor: pointer;
   font-size: 14px;
+  background-color: transparent;
   color: #6d6d6d;
   border-bottom: 2px solid transparent;
   transition: all 0.3s ease;
