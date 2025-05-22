@@ -1,41 +1,63 @@
 .container {
   display: flex;
   justify-content: center;
-  padding: 1rem;
+  padding: 2rem 1rem;
+  background-color: #f5f6fa;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .card {
   background: #fff;
-  border: 1px solid #333;
-  border-radius: 4px;
-  padding: 1rem;
+  border-radius: 10px;
+  padding: 2rem 2.5rem;
   width: 100%;
-  max-width: 360px;
+  max-width: 400px;
   box-sizing: border-box;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  color: #333;
 }
 
 .title {
-  font-size: 1.2rem;
+  font-size: 1.6rem;
+  font-weight: 700;
   color: #333;
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
+  user-select: none;
 }
 
 .summary {
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 .item {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  line-height: 1.4;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 6px;
+}
+
+.item span:first-child {
+  font-weight: 600;
+  color: #555;
+  user-select: none;
+}
+
+.item span:last-child {
+  max-width: 60%;
+  text-align: right;
+  word-wrap: break-word;
+  color: #222;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1.25rem;
 }
 
 .inputGroup {
@@ -44,50 +66,103 @@
 }
 
 .label {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  user-select: none;
+}
+
+.input, select {
+  padding: 10px 12px;
+  font-size: 1rem;
+  border: 1.8px solid #ccc;
+  border-radius: 8px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: #fafafa;
   color: #333;
-  margin-bottom: 0.25rem;
 }
 
-.input {
-  border: none;
-  border-bottom: 1px solid #333;
-  padding: 0.25rem 0;
-  font-size: 0.95rem;
-}
-
-.input:focus {
+.input:focus, select:focus {
   outline: none;
-  border-bottom-color: #fb8c00;
+  border-color: #fb8c00;
+  box-shadow: 0 0 8px rgba(251, 140, 0, 0.4);
+  background-color: #fff;
+}
+
+.buttonRow {
+  display: flex;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-top: 1rem;
 }
 
 .button {
   flex: 1;
-  padding: 0.5rem;
-  font-size: 0.95rem;
-  border-radius: 4px;
+  padding: 0.7rem ;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: 8px;
   cursor: pointer;
-  border: 1px solid #fb8c00;
+  border: none;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
 }
 
 .primaryBtn {
-  background: #fb8c00;
-  color: #fff;
+  background-color: #fb8c00;
+  color: white;
+  box-shadow: 0 6px 12px rgba(251, 140, 0, 0.5);
+}
+
+.primaryBtn:hover:not(:disabled) {
+  background-color: #e27600;
+  box-shadow: 0 8px 20px rgba(226, 118, 0, 0.6);
 }
 
 .secondaryBtn {
-  background: none;
+  background-color: #fff;
   color: #fb8c00;
+  border: 2px solid #fb8c00;
+  box-shadow: none;
+  font-weight: 600;
+}
+
+.secondaryBtn:hover:not(:disabled) {
+  background-color: #fb8c00;
+  color: white;
+  box-shadow: 0 6px 12px rgba(251, 140, 0, 0.5);
+  border: none;
 }
 
 .button:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .message {
   color: #fb8c00;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   text-align: center;
   margin: 0;
+  font-weight: 600;
+}
+
+.certificateImage {
+  max-width: 180px;
+  max-height: 130px;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: transform 0.25s ease;
+  user-select: none;
+  display: block;
+  margin-left: auto;
+}
+
+.certificateImage:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 16px rgba(251, 140, 0, 0.6);
 }

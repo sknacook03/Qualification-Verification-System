@@ -4,6 +4,7 @@ import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
 import styles from "./AgencyPrivacy.module.css";
 
 export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
+  const [typeAgencies, setTypeAgencies] = useState([]);
   const [phase, setPhase] = useState("view");
   const [currentPass, setCurrentPass] = useState("");
   const [form, setForm] = useState({
@@ -22,8 +23,20 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
     statusApprove: "",
   });
   const [newPass, setNewPass] = useState("");
+  const [confirmPass, setConfirmPass] = useState("");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+
+  const normalizeImagePath = (path) => {
+    if (!path) return null;
+    return path.replace(/\\/g, "/");
+  };
+
+  const baseURL = "http://localhost:3000/";
+
+  const certificateURL = agency.certificate
+    ? baseURL + normalizeImagePath(agency.certificate)
+    : null;
 
   useEffect(() => {
     if (agency) {
@@ -44,6 +57,25 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
       });
     }
   }, [agency]);
+
+  useEffect(() => {
+    axios
+      .get(`${API_BASE_URL}${APIEndpoints.typeAgency.fetchAll}`, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        const list = Array.isArray(res.data.data)
+          ? res.data.data
+          : Array.isArray(res.data)
+          ? res.data
+          : [];
+        setTypeAgencies(list);
+      })
+      .catch((err) => {
+        console.error("โหลดประเภทหน่วยงานล้มเหลว:", err);
+        setTypeAgencies([]);
+      });
+  }, []);
 
   const handleVerify = async (e) => {
     e.preventDefault();
@@ -138,18 +170,20 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
           <>
             <div className={styles.summary}>
               {[
-                ["ID", agency.id],
-                ["อีเมล", agency.email],
                 ["ชื่อหน่วยงาน", agency.agency_name],
+                ["อีเมล", agency.email],
                 ["แผนก", agency.department],
+                [
+                  "ประเภทหน่วยงาน",
+                  typeAgencies.find((t) => t.id === agency.type_id)
+                    ?.type_name || agency.type_id,
+                ],
                 ["โทรศัพท์", agency.telephone_number],
                 ["ที่อยู่", agency.address],
                 ["ตำบล", agency.subdistrict],
                 ["อำเภอ", agency.district],
                 ["จังหวัด", agency.province],
                 ["รหัสไปรษณีย์", agency.postal_code],
-                ["Type ID", agency.type_id],
-                ["Certificate", agency.certificate],
                 ["Role", agency.role],
                 ["Approve Status", agency.status_approve],
               ].map(([label, value]) => (
@@ -158,16 +192,32 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   <span>{value}</span>
                 </div>
               ))}
+
+              <div key="Certificate" className={styles.item}>
+                <span>Certificate</span>
+                <span>
+                  {certificateURL ? (
+                    <img
+                      src={certificateURL}
+                      alt="Certificate"
+                      className={styles.certificateImage}
+                      onClick={() => window.open(certificateURL, "_blank")}
+                    />
+                  ) : (
+                    "ไม่มีข้อมูล"
+                  )}
+                </span>
+              </div>
             </div>
+
             <button
-              className={styles.primaryBtn}
+              className={`${styles.button} ${styles.primaryBtn}`}
               onClick={() => setPhase("verify")}
             >
               แก้ไขข้อมูล
             </button>
           </>
         )}
-
         {(phase === "verify" || phase === "edit") && (
           <form
             onSubmit={phase === "verify" ? handleVerify : handleUpdate}
@@ -201,8 +251,9 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   />
                 </div>
                 <div className={styles.inputGroup}>
-                  <label>ชื่อหน่วยงาน</label>
+                  <label className={styles.label}>ชื่อหน่วยงาน</label>
                   <input
+                    className={styles.input}
                     type="text"
                     value={form.agencyName}
                     onChange={(e) =>
@@ -212,8 +263,9 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   />
                 </div>
                 <div className={styles.inputGroup}>
-                  <label>แผนก</label>
+                  <label className={styles.label}>แผนก</label>
                   <input
+                    className={styles.input}
                     type="text"
                     value={form.department}
                     onChange={(e) =>
@@ -223,8 +275,9 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   />
                 </div>
                 <div className={styles.inputGroup}>
-                  <label>โทรศัพท์</label>
+                  <label className={styles.label}>โทรศัพท์</label>
                   <input
+                  className={styles.input}
                     type="text"
                     value={form.telephoneNumber}
                     onChange={(e) =>
@@ -234,8 +287,9 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   />
                 </div>
                 <div className={styles.inputGroup}>
-                  <label>ที่อยู่</label>
+                  <label className={styles.label}>ที่อยู่</label>
                   <input
+                  className={styles.input}
                     type="text"
                     value={form.address}
                     onChange={(e) =>
@@ -245,8 +299,9 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   />
                 </div>
                 <div className={styles.inputGroup}>
-                  <label>ตำบล</label>
+                  <label className={styles.label}>ตำบล</label>
                   <input
+                  className={styles.input}
                     type="text"
                     value={form.subdistrict}
                     onChange={(e) =>
@@ -256,8 +311,9 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   />
                 </div>
                 <div className={styles.inputGroup}>
-                  <label>อำเภอ</label>
+                  <label className={styles.label}>อำเภอ</label>
                   <input
+                  className={styles.input}
                     type="text"
                     value={form.district}
                     onChange={(e) =>
@@ -267,8 +323,9 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   />
                 </div>
                 <div className={styles.inputGroup}>
-                  <label>จังหวัด</label>
+                  <label className={styles.label}>จังหวัด</label>
                   <input
+                  className={styles.input}
                     type="text"
                     value={form.province}
                     onChange={(e) =>
@@ -278,8 +335,9 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   />
                 </div>
                 <div className={styles.inputGroup}>
-                  <label>รหัสไปรษณีย์</label>
+                  <label className={styles.label}>รหัสไปรษณีย์</label>
                   <input
+                  className={styles.input}
                     type="text"
                     value={form.postalCode}
                     onChange={(e) =>
@@ -289,53 +347,40 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   />
                 </div>
                 <div className={styles.inputGroup}>
-                  <label>Type ID</label>
-                  <input
-                    type="text"
+                  <label className={styles.label}>ประเภทหน่วยงาน</label>
+                  <select
+                    className={styles.input}
                     value={form.typeId}
                     onChange={(e) =>
                       setForm({ ...form, typeId: e.target.value })
                     }
                     disabled={busy}
-                  />
+                  >
+                    <option value="">-- เลือกประเภทหน่วยงาน --</option>
+                    {typeAgencies.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.type_name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className={styles.inputGroup}>
-                  <label>Certificate</label>
+                  <label className={styles.label}>รหัสผ่านใหม่ (ถ้าต้องการ)</label>
                   <input
-                    type="text"
-                    value={form.certificate}
-                    onChange={(e) =>
-                      setForm({ ...form, certificate: e.target.value })
-                    }
-                    disabled={busy}
-                  />
-                </div>
-                <div className={styles.inputGroup}>
-                  <label>Role</label>
-                  <input
-                    type="text"
-                    value={form.role}
-                    onChange={(e) => setForm({ ...form, role: e.target.value })}
-                    disabled={busy}
-                  />
-                </div>
-                <div className={styles.inputGroup}>
-                  <label>Approve Status</label>
-                  <input
-                    type="text"
-                    value={form.statusApprove}
-                    onChange={(e) =>
-                      setForm({ ...form, statusApprove: e.target.value })
-                    }
-                    disabled={busy}
-                  />
-                </div>
-                <div className={styles.inputGroup}>
-                  <label>รหัสผ่านใหม่ (ถ้าต้องการ)</label>
-                  <input
+                    className={styles.input}
                     type="password"
                     value={newPass}
                     onChange={(e) => setNewPass(e.target.value)}
+                    disabled={busy}
+                  />
+                </div>
+                <div className={styles.inputGroup}>
+                  <label className={styles.label}>ยืนยันรหัสผ่านใหม่</label>
+                  <input
+                  className={styles.input}
+                    type="password"
+                    value={confirmPass}
+                    onChange={(e) => setConfirmPass(e.target.value)}
                     disabled={busy}
                   />
                 </div>
