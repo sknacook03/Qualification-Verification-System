@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import hide from "../../assets/hide.png";
 import visibility from "../../assets/visibility.png";
-import "./PasswordInput.css";
+import styles from "./PasswordInput.module.css";
 
 const PasswordInput = ({
   label,
@@ -16,11 +16,11 @@ const PasswordInput = ({
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   return (
-    <div className="password-container">
+    <div className={styles.passwordContainer}>
       <label htmlFor={id}>{label}</label>
-      <div className="password-field-wrapper">
+      <div className={styles.passwordFieldWrapper}>
         <input
-          className={`password-field ${error ? "password-error" : ""}`}
+          className={`${styles.passwordField} ${error ? styles.passwordError : ""}`}
           type={showPassword ? "text" : "password"}
           id={id}
           name={name}
@@ -30,7 +30,7 @@ const PasswordInput = ({
         />
         <button
           type="button"
-          className="toggle-password-btn"
+          className={styles.togglePasswordBtn}
           onClick={togglePasswordVisibility}
         >
           {showPassword ? (
@@ -40,7 +40,7 @@ const PasswordInput = ({
           )}
         </button>
       </div>
-      {error && <div className="error-message">{error}</div>}
+      {error && <div className={styles.errorMessage}>{error}</div>}
     </div>
   );
 };
