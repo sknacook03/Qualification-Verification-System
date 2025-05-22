@@ -9,6 +9,7 @@ OfficerRouter.get("/officers", authMiddleware, OfficerController.getOfficerContr
 OfficerRouter.get("/logged-in", authMiddleware, OfficerController.getLoggedInController);
 OfficerRouter.post("/", OfficerController.createOfficerController)
 OfficerRouter.post("/send-email", authMiddleware, OfficerController.sendAgency)
+OfficerRouter.post("/check-email", authMiddleware, OfficerController.checkOfficerEmail)
 OfficerRouter.post("/verify-password/:id", authMiddleware, OfficerController.verifyPasswordOfficerController)
 OfficerRouter.post("/verify-token", verifyTokenMiddleware, OfficerController.rejectVerifyToken)
 OfficerRouter.put("/update-officer/:id", authMiddleware, OfficerController.updateOfficerController)

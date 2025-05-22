@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import LayoutAllpage from "../../../components/LayoutAllPage/LayoutAllPage.jsx";
+import AllOfficer from "../../../hooks/AllOfficer/AllOfficer.jsx";
+import AddOfficerByOfficer from "../../../hooks/AddOfficerByOfficer/AddOfficerByOfficer.jsx";
 import Icon from "../../../assets/manage.png";
 import { API_BASE_URL, APIEndpoints } from "../../../services/api.jsx";
 import styles from "./OfficerControlPanel.module.css";
@@ -60,13 +62,13 @@ function OfficerControlPanel() {
       case 0:
         return (
           <div>
-            <p>เจ้าหน้าที่ทั้งหมด</p>
+            <AllOfficer officer={officer} />
           </div>
         );
       case 1:
         return (
           <div>
-            <p>เพิ่มเจ้าหน้าที่</p>
+            <AddOfficerByOfficer officer={officer} />
           </div>
         );
       default:

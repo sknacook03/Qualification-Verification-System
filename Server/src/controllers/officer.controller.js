@@ -220,5 +220,18 @@ const OfficerController = {
       next(err);
     }
   },
+  checkOfficerEmail: async (req, res) => {
+    try {
+      const { email } = req.body;
+      if (!email) {
+        return res.status(400).json({ error: "กรุณาระบุอีเมล" });
+      }
+      const exists = await OfficerService.checkEmailOfficerExists(email);
+      return res.json({ exists });
+    } catch (error) {
+      console.error("Error in checkEmail:", error);
+      return res.status(500).json({ error: "เกิดข้อผิดพลาดในระบบ" });
+    }
+  },
 };
 export default OfficerController;

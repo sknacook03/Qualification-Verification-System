@@ -1,0 +1,71 @@
+.add-officer-container {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 1rem 1.5rem;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 0 12px rgb(0 0 0 / 0.1);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .add-officer-title {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #333;
+  }
+  
+  .add-officer-form .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+    color: #555;
+  }
+  
+  .form-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    border: 1.5px solid #ccc;
+    border-radius: 4px;
+    outline-offset: 2px;
+    transition: border-color 0.2s ease-in-out;
+  }
+  
+  .form-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 3px #007bffaa;
+  }
+  
+  .submit-button {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0.75rem 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .submit-button:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+  }
+  
+  .submit-button:not(:disabled):hover {
+    background-color: #0056b3;
+  }
+  
+  .form-message {
+    margin-top: 1rem;
+    font-weight: 600;
+    color: #28a745;
+    text-align: center;
+  }
+  

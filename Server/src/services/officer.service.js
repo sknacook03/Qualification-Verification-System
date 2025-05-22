@@ -177,5 +177,11 @@ const OfficerService = {
     }
     return true;
   },
+  checkEmailOfficerExists: async (email) => {
+    const officer = await prisma.officer.findUnique({
+      where: { email },
+    });
+    return officer !== null;
+  },
 };
 export default OfficerService;

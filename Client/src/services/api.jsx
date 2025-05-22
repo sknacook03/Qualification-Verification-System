@@ -28,6 +28,7 @@ export const APIEndpoints = {
       createOfficer: "/officer",
       sendEmail: "/officer/send-email",
       verifyToken: "/officer/verify-token",
+      checkOfficerEmail: "/officer/check-email",
       verifyPassword: (officerId) => `/officer/verify-password/${officerId}`,
       updateOfficer: (officerId) => `/officer/update-officer/${officerId}`,
       deleteOfficer: (officerId) => `/officer/delete-officer/${officerId}`,
