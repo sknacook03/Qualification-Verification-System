@@ -1,4 +1,3 @@
-// src/pages/PrivacySettingsPage/PrivacySettingsPage.jsx
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -16,7 +15,6 @@ export default function PrivacySettingsPage() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // ดึงข้อมูลหน่วยงาน ใช้ซ้ำได้ทั้งตอน mount และหลังอัพเดต
   const fetchAgencyData = useCallback(async () => {
     try {
       const res = await toast.promise(
@@ -59,7 +57,6 @@ export default function PrivacySettingsPage() {
     }
   };
 
-  // callback ให้ AgencyPrivacy เรียกเมื่ออัพเดตเสร็จ
   const handleAgencyUpdated = async () => {
     setLoading(true);
     await fetchAgencyData();
@@ -78,7 +75,6 @@ export default function PrivacySettingsPage() {
         icon={Icon}
         label="ตั้งค่าความเป็นส่วนตัว"
       >
-        {/* ให้ ToastContainer อยู่ใน Layout หลักหรือภายในนี้ก็ได้ */}
         <ToastContainer position="top-right" autoClose={3000} />
         <AgencyPrivacy
           agency={agency}

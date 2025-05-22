@@ -1,11 +1,10 @@
-// src/hooks/AgencyPrivacy/AgencyPrivacy.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
 import styles from "./AgencyPrivacy.module.css";
 
 export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
-  const [phase, setPhase] = useState("view"); // view | verify | edit
+  const [phase, setPhase] = useState("view");
   const [currentPass, setCurrentPass] = useState("");
   const [form, setForm] = useState({
     email: "",
@@ -46,7 +45,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
     }
   }, [agency]);
 
-  const handleVerify = async e => {
+  const handleVerify = async (e) => {
     e.preventDefault();
     if (!currentPass.trim()) {
       setMessage("กรุณาใส่รหัสผ่านปัจจุบัน");
@@ -72,7 +71,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
     }
   };
 
-  const handleUpdate = async e => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
     if (!form.email.trim() || !form.agencyName.trim()) {
       setMessage("กรุณากรอกอีเมลและชื่อหน่วยงาน");
@@ -176,11 +175,12 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
           >
             {phase === "verify" && (
               <div className={styles.inputGroup}>
-                <label>รหัสผ่านปัจจุบัน</label>
+                <label className={styles.label}>รหัสผ่านปัจจุบัน</label>
                 <input
+                  className={styles.input}
                   type="password"
                   value={currentPass}
-                  onChange={e => setCurrentPass(e.target.value)}
+                  onChange={(e) => setCurrentPass(e.target.value)}
                   disabled={busy}
                 />
               </div>
@@ -189,11 +189,12 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
             {phase === "edit" && (
               <>
                 <div className={styles.inputGroup}>
-                  <label>อีเมล</label>
+                  <label className={styles.label}>อีเมล</label>
                   <input
+                    className={styles.input}
                     type="email"
                     value={form.email}
-                    onChange={e =>
+                    onChange={(e) =>
                       setForm({ ...form, email: e.target.value })
                     }
                     disabled={busy}
@@ -204,7 +205,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   <input
                     type="text"
                     value={form.agencyName}
-                    onChange={e =>
+                    onChange={(e) =>
                       setForm({ ...form, agencyName: e.target.value })
                     }
                     disabled={busy}
@@ -215,7 +216,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   <input
                     type="text"
                     value={form.department}
-                    onChange={e =>
+                    onChange={(e) =>
                       setForm({ ...form, department: e.target.value })
                     }
                     disabled={busy}
@@ -226,7 +227,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   <input
                     type="text"
                     value={form.telephoneNumber}
-                    onChange={e =>
+                    onChange={(e) =>
                       setForm({ ...form, telephoneNumber: e.target.value })
                     }
                     disabled={busy}
@@ -237,7 +238,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   <input
                     type="text"
                     value={form.address}
-                    onChange={e =>
+                    onChange={(e) =>
                       setForm({ ...form, address: e.target.value })
                     }
                     disabled={busy}
@@ -248,7 +249,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   <input
                     type="text"
                     value={form.subdistrict}
-                    onChange={e =>
+                    onChange={(e) =>
                       setForm({ ...form, subdistrict: e.target.value })
                     }
                     disabled={busy}
@@ -259,7 +260,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   <input
                     type="text"
                     value={form.district}
-                    onChange={e =>
+                    onChange={(e) =>
                       setForm({ ...form, district: e.target.value })
                     }
                     disabled={busy}
@@ -270,7 +271,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   <input
                     type="text"
                     value={form.province}
-                    onChange={e =>
+                    onChange={(e) =>
                       setForm({ ...form, province: e.target.value })
                     }
                     disabled={busy}
@@ -281,7 +282,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   <input
                     type="text"
                     value={form.postalCode}
-                    onChange={e =>
+                    onChange={(e) =>
                       setForm({ ...form, postalCode: e.target.value })
                     }
                     disabled={busy}
@@ -292,7 +293,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   <input
                     type="text"
                     value={form.typeId}
-                    onChange={e =>
+                    onChange={(e) =>
                       setForm({ ...form, typeId: e.target.value })
                     }
                     disabled={busy}
@@ -303,7 +304,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   <input
                     type="text"
                     value={form.certificate}
-                    onChange={e =>
+                    onChange={(e) =>
                       setForm({ ...form, certificate: e.target.value })
                     }
                     disabled={busy}
@@ -314,9 +315,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   <input
                     type="text"
                     value={form.role}
-                    onChange={e =>
-                      setForm({ ...form, role: e.target.value })
-                    }
+                    onChange={(e) => setForm({ ...form, role: e.target.value })}
                     disabled={busy}
                   />
                 </div>
@@ -325,7 +324,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   <input
                     type="text"
                     value={form.statusApprove}
-                    onChange={e =>
+                    onChange={(e) =>
                       setForm({ ...form, statusApprove: e.target.value })
                     }
                     disabled={busy}
@@ -336,7 +335,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   <input
                     type="password"
                     value={newPass}
-                    onChange={e => setNewPass(e.target.value)}
+                    onChange={(e) => setNewPass(e.target.value)}
                     disabled={busy}
                   />
                 </div>
@@ -348,7 +347,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
             <div className={styles.buttonRow}>
               <button
                 type="submit"
-                className={styles.primaryBtn}
+                className={`${styles.button} ${styles.primaryBtn}`}
                 disabled={busy}
               >
                 {busy
@@ -361,7 +360,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
               </button>
               <button
                 type="button"
-                className={styles.secondaryBtn}
+                className={`${styles.button} ${styles.secondaryBtn}`}
                 onClick={() => {
                   setPhase("view");
                   setMessage("");

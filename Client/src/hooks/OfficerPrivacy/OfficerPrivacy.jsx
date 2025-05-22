@@ -122,7 +122,9 @@ export default function OfficerPrivacy({ officer, loading, onOfficerUpdated }) {
               </div>
               <div className={styles.item}>
                 <span>ชื่อ</span>
-                <span>{officer.first_name} {officer.last_name}</span>
+                <span>
+                  {officer.first_name} {officer.last_name}
+                </span>
               </div>
               <div className={styles.item}>
                 <span>อีเมล</span>
@@ -145,11 +147,12 @@ export default function OfficerPrivacy({ officer, loading, onOfficerUpdated }) {
           >
             {phase === "verify" && (
               <div className={styles.inputGroup}>
-                <label>รหัสผ่านปัจจุบัน</label>
+                <label className={styles.label}>รหัสผ่านปัจจุบัน</label>
                 <input
+                  className={styles.input}
                   type="password"
                   value={currentPass}
-                  onChange={e => setCurrentPass(e.target.value)}
+                  onChange={(e) => setCurrentPass(e.target.value)}
                   disabled={busy}
                 />
               </div>
@@ -158,47 +161,60 @@ export default function OfficerPrivacy({ officer, loading, onOfficerUpdated }) {
             {phase === "edit" && (
               <>
                 <div className={styles.inputGroup}>
-                  <label>ชื่อ</label>
+                  <label className={styles.label}>ชื่อ</label>
                   <input
+                    className={styles.input}
                     type="text"
                     value={form.firstName}
-                    onChange={e => setForm({ ...form, firstName: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, firstName: e.target.value })
+                    }
                     disabled={busy}
                   />
                 </div>
                 <div className={styles.inputGroup}>
-                  <label>นามสกุล</label>
+                  <label className={styles.label}>นามสกุล</label>
                   <input
+                    className={styles.input}
                     type="text"
                     value={form.lastName}
-                    onChange={e => setForm({ ...form, lastName: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, lastName: e.target.value })
+                    }
                     disabled={busy}
                   />
                 </div>
                 <div className={styles.inputGroup}>
-                  <label>อีเมล</label>
+                  <label className={styles.label}>อีเมล</label>
                   <input
+                    className={styles.input}
                     type="email"
                     value={form.email}
-                    onChange={e => setForm({ ...form, email: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, email: e.target.value })
+                    }
                     disabled={busy}
                   />
                 </div>
                 <div className={styles.inputGroup}>
-                  <label>รหัสผ่านใหม่ (ถ้าต้องการ)</label>
+                  <label className={styles.label}>
+                    รหัสผ่านใหม่ (ถ้าต้องการ)
+                  </label>
                   <input
+                    className={styles.input}
                     type="password"
                     value={newPass}
-                    onChange={e => setNewPass(e.target.value)}
+                    onChange={(e) => setNewPass(e.target.value)}
                     disabled={busy}
                   />
                 </div>
                 <div className={styles.inputGroup}>
-                  <label>ยืนยันรหัสผ่านใหม่</label>
+                  <label className={styles.label}>ยืนยันรหัสผ่านใหม่</label>
                   <input
+                    className={styles.input}
                     type="password"
                     value={confirmPass}
-                    onChange={e => setConfirmPass(e.target.value)}
+                    onChange={(e) => setConfirmPass(e.target.value)}
                     disabled={busy}
                   />
                 </div>
@@ -210,7 +226,7 @@ export default function OfficerPrivacy({ officer, loading, onOfficerUpdated }) {
             <div className={styles.buttonRow}>
               <button
                 type="submit"
-                className={styles.primaryBtn}
+                className={`${styles.button} ${styles.primaryBtn}`}
                 disabled={busy}
               >
                 {busy
@@ -223,7 +239,7 @@ export default function OfficerPrivacy({ officer, loading, onOfficerUpdated }) {
               </button>
               <button
                 type="button"
-                className={styles.secondaryBtn}
+                className={`${styles.button} ${styles.secondaryBtn}`}
                 onClick={() => {
                   setPhase("view");
                   setMessage("");

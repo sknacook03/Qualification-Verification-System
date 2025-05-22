@@ -1,109 +1,93 @@
-/* src/hooks/AgencyPrivacy/AgencyPrivacy.module.css */
-:root {
-    --accent: #fb8c00;
-    --bg:     #fff;
-    --text:   #333;
-    --border: #ccc;
-    --radius: 4px;
-  }
-  
-  .container {
-    display: flex;
-    justify-content: center;
-    padding: 1rem;
-  }
-  
-  .card {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1rem;
-    width: 100%;
-    max-width: 360px;
-    box-sizing: border-box;
-  }
-  
-  .title {
-    font-size: 1.2rem;
-    color: var(--text);
-    text-align: center;
-    margin-bottom: 1rem;
-  }
-  
-  .summary {
-    margin-bottom: 1rem;
-  }
-  
-  .item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-  }
-  
-  .form {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  
-  .inputGroup {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  label {
-    font-size: 0.85rem;
-    color: var(--text);
-    margin-bottom: 0.25rem;
-  }
-  
-  input {
-    border: none;
-    border-bottom: 1px solid var(--border);
-    padding: 0.25rem 0;
-    font-size: 0.95rem;
-  }
-  
-  input:focus {
-    outline: none;
-    border-bottom-color: var(--accent);
-  }
-  
-  .buttonRow {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-  
-  button {
-    flex: 1;
-    padding: 0.5rem;
-    font-size: 0.95rem;
-    border-radius: var(--radius);
-    cursor: pointer;
-    border: 1px solid var(--accent);
-  }
-  
-  .primaryBtn {
-    background: var(--accent);
-    color: #fff;
-  }
-  
-  .secondaryBtn {
-    background: none;
-    color: var(--accent);
-  }
-  
-  button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-  
-  .message {
-    color: var(--accent);
-    font-size: 0.85rem;
-    text-align: center;
-    margin: 0;
-  }
-  
+.container {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 1rem;
+  width: 100%;
+  max-width: 360px;
+  box-sizing: border-box;
+}
+
+.title {
+  font-size: 1.2rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.summary {
+  margin-bottom: 1rem;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 0.85rem;
+  color: #333;
+  margin-bottom: 0.25rem;
+}
+
+.input {
+  border: none;
+  border-bottom: 1px solid #333;
+  padding: 0.25rem 0;
+  font-size: 0.95rem;
+}
+
+.input:focus {
+  outline: none;
+  border-bottom-color: #fb8c00;
+}
+
+.button {
+  flex: 1;
+  padding: 0.5rem;
+  font-size: 0.95rem;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid #fb8c00;
+}
+
+.primaryBtn {
+  background: #fb8c00;
+  color: #fff;
+}
+
+.secondaryBtn {
+  background: none;
+  color: #fb8c00;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.message {
+  color: #fb8c00;
+  font-size: 0.85rem;
+  text-align: center;
+  margin: 0;
+}
