@@ -176,26 +176,24 @@ const AgencyService = {
 },
 updateAgency: async (id, updateData) => {
   try {
+    const { password, ...restData } = updateData;
+
+    const data = { ...restData };
+
+    if (password) {
+      data.password = await bcrypt.hash(password, 10);
+    }
+
     const now = new Date();
     const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
-    const existAgency = await prisma.agency.findUnique({
-      where: { id: BigInt(id) }
-    });
-    
-    if (!existAgency) {
-      throw new Error(`Agency with ID ${id} does not exist.`);
-    }
+    data.updated_at = bangkokTime;
 
     const updatedAgency = await prisma.agency.update({
       where: { id: BigInt(id) },
-      data: {
-        ...updateData, 
-        updated_at: bangkokTime,
-      },
+      data,
     });
 
     return updatedAgency;
-    
   } catch (error) {
     console.error("Failed to update agency:", error);
     throw error;
