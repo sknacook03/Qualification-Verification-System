@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL, APIEndpoints } from "../../../services/api";
 import LayoutAllPage from "../../../components/LayoutAllPage/LayoutAllPage";
 import { topMenuItems, bottomMenuItems } from "../../../constants/agencyMenuItems";
+import AccessStatistics from "../../../hooks/AccessStatistics/AccessStatistics.jsx";
 
 function AccessStatisticsPage() {
   const [agency, setAgency] = useState(null);
@@ -70,7 +71,9 @@ function AccessStatisticsPage() {
         bottomMenuItems={bottomMenuItems(logout)}
         icon={Icon}
         label="สถิติการเข้าถึง"
-      ></LayoutAllPage>
+      >
+        <AccessStatistics />
+      </LayoutAllPage>
     </>
   );
 }
