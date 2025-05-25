@@ -2,12 +2,15 @@ import React, { useState, useRef } from "react";
 import { API_BASE_URL, APIEndpoints } from "../../services/api";
 import axios from "axios";
 import Icon from "../../assets/upload.png";
+import IconClose from "../../assets/close.png";
+import IconExcel from "../../assets/excel.png";
+import { filesize } from "filesize";
 import styles from "./UploadExcelStudent.module.css";
 
 const UploadExcelStudent = () => {
   const [file, setFile] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
-  const [isDragging, setIsDragging] = useState(false); 
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
 
   const handleClick = () => fileInputRef.current.click();
@@ -22,6 +25,12 @@ const UploadExcelStudent = () => {
     setErrorMsg("");
     setFile(selectedFile);
   };
+  const handleCloseFile = () => {
+    setFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = null;
+    }
+  };
 
   const handleFileChange = (e) => {
     handleFile(e.target.files[0]);
@@ -29,12 +38,12 @@ const UploadExcelStudent = () => {
 
   const handleDragEnter = (e) => {
     e.preventDefault();
-    setIsDragging(true); 
+    setIsDragging(true);
   };
 
   const handleDragLeave = (e) => {
     e.preventDefault();
-    setIsDragging(false); 
+    setIsDragging(false);
   };
 
   const handleDrop = (e) => {
@@ -105,12 +114,29 @@ const UploadExcelStudent = () => {
           className={styles.inputUploadFile}
           accept=".xlsx"
         />
-        {file && <p className={styles.selectedFile}>ไฟล์ที่เลือก: {file.name}</p>}
-        {errorMsg && (
-          <p className={styles.errorMsg}>
-            {errorMsg}
-          </p>
+        {file && (
+          <div className={styles.selectedFileContainer}>
+            <div className={styles.selectedFile}>
+              <img src={IconExcel} alt="" width={40} height={40} />
+              <div className={styles.infoFile}>
+                <p className={styles.fileName}>{file.name}</p>
+                <p className={styles.fileSize}>{filesize(file.size)}</p>
+              </div>
+            </div>
+            <img
+              src={IconClose}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCloseFile();
+              }}
+              className={styles.closeIcon}
+              alt=""
+              width={15}
+              height={15}
+            />
+          </div>
         )}
+        {errorMsg && <p className={styles.errorMsg}>{errorMsg}</p>}
       </div>
       <button onClick={handleUpload} className={styles.btnUpload}>
         Upload

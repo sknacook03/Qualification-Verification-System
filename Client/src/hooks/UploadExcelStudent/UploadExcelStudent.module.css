@@ -59,11 +59,32 @@
   color: white;
   font-family: "Prompt", sans-serif;
 }
-.selectedFile {
-  font-size: 14px;
-  color: #444;
-  margin-top: -0.5rem;
-}
 .errorMsg{
   color: red;
+}
+.selectedFileContainer{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: transparent;
+  border: #ccc solid 2px;
+  border-radius: 0.5rem;
+}
+.selectedFile{
+  display:flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.infoFile{
+  color: #3B3B3B;
+  font-size: 14px;
+}
+.infoFile .fileSize{
+  color: #4f4f4f;
+  font-size: 12px;
 }
