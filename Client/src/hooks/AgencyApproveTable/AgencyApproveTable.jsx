@@ -28,6 +28,7 @@ function AgencyApproveTable({
   };
 
   return (
+    <div className={styles.container}>
     <table className={styles.table}>
       <thead>
         <tr>
@@ -113,6 +114,7 @@ function AgencyApproveTable({
         ))}
       </tbody>
     </table>
+    </div>
   );
 }
 

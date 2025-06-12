@@ -78,8 +78,16 @@
 }
 
 .primaryBtn {
+  cursor: pointer;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 0.3rem;
   background: #fb8c00;
   color: #fff;
+  transition: ease-in-out .3s;
+}
+.primaryBtn:hover {
+  background: #da7800;
 }
 
 .secondaryBtn {

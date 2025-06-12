@@ -37,6 +37,7 @@
 }
 .btnChooseFile {
   width: fit-content;
+  cursor: pointer;
   padding: 0.5rem;
   border: solid 1px #999;
   font-family: "Prompt", sans-serif;
@@ -56,8 +57,16 @@
 }
 .btnUpload {
   background-color: #2563eb;
+  border-radius: 0.5rem;
+  border: none;
+  padding: 0.5rem;
   color: white;
   font-family: "Prompt", sans-serif;
+  cursor: pointer;
+  transition: ease-in-out 0.3s;
+}
+.btnUpload:hover {
+  background-color: #0a4ad3;
 }
 .errorMsg{
   color: red;

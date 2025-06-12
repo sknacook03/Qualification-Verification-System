@@ -67,3 +67,6 @@
     width: 23rem;
     color: #333;
 }
+.closeButton{
+  border: none;
+}

@@ -136,6 +136,7 @@ const StudentSearch = ({ agency, forOfficer }) => {
       {loading && <p>Loading...</p>}
 
       {!loading && students.length > 0 && (
+        <div className={styles.studentTableContainer}>
         <table className={styles.studentTable}>
           <thead>
             <tr>
@@ -202,6 +203,7 @@ const StudentSearch = ({ agency, forOfficer }) => {
             ))}
           </tbody>
         </table>
+        </div>
       )}
       {selectedStudent && (
         <PopupStudent student={selectedStudent} onClose={handleClosePopup} />

@@ -1,15 +1,15 @@
-.container{
-    display: flex;
-    align-items: center;
-    padding: 10px 0;
+.container {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
 }
-.logo{
-    margin-right: 2rem;
+.logo {
+  margin-right: 2rem;
 }
-h2{
-    font-weight: 400;
+h2 {
+  font-weight: 400;
 }
 
-.header-info1{
-    color: #FF7100;
+.header-info1 {
+  color: #ff7100;
 }
