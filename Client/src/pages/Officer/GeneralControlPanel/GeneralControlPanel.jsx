@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import LayoutAllpage from "../../../components/LayoutAllPage/LayoutAllPage.jsx";
 import Icon from "../../../assets/general.png";
+import Loading from "../../../components/Loading/Loading.jsx";
 import { API_BASE_URL, APIEndpoints } from "../../../services/api.jsx";
 import styles from "./GeneralControlPanel.module.css";
 import { useNavigate } from "react-router-dom";
@@ -104,7 +105,7 @@ function GeneralControlPanel() {
         }
       );
       setEditData(res.data.data);
-      setIsEditMode(true); 
+      setIsEditMode(true);
       setShowPopup(true);
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการโหลดข้อมูล:", error);
@@ -114,8 +115,8 @@ function GeneralControlPanel() {
 
   const addTypeAgency = () => {
     setErrors({});
-    setEditData({ type_name: "" }); 
-    setIsEditMode(false); 
+    setEditData({ type_name: "" });
+    setIsEditMode(false);
     setShowPopup(true);
   };
 
@@ -128,7 +129,7 @@ function GeneralControlPanel() {
       setErrors(newErrors);
       return;
     }
-  
+
     try {
       if (isEditMode) {
         await axios.put(
@@ -154,9 +155,9 @@ function GeneralControlPanel() {
       setTypeAgency(res.data.data);
     } catch (error) {
       console.error("บันทึกข้อมูลไม่สำเร็จ:", error);
-  
+
       if (error.response && error.response.status === 409) {
-        setErrors(prev => ({
+        setErrors((prev) => ({
           ...prev,
           type_name: "ชื่อประเภทหน่วยงานนี้มีอยู่แล้ว",
         }));
@@ -165,7 +166,6 @@ function GeneralControlPanel() {
       }
     }
   };
-  
 
   const logout = async () => {
     try {
@@ -203,9 +203,6 @@ function GeneralControlPanel() {
     }
   };
 
-  if (loading) {
-    return <p className={styles.loading}>กำลังโหลดข้อมูล...</p>;
-  }
   return (
     <LayoutAllpage
       user={officer ? officer.first_name : "Loading..."}
@@ -220,7 +217,8 @@ function GeneralControlPanel() {
           activeTab={activeTab}
           onTabChange={setActiveTab}
         />
-        <div>{renderContent()}</div>
+        {loading && <Loading />}
+        {!loading && <div>{renderContent()}</div>}
       </div>
       {showPopup && (
         <Popup
@@ -234,7 +232,7 @@ function GeneralControlPanel() {
             value={editData.type_name}
             onChange={(e) => {
               setEditData({ ...editData, type_name: e.target.value });
-              setErrors((prev) => ({ ...prev, type_name: null })); 
+              setErrors((prev) => ({ ...prev, type_name: null }));
             }}
             placeholder="กรอกชื่อประเภทหน่วยงาน"
             error={errors.type_name}

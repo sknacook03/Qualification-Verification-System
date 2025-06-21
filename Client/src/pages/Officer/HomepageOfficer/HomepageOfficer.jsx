@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import LayoutAllpage from "../../../components/LayoutAllPage/LayoutAllPage.jsx";
+import Loading from "../../../components/Loading/Loading.jsx";
 import Icon from "../../../assets/homepage.png";
 import { API_BASE_URL, APIEndpoints } from "../../../services/api.jsx";
 import styles from "./HomepageOfficer.module.css";
 import { useNavigate } from "react-router-dom";
-import { topMenuItems, bottomMenuItems } from "../../../constants/officerMenuItems.jsx";
+import {
+  topMenuItems,
+  bottomMenuItems,
+} from "../../../constants/officerMenuItems.jsx";
 
 function HomepagesOfficer() {
   const [officer, setOfficer] = useState(null);
@@ -33,7 +37,6 @@ function HomepagesOfficer() {
     fetchOfficerData();
   }, [navigate]);
 
-  
   const logout = async () => {
     try {
       await axios.post(
@@ -51,9 +54,6 @@ function HomepagesOfficer() {
     }
   };
 
-  if (loading) {
-    return <p className={styles.loading}>กำลังโหลดข้อมูล...</p>;
-  }
   return (
     <LayoutAllpage
       user={officer ? officer.first_name : "Loading..."}
@@ -62,6 +62,7 @@ function HomepagesOfficer() {
       icon={Icon}
       label="หน้าหลัก"
     >
+      <Loading />
     </LayoutAllpage>
   );
 }

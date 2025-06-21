@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AgencyApproveTable from "../../hooks/AgencyApproveTable/AgencyApproveTable.jsx";
 import EditAgencyPopup from "../../hooks/EditAgencyPopup/EditAgencyPopup.jsx";
+import Loading from "../../components/Loading/Loading.jsx";
 import Popup from "../../components/Popup/Popup.jsx";
 import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
 import styles from "./AgencyApproval.module.css";
@@ -193,7 +194,7 @@ const AgencyApproval = ({ officer }) => {
 
   return (
     <div className={styles.container}>
-      {loading && <p className={styles.loading}>Loading...</p>}
+      {loading && <Loading />}
       {!loading && (
         <AgencyApproveTable
           agencies={pendingAgencies}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Loading from "../../components/Loading/Loading.jsx";
 import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
 import styles from "./AllOfficer.module.css";
 
@@ -7,7 +8,6 @@ function AllOfficer() {
   const [officers, setOfficers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // State popup edit
   const [editingOfficer, setEditingOfficer] = useState(null);
   const [editForm, setEditForm] = useState({
     first_name: "",
@@ -99,10 +99,10 @@ function AllOfficer() {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-
   return (
     <>
+      {loading && <Loading />}
+      {!loading && (
       <table className={styles.table}>
         <thead>
           <tr>
@@ -138,7 +138,7 @@ function AllOfficer() {
           ))}
         </tbody>
       </table>
-
+      )}
       {editingOfficer && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>

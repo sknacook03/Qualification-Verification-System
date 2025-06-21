@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./AccessStatistics.module.css";
+import Loading from "../../components/Loading/Loading.jsx";
 import axios from "axios";
 import { APIEndpoints, API_BASE_URL } from "../../services/api";
 import {
@@ -46,6 +47,7 @@ const AccessStatistics = () => {
   const [topAgencies, setTopAgencies] = useState([]);
   const [topFaculties, setTopFaculties] = useState([]);
   const [trend, setTrend] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const backgroundColor = [
     "rgba(255, 99, 132, 0.6)",
@@ -62,53 +64,31 @@ const AccessStatistics = () => {
     "rgba(153, 102, 255, 1)",
   ];
   useEffect(() => {
-    const fetchStatistics = async () => {
+    const fetchData = async () => {
       try {
-        const res = await axios.get(
-          API_BASE_URL + APIEndpoints.pageview.statistics
+        const [statisticsRes, agenciesRes, facultiesRes, trendRes] =
+          await Promise.all([
+            axios.get(API_BASE_URL + APIEndpoints.pageview.statistics),
+            axios.get(API_BASE_URL + APIEndpoints.pageview.topAgency),
+            axios.get(API_BASE_URL + APIEndpoints.pageview.topFaculty),
+            axios.get(API_BASE_URL + APIEndpoints.pageview.trend),
+          ]);
+
+        setTotalViews(statisticsRes.data.totalViews);
+        setUniqueStudents(statisticsRes.data.uniqueStudents);
+        setTopAgencies(Array.isArray(agenciesRes.data) ? agenciesRes.data : []);
+        setTopFaculties(
+          Array.isArray(facultiesRes.data) ? facultiesRes.data : []
         );
-        setTotalViews(res.data.totalViews);
-        setUniqueStudents(res.data.uniqueStudents);
+        setTrend(Array.isArray(trendRes.data) ? trendRes.data : []);
       } catch (error) {
-        console.error("Failed to fetch statistics:", error);
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    const fetchTopAgencies = async () => {
-      try {
-        const res = await axios.get(
-          API_BASE_URL + APIEndpoints.pageview.topAgency
-        );
-        setTopAgencies(Array.isArray(res.data) ? res.data : []);
-      } catch (error) {
-        console.error("Failed to fetch top agency views:", error);
-        setTopAgencies([]);
-      }
-    };
-    const fetchTopFaculties = async () => {
-      try {
-        const res = await axios.get(
-          API_BASE_URL + APIEndpoints.pageview.topFaculty
-        );
-        setTopFaculties(Array.isArray(res.data) ? res.data : []);
-      } catch (error) {
-        console.error("Failed to fetch top faculty views:", error);
-        setTopFaculties([]);
-      }
-    };
-    const fetchTrend = async () => {
-      try {
-        const res = await axios.get(API_BASE_URL + APIEndpoints.pageview.trend);
-        setTrend(Array.isArray(res.data) ? res.data : []);
-      } catch (error) {
-        console.error("Failed to fetch trend:", error);
-        setTrend([]);
-      }
-    };
-    fetchTopFaculties();
-    fetchStatistics();
-    fetchTopAgencies();
-    fetchTrend();
+    fetchData();
   }, []);
 
   const barChartData = {
@@ -211,7 +191,9 @@ const AccessStatistics = () => {
     },
   };
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div className={styles.containerStatistics}>
       <div className={styles.leftBoxState}>
         <div className={styles.boxState}>
