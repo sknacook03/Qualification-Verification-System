@@ -1,21 +1,22 @@
 import multer from "multer";
 import path from "path";
 import AgencyService from "../services/agency.service.js";
+import { sendAgencyCreate } from "../services/email.service.js";
 
 const replacer = (key, value) => {
   if (typeof value === "bigint") {
-    return value.toString(); 
+    return value.toString();
   }
   return value;
 };
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); 
+    cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
-    cb(null, `${Date.now()}${ext}`); 
+    cb(null, `${Date.now()}${ext}`);
   },
 });
 
@@ -54,30 +55,30 @@ const AgencyController = {
   getLoggedInController: async (req, res) => {
     try {
       const agencyId = req.agency.id;
-      
+
       const agencyData = await AgencyService.getAgencyById(agencyId);
-  
+
       if (!agencyData) {
         return res.status(404).json({ error: "Agency data not found" });
       }
 
       if (agencyData.id) {
-        agencyData.id = agencyData.id.toString(); 
+        agencyData.id = agencyData.id.toString();
       }
 
       const agencyDataStringified = JSON.parse(
         JSON.stringify(agencyData, (key, value) =>
-          typeof value === 'bigint' ? value.toString() : value
+          typeof value === "bigint" ? value.toString() : value
         )
       );
-  
+
       res.json({ data: agencyDataStringified });
     } catch (error) {
       console.error("Error fetching agency data:", error.message);
       res.status(500).json({ error: "Internal Server Error" });
     }
   },
-  
+
   createAgencyController: async (req, res) => {
     upload(req, res, async (err) => {
       if (err) {
@@ -98,8 +99,10 @@ const AgencyController = {
           type_id,
           password,
         } = req.body;
-        console.log(req.body); 
-        const certificate = req.file ? req.file.path : "no_certificate_uploaded";;
+        console.log(req.body);
+        const certificate = req.file
+          ? req.file.path
+          : "no_certificate_uploaded";
 
         const lastAgency = await AgencyService.getLastAgency();
         const newId = lastAgency ? Number(lastAgency.id) + 1 : 1;
@@ -122,7 +125,21 @@ const AgencyController = {
 
         const agency = await AgencyService.createAgency(agencyData);
         const responseData = JSON.parse(JSON.stringify(agency, replacer));
+        const emailOfficer = await AgencyService.findAllOfficerEmailsAndNames();
 
+        await Promise.all(
+          emailOfficer.map(async (officer) => {
+            try {
+              await sendAgencyCreate(
+                officer.email,
+                officer.first_name,
+                agency_name
+              );
+            } catch (error) {
+              console.error(`Failed to send email to ${officer.email}:`, error);
+            }
+          })
+        );
         res.status(201).json({
           success: true,
           data: responseData,
@@ -152,84 +169,104 @@ const AgencyController = {
   },
   updateRejectionAgencyController: async (req, res) => {
     upload(req, res, async (err) => {
-        if (err) {
-            return res.status(400).json({ error: err.message });
+      if (err) {
+        return res.status(400).json({ error: err.message });
+      }
+
+      try {
+        const { id } = req.params;
+        let updateData = req.body;
+
+        console.log("Received Body Data:", updateData);
+        console.log("Received File Data:", req.file);
+
+        if (!req.file) {
+          return res
+            .status(400)
+            .json({ error: "No certificate file uploaded." });
         }
 
-        try {
-            const { id } = req.params;
-            let updateData = req.body;
+        updateData.certificate = req.file.path;
 
-            console.log("Received Body Data:", updateData);
-            console.log("Received File Data:", req.file);
+        const updatedAgency = await AgencyService.updateRejectionAgency(
+          id,
+          updateData
+        );
 
-            if (!req.file) {
-                return res.status(400).json({ error: "No certificate file uploaded." });
-            }
+        const responseData = JSON.parse(
+          JSON.stringify(updatedAgency, (key, value) =>
+            typeof value === "bigint" ? value.toString() : value
+          )
+        );
 
-            updateData.certificate = req.file.path;
-
-            const updatedAgency = await AgencyService.updateRejectionAgency(id, updateData);
-
-            const responseData = JSON.parse(JSON.stringify(updatedAgency, (key, value) =>
-                typeof value === 'bigint' ? value.toString() : value
-            ));
-
-            res.status(200).json({
-                success: true,
-                message: "Successfully updated agency.",
-                data: responseData,
-            });
-
-        } catch (error) {
-            console.error("An error occurred while updating the unit:", error.message);
-            res.status(500).json({ error: error.message || "Unable to update agency" });
-        }
+        res.status(200).json({
+          success: true,
+          message: "Successfully updated agency.",
+          data: responseData,
+        });
+      } catch (error) {
+        console.error(
+          "An error occurred while updating the unit:",
+          error.message
+        );
+        res
+          .status(500)
+          .json({ error: error.message || "Unable to update agency" });
+      }
     });
-},
+  },
   checkEmailController: async (req, res) => {
     const { email } = req.body;
-  
+
     try {
       const exists = await AgencyService.checkEmailExists(email);
       res.status(200).json({ exists });
     } catch (error) {
-      console.error('Error checking email:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error("Error checking email:", error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
   },
   updateAgencyController: async (req, res) => {
     try {
       const { id } = req.params;
       const updateData = req.body;
-  
+
       if (Object.keys(updateData).length === 0) {
-        return res.status(400).json({ error: "There is no information for updates." });
+        return res
+          .status(400)
+          .json({ error: "There is no information for updates." });
       }
-  
+
       const updateAgencyData = await AgencyService.updateAgency(id, updateData);
-  
-      const responseData = JSON.parse(JSON.stringify(updateAgencyData, replacer));
-  
+
+      const responseData = JSON.parse(
+        JSON.stringify(updateAgencyData, replacer)
+      );
+
       res.status(200).json({
         success: true,
         message: "Successfully updated agency.",
         data: responseData,
       });
     } catch (error) {
-      console.error("An error occurred while updating the unit:", error.message);
-      res.status(500).json({ error: error.message || "Unable to update agency" });
+      console.error(
+        "An error occurred while updating the unit:",
+        error.message
+      );
+      res
+        .status(500)
+        .json({ error: error.message || "Unable to update agency" });
     }
   },
   checkTelephoneController: async (req, res) => {
     const { telephone_number } = req.body;
-  
+
     try {
       const exists = await AgencyService.checkTelephoneExists(telephone_number);
       res.status(200).json({ exists });
     } catch (error) {
-      console.error('Error checking telephone:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error("Error checking telephone:", error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
   },
   verifyPasswordAgencyController: async (req, res, next) => {
@@ -247,7 +284,6 @@ const AgencyController = {
       next(err);
     }
   },
-  
 };
 
 export default AgencyController;

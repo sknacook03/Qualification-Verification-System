@@ -20,7 +20,7 @@ const AgencyService = {
       const agency = await prisma.agency.findUnique({
         where: { id: BigInt(id) },
       });
-  
+
       if (!agency) {
         console.error("No agency found for ID:", id);
       }
@@ -65,12 +65,11 @@ const AgencyService = {
       if (!type_id) {
         throw new Error("Type ID is required");
       }
-  
 
       const typeAgency = await prisma.typeAgency.findUnique({
         where: { id: type_id },
       });
-  
+
       if (!typeAgency) {
         throw new Error("Invalid Type ID");
       }
@@ -89,7 +88,7 @@ const AgencyService = {
           province: province || "-",
           postal_code: postal_code || "-",
           typeAgency: {
-            connect: { id: type_id }, 
+            connect: { id: type_id },
           },
           password: hashedPassword,
           certificate,
@@ -107,98 +106,120 @@ const AgencyService = {
   deleteAgency: async (id) => {
     try {
       const agencyId = BigInt(id);
-  
+
       const existingAgency = await prisma.agency.findUnique({
         where: { id: agencyId },
       });
       if (!existingAgency) {
         throw new Error(`Agency with ID ${id} does not exist.`);
       }
-  
+
       await prisma.$transaction([
         prisma.approvalLog.deleteMany({
           where: { agency_id: agencyId },
         }),
-  
+
         prisma.agency.delete({
           where: { id: agencyId },
         }),
       ]);
-  
+
       return true;
     } catch (error) {
       console.error("Failed to delete agency:", error);
       throw error;
     }
   },
+  findAllOfficerEmailsAndNames: async () => {
+    try {
+      const officers = await prisma.officer.findMany({
+        select: {
+          email: true,
+          first_name: true,
+        },
+      });
+
+      if (!officers || officers.length === 0) {
+        console.error("No officers found.");
+      }
+
+      return officers.map((officer) => ({
+        email: officer.email,
+        first_name: officer.first_name,
+      }));
+    } catch (error) {
+      console.error("Error finding officers' emails:", error);
+      throw new Error("Database error");
+    }
+  },
+
   updateRejectionAgency: async (id, updateData) => {
     try {
-        const existAgency = await prisma.agency.findUnique({
-            where: { id: BigInt(id) }
-        });
+      const existAgency = await prisma.agency.findUnique({
+        where: { id: BigInt(id) },
+      });
 
-        if (!existAgency) {
-            throw new Error(`Agency with ID ${id} does not exist.`);
-        }
-        const now = new Date();
-        const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
-        let updatePayload = { ...updateData, updated_at: bangkokTime };
+      if (!existAgency) {
+        throw new Error(`Agency with ID ${id} does not exist.`);
+      }
+      const now = new Date();
+      const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+      let updatePayload = { ...updateData, updated_at: bangkokTime };
 
-        if (updateData.password) {
-            updatePayload.password = await bcrypt.hash(updateData.password, 10);
-        } else {
-            delete updatePayload.password;
-        }
+      if (updateData.password) {
+        updatePayload.password = await bcrypt.hash(updateData.password, 10);
+      } else {
+        delete updatePayload.password;
+      }
 
-        if (updateData.postalCode) {
-            updatePayload.postal_code = updateData.postalCode;
-            delete updatePayload.postalCode;
-        }
+      if (updateData.postalCode) {
+        updatePayload.postal_code = updateData.postalCode;
+        delete updatePayload.postalCode;
+      }
 
-        if (updateData.type_id) {
-            updatePayload.typeAgency = {
-                connect: { id: parseInt(updateData.type_id) }
-            };
-            delete updatePayload.type_id;
-        }
+      if (updateData.type_id) {
+        updatePayload.typeAgency = {
+          connect: { id: parseInt(updateData.type_id) },
+        };
+        delete updatePayload.type_id;
+      }
 
-        const updatedAgency = await prisma.agency.update({
-            where: { id: BigInt(id) },
-            data: updatePayload,
-        });
+      const updatedAgency = await prisma.agency.update({
+        where: { id: BigInt(id) },
+        data: updatePayload,
+      });
 
-        return updatedAgency;
-
+      return updatedAgency;
     } catch (error) {
-        console.error("Failed to update agency:", error);
-        throw error;
+      console.error("Failed to update agency:", error);
+      throw error;
     }
-},
-updateAgency: async (id, updateData) => {
-  try {
-    const { password, ...restData } = updateData;
+  },
+  updateAgency: async (id, updateData) => {
+    try {
+      const { password, ...restData } = updateData;
 
-    const data = { ...restData };
+      const data = { ...restData };
 
-    if (password) {
-      data.password = await bcrypt.hash(password, 10);
+      if (password) {
+        data.password = await bcrypt.hash(password, 10);
+      }
+
+      const now = new Date();
+      const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+      data.updated_at = bangkokTime;
+
+      const updatedAgency = await prisma.agency.update({
+        where: { id: BigInt(id) },
+        data,
+      });
+
+      return updatedAgency;
+    } catch (error) {
+      console.error("Failed to update agency:", error);
+      throw error;
     }
-
-    const now = new Date();
-    const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
-    data.updated_at = bangkokTime;
-
-    const updatedAgency = await prisma.agency.update({
-      where: { id: BigInt(id) },
-      data,
-    });
-
-    return updatedAgency;
-  } catch (error) {
-    console.error("Failed to update agency:", error);
-    throw error;
-  }
-},
+  },
   getLastAgency: async () => {
     try {
       const agency = await prisma.agency.findFirst({
@@ -259,7 +280,6 @@ updateAgency: async (id, updateData) => {
     }
     return true;
   },
-  
 };
 
 export default AgencyService;

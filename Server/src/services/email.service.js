@@ -145,7 +145,7 @@ export const sendApprovalEmail = async (email, agencyName) => {
     <body>
         <div class="container">
             <div class="header">
-                <img src="https://sci.rmuti.ac.th/main/wp-content/uploads/2022/02/unnamed-1-270x300.png" alt="RMUTI Logo">
+                <img src="https://sci.rmuti.ac.th/main/wp-content/uploads/2022/02/unnamed-1-270x300.png" alt="Logo">
             </div>
             <div class="content">
                 <p>เรียนคุณ ${agencyName},</p>
@@ -234,7 +234,7 @@ export const sendRejectionEmail = async (email, agencyName, reason, agencyId) =>
         <body>
             <div class="container">
                 <div class="header">
-                    <img src="https://sci.rmuti.ac.th/main/wp-content/uploads/2022/02/unnamed-1-270x300.png" alt="RMUTI Logo">
+                    <img src="https://sci.rmuti.ac.th/main/wp-content/uploads/2022/02/unnamed-1-270x300.png" alt="Logo">
                 </div>
                 <div class="content">
                     <p>เรียนคุณ ${agencyName},</p>
@@ -256,3 +256,94 @@ export const sendRejectionEmail = async (email, agencyName, reason, agencyId) =>
   
     await sendEmail(email, subject, null, htmlContent);
   };
+
+export const sendAgencyCreate = async (email, officerName, agencyName) => {
+  const subject = "Create Agency";
+  const htmlContent = `
+        <!DOCTYPE html>
+    <html lang="th">
+    <head>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background: #f2f2f2;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: #ff7100;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+        .header img {
+            max-width: 100px;
+            margin-bottom: 10px;
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+        .content p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #333;
+            margin: 10px 0;
+        }
+        .content p strong {
+             font-size: 18px;
+             color: #ff7100;
+        }
+        .content a {
+            font-size: 16px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .content a:hover {
+            text-decoration: underline;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #888888;
+            margin-top: 20px;
+            padding: 10px 0;
+        }
+    </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <img src="https://sci.rmuti.ac.th/main/wp-content/uploads/2022/02/unnamed-1-270x300.png" alt="Logo">
+            </div>
+            <div class="content">
+                <p>เรียนคุณ ${officerName},</p>
+                <p>ขณะนี้มีการสมัครสมาชิกของหน่วยงานเข้ามา</p>
+                <p>ชื่อของหน่วยงานดังกล่าวคือ: <strong>${agencyName}</strong></p>
+                <p>คุณสามารถตรวจสอบหน่วยงานได้โดยใช้ลิงก์ด้านล่าง</p>
+                <p><a href="http://localhost:5173/">http://localhost:5173/</a></p>
+            </div>
+            <div class="footer">
+                <p>© 2024 มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน</p>
+                <p>อีเมลนี้ส่งจากระบบอัตโนมัติ กรุณาอย่าตอบกลับ</p>
+            </div>
+        </div>
+    </body>
+    </html>
+  `;
+
+  try {
+    await sendEmail(email, subject, null, htmlContent);
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw new Error("Failed to send email");
+  }
+};
