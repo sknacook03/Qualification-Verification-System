@@ -43,8 +43,8 @@ function RegisterNext() {
     return Object.keys(newErrors).length === 0;
   };
   const closePopup = (e) => {
-    setShowPopup(false);
     navigate("/");
+    setShowPopup(false);
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -169,6 +169,8 @@ function RegisterNext() {
               <Button text="ย้อนกลับ" styleType="back" />
             </Link>
           </div>
+        </form>
+      </div>
           {showPopup && (
             <Popup
               topic="สมัครสมาชิกสำเร็จ!"
@@ -178,8 +180,6 @@ function RegisterNext() {
               textButtonSuccess="กลับไปยังหน้าเข้าสู่ระบบ"
             />
           )}
-        </form>
-      </div>
       <ToastContainer position="top-center" />
       <Footer />
     </div>
