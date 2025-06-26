@@ -54,9 +54,6 @@ function PrivacySettingsPageOfficer() {
     }
   };
 
-  if (loading) {
-    return <p className={styles.loading}>กำลังโหลดข้อมูล...</p>;
-  }
 
   return (
     <LayoutAllpage

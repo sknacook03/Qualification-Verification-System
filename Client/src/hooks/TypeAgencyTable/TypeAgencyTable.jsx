@@ -20,8 +20,10 @@ const TypeAgencyTable = ({ typeAgency, editType, deleteType, addType }) => {
               <td>{index + 1}</td>
               <td>{typeItem.type_name}</td>
               <td className={styles.btnTypeAgency}>
+                <div className={styles.btnContainer}>
                 <button className={styles.editType} onClick={() => editType(typeItem.id)}>แก้ไข</button>
                 <button className={styles.deleteType} onClick={() => deleteType(typeItem.id)}>ลบ</button>
+                </div>
               </td>
             </tr>
           ))}

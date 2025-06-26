@@ -16,6 +16,7 @@ export const APIEndpoints = {
       updateAgency: (agencyId) => `/agency/update-agency/${agencyId}`,
       updateRejectAgency: (agencyId) => `/agency/update-reject-agency/${agencyId}`,
       deleteAgency: (agencyId) => `/agency/delete-agency/${agencyId}`,
+      latestSearch: (agencyId) => `/agency/latest-search/${agencyId}`,
     },
     passwordReset: {
       request: "/password-reset/request-reset",

@@ -13,6 +13,7 @@ AgencyRouter.post("/verify-password/:id", authMiddleware,AgencyController.verify
 AgencyRouter.put("/update-agency/:id", authMiddleware,AgencyController.updateAgencyController);
 AgencyRouter.put("/update-reject-agency/:id",AgencyController.updateRejectionAgencyController);
 AgencyRouter.delete("/delete-agency/:id",authMiddleware, AgencyController.deleteAgencyController)
+AgencyRouter.get("/latest-search/:id", authMiddleware, AgencyController.latestSearchController)
   
 
 export default AgencyRouter;

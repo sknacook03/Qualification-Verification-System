@@ -52,9 +52,6 @@ function StudentControlPanel() {
     }
   };
 
-  if (loading) {
-    return <p className={styles.loading}>กำลังโหลดข้อมูล...</p>;
-  }
   return (
     <LayoutAllpage
       user={officer ? officer.first_name : "Loading..."}

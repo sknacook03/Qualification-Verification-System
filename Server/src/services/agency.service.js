@@ -280,6 +280,33 @@ const AgencyService = {
     }
     return true;
   },
+  latestSearch: async (id) => {
+    try {
+      const Latest = await prisma.pageView.findMany({
+        orderBy: {
+          created_at: "desc",
+        },
+        take: 5,
+        where: {
+          agency_id: BigInt(id),
+        },
+        include: {
+          agency: true,
+          student: true,
+        },
+      });
+      const converted = JSON.parse(
+        JSON.stringify(Latest, (_, value) =>
+          typeof value === "bigint" ? value.toString() : value
+        )
+      );
+
+      return converted;
+    } catch (error) {
+      console.error("Failed to latestSearch:", error);
+      throw new Error("Failed to latestSearch");
+    }
+  },
 };
 
 export default AgencyService;

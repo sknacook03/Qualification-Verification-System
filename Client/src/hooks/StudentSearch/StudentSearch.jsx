@@ -143,6 +143,8 @@ const StudentSearch = ({ agency, forOfficer }) => {
               <th>รหัสนักศึกษา</th>
               <th>ชื่อ</th>
               <th>นามสกุล</th>
+              <th>คณะ</th>
+              <th>สาขา</th>
               <th>สถานะการศึกษา</th>
               <th>เพิ่มเติม</th>
             </tr>
@@ -153,6 +155,8 @@ const StudentSearch = ({ agency, forOfficer }) => {
                 <td>{student.student_no}</td>
                 <td>{student.name}</td>
                 <td>{student.lname}</td>
+                <td>{student.curr_name.split("(")[0].trim() || "Unknown"}</td>
+                <td>{student.curr_name.match(/\((.*?)\)/)?.[1] || "Unknown"}</td>
                 <td
                   style={{
                     color: student.status_graduate == 1 ? "green" : "red",

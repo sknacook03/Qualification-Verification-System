@@ -284,6 +284,16 @@ const AgencyController = {
       next(err);
     }
   },
+  latestSearchController: async (req, res) => {
+    try {
+      const agencyId = req.params.id;
+      const result = await AgencyService.latestSearch(agencyId);
+      res.json({ success: true, message: "บันทึกการค้นหาเรียบร้อย", data: result });
+    } catch (error) {
+      console.error("Error saving latest search:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
 };
 
 export default AgencyController;
