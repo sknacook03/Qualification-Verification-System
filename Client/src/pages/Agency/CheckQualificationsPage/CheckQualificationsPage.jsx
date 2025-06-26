@@ -43,10 +43,6 @@ function CheckQualificationsPage() {
     fetchUserData();
   }, [navigate]);
 
-  if (loading) {
-    return <div>กำลังโหลดข้อมูล...</div>;
-  }
-
   const logout = async () => {
     try {
       await axios.post(

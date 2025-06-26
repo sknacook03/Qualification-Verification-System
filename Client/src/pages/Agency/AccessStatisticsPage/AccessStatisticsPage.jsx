@@ -43,9 +43,6 @@ function AccessStatisticsPage() {
     fetchUserData();
   }, [navigate]);
 
-  if (loading) {
-    return <div>กำลังโหลดข้อมูล...</div>;
-  }
 
   const logout = async () => {
     try {

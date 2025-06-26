@@ -286,7 +286,6 @@ const AgencyService = {
         orderBy: {
           created_at: "desc",
         },
-        take: 5,
         where: {
           agency_id: BigInt(id),
         },
