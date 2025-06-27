@@ -1,5 +1,6 @@
 import React from "react";
-import close from "../../assets/close.png"
+import ClipLoader from "react-spinners/ClipLoader";
+import close from "../../assets/close.png";
 import styles from "./Popup.module.css";
 
 const Popup = ({
@@ -13,16 +14,27 @@ const Popup = ({
   onChangeTextarea,
   placeholderTextarea,
   valueTextarea,
+  loading,
   children,
 }) => {
   const handleSubmit = (e) => {
-    e.preventDefault(); 
-    successPopup(); 
+    e.preventDefault();
+    if (textarea && !valueTextarea.trim()) return;
+    successPopup();
   };
   return (
     <div className={styles.overlayPopup}>
       <form onSubmit={handleSubmit} className={styles.contentPopup}>
-        {closePopup && <img src={close} onClick={closePopup} alt="close" className={styles.closePopup} width={25} height={25} />}
+        {closePopup && (
+          <img
+            src={close}
+            onClick={closePopup}
+            alt="close"
+            className={styles.closePopup}
+            width={25}
+            height={25}
+          />
+        )}
         <h2>{topic}</h2>
         {img && <img src={img} alt="" width={100} height={100} />}
         {info && <p>{info}</p>}
@@ -34,7 +46,19 @@ const Popup = ({
           ></textarea>
         )}
         {children}
-          <button type="submit" className={styles.buttonPopup}>{textButtonSuccess}</button>
+        {loading ? (
+          <div className={styles.loader}>
+            <ClipLoader size={15} color={"#FF7100"} />
+          </div>
+        ) : (
+          <button
+            type="submit"
+            className={styles.buttonPopup}
+            disabled={textarea && !valueTextarea.trim()}
+          >
+            {textButtonSuccess}
+          </button>
+        )}
       </form>
     </div>
   );

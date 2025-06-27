@@ -1,8 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./AgencyApproveTable.module.css";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faPenToSquare, faTrashCan, faClock, faRectangleXmark, faSquareCheck } from '@fortawesome/free-regular-svg-icons';
-import { faInfo } from '@fortawesome/free-solid-svg-icons';
+import ClipLoader from "react-spinners/ClipLoader";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faEye,
+  faPenToSquare,
+  faTrashCan,
+  faClock,
+  faRectangleXmark,
+  faSquareCheck,
+} from "@fortawesome/free-regular-svg-icons";
+import { faInfo } from "@fortawesome/free-solid-svg-icons";
 
 function AgencyApproveTable({
   agencies,
@@ -17,6 +25,25 @@ function AgencyApproveTable({
   disableEdit,
   disableDelete,
 }) {
+  const [loadingApproveId, setLoadingApproveId] = useState(null);
+  const [loadingPendingId, setLoadingPendingId] = useState(null);
+  const handleApprove = async (id) => {
+    setLoadingApproveId(id);
+    try {
+      await onApprove(id);
+    } finally {
+      setLoadingApproveId(null);
+    }
+  };
+
+  const handlePending = async (id) => {
+    setLoadingPendingId(id);
+    try {
+      await onPending(id);
+    } finally {
+      setLoadingPendingId(null);
+    }
+  };
   const normalizeImagePath = (path) => path?.replace(/\\/g, "/") || null;
 
   const viewImage = (url) => {
@@ -63,7 +90,9 @@ function AgencyApproveTable({
                   <span className={styles.emailText}>{agencyItem.email}</span>
                 </td>
                 <td data-label="เบอร์โทรศัพท์">
-                  <span className={styles.telText}>{agencyItem.telephone_number}</span>
+                  <span className={styles.telText}>
+                    {agencyItem.telephone_number}
+                  </span>
                 </td>
                 <td data-label="ประเภทหน่วยงาน">
                   {/* ใส่ข้อมูลประเภทถ้ามี */}
@@ -82,7 +111,7 @@ function AgencyApproveTable({
                           )
                         }
                       >
-                        <FontAwesomeIcon icon={faEye}/>
+                        <FontAwesomeIcon icon={faEye} />
                       </button>
                     ) : (
                       "No Certificate"
@@ -100,18 +129,29 @@ function AgencyApproveTable({
                     <button
                       className={`${styles.button} ${styles.approveButton}`}
                       title="ยืนยันหน่วยงาน"
-                      onClick={() => onApprove(agencyItem.id)}
+                      onClick={() => handleApprove(agencyItem.id)}
+                      disabled={loadingApproveId === agencyItem.id}
                     >
-                      <FontAwesomeIcon icon={faSquareCheck}/>
+                      {loadingApproveId === agencyItem.id ? (
+                        <ClipLoader size={15} color="#fff" />
+                      ) : (
+                        <FontAwesomeIcon icon={faSquareCheck} />
+                      )}
                     </button>
                   )}
+
                   {!disablePending && (
                     <button
                       className={`${styles.button} ${styles.pendingButton}`}
                       title="รอดำเนินการ"
-                      onClick={() => onPending(agencyItem.id)}
+                      onClick={() => handlePending(agencyItem.id)}
+                      disabled={loadingPendingId === agencyItem.id}
                     >
-                      <FontAwesomeIcon icon={faClock}/>
+                      {loadingPendingId === agencyItem.id ? (
+                        <ClipLoader size={15} color="#fff" />
+                      ) : (
+                        <FontAwesomeIcon icon={faClock} />
+                      )}
                     </button>
                   )}
                   {!disableReject && (
@@ -120,7 +160,7 @@ function AgencyApproveTable({
                       title="ปฏิเสธหน่วยงาน"
                       onClick={() => onReject(agencyItem.id)}
                     >
-                      <FontAwesomeIcon icon={faRectangleXmark}/>
+                      <FontAwesomeIcon icon={faRectangleXmark} />
                     </button>
                   )}
                 </td>
@@ -131,7 +171,7 @@ function AgencyApproveTable({
                       title="แก้ไขหน่วยงาน"
                       onClick={() => onEdit(agencyItem.id)}
                     >
-                      <FontAwesomeIcon icon={faPenToSquare}/>
+                      <FontAwesomeIcon icon={faPenToSquare} />
                     </button>
                   )}
                   {!disableDelete && (
@@ -140,14 +180,15 @@ function AgencyApproveTable({
                       title="ลบหน่วยงาน"
                       onClick={() => onDelete(agencyItem.id)}
                     >
-                      <FontAwesomeIcon icon={faTrashCan}/>
+                      <FontAwesomeIcon icon={faTrashCan} />
                     </button>
                   )}
                   <button
                     className={`${styles.button} ${styles.infoButton}`}
                     title="ข้อมูลหน่วยงาน"
-                    onClick={() => alert("ข้อมูลเพิ่มเติม")}>
-                    <FontAwesomeIcon icon={faInfo}/>
+                    onClick={() => alert("ข้อมูลเพิ่มเติม")}
+                  >
+                    <FontAwesomeIcon icon={faInfo} />
                   </button>
                 </td>
               </tr>

@@ -115,7 +115,6 @@ function Homepages() {
                         <th>รหัสนักศึกษา</th>
                         <th>ชื่อ</th>
                         <th>นามสกุล</th>
-                        <th>คณะ</th>
                         <th>สาขา</th>
                         <th>สถานะการศึกษา</th>
                         <th>เพิ่มเติม</th>
@@ -128,10 +127,6 @@ function Homepages() {
                         <td>{item.student.student_no}</td>
                         <td>{item.student.name}</td>
                         <td>{item.student.lname}</td>
-                        <td>
-                          {item.student.curr_name?.split?.("(")?.[0]?.trim() ||
-                            "Unknown"}
-                        </td>
                         <td>
                           {item.student.curr_name?.match?.(/\((.*?)\)/)?.[1] ||
                             "Unknown"}

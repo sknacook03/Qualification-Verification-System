@@ -57,7 +57,7 @@ function PrivacySettingsPageOfficer() {
 
   return (
     <LayoutAllpage
-      user={officer.first_name}
+      user={officer ? officer.first_name : "Loading..."}
       icon={Icon}
       label="ตั้งค่าความเป็นส่วนตัว"
       topMenuItems={topMenuItems}
