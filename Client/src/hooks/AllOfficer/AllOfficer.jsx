@@ -3,6 +3,8 @@ import axios from "axios";
 import Loading from "../../components/Loading/Loading.jsx";
 import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
 import styles from "./AllOfficer.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare, faTrashCan } from "@fortawesome/free-regular-svg-icons";
 
 function AllOfficer() {
   const [officers, setOfficers] = useState([]);
@@ -56,7 +58,11 @@ function AllOfficer() {
   };
 
   const handleEditSave = async () => {
-    if (!editForm.first_name.trim() || !editForm.last_name.trim() || !editForm.email.trim()) {
+    if (
+      !editForm.first_name.trim() ||
+      !editForm.last_name.trim() ||
+      !editForm.email.trim()
+    ) {
       setEditError("กรุณากรอกข้อมูลให้ครบถ้วน");
       return;
     }
@@ -88,9 +94,12 @@ function AllOfficer() {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure to delete this officer?")) return;
     try {
-      await axios.delete(API_BASE_URL + APIEndpoints.officer.deleteOfficer(id), {
-        withCredentials: true,
-      });
+      await axios.delete(
+        API_BASE_URL + APIEndpoints.officer.deleteOfficer(id),
+        {
+          withCredentials: true,
+        }
+      );
       setOfficers((prev) => prev.filter((officer) => officer.id !== id));
       alert("Deleted successfully");
     } catch (error) {
@@ -103,46 +112,48 @@ function AllOfficer() {
     <>
       {loading && <Loading />}
       {!loading && (
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>Actions Officer</th>
-          </tr>
-        </thead>
-        <tbody>
-          {officers.map((officer, index) => (
-            <tr key={officer.id}>
-              <td>{index + 1}</td>
-              <td>{officer.first_name}</td>
-              <td>{officer.last_name}</td>
-              <td>{officer.email}</td>
-              <td>
-                <button
-                  className={styles.editButton}
-                  onClick={() => openEditModal(officer)}
-                >
-                  Edit
-                </button>
-                <button
-                  className={styles.deleteButton}
-                  onClick={() => handleDelete(officer.id)}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        <div className={styles.container}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>ชื่อ</th>
+                <th>นามสกุล</th>
+                <th>อีเมล</th>
+                <th>จัดการเจ้าหน้าที่</th>
+              </tr>
+            </thead>
+            <tbody>
+              {officers.map((officer, index) => (
+                <tr key={officer.id}>
+                  <td>{index + 1}</td>
+                  <td>{officer.first_name}</td>
+                  <td>{officer.last_name}</td>
+                  <td>{officer.email}</td>
+                  <td>
+                    <button
+                      className={`${styles.button} ${styles.editButton}`}
+                      onClick={() => openEditModal(officer)}
+                    >
+                      <FontAwesomeIcon icon={faPenToSquare} />
+                    </button>
+                    <button
+                      className={styles.deleteButton}
+                      onClick={() => handleDelete(officer.id)}
+                    >
+                      <FontAwesomeIcon icon={faTrashCan} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
       {editingOfficer && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
-            <h3>แก้ไขเจ้าหน้าที่</h3>
+            <h2 className={styles.titleOverlayOfficer}>แก้ไขข้อมูลเจ้าหน้าที่</h2>
             <div className={styles.formGroup}>
               <label>ชื่อ:</label>
               <input
@@ -174,15 +185,15 @@ function AllOfficer() {
             {editError && <p className={styles.formError}>{editError}</p>}
 
             <div className={styles.modalActions}>
+              <button onClick={closeEditModal} className={styles.cancelButton}>
+                ยกเลิก
+              </button>
               <button
                 onClick={handleEditSave}
                 disabled={editLoading}
                 className={styles.saveButton}
               >
                 {editLoading ? "กำลังบันทึก..." : "บันทึก"}
-              </button>
-              <button onClick={closeEditModal} className={styles.cancelButton}>
-                ยกเลิก
               </button>
             </div>
           </div>

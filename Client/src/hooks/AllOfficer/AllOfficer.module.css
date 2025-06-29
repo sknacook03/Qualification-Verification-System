@@ -1,59 +1,82 @@
+.container{
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 1.2rem;
+  max-width: 100vw;
+  box-shadow: 0 4px 24px rgba(60, 100, 180, 0.07);
+}
 .table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(60, 100, 180, 0.07);
+  min-width: 900px;
   }
   
   .table th,
   .table td {
-    border: 1px solid #ddd;
-    padding: 10px 15px;
+    padding: 14px 12px;
     text-align: left;
+    font-size: 15px;
+    font-weight: 500;
+    vertical-align: middle;
   }
   
   .table th {
-    background-color: #f5f5f5;
-    font-weight: 600;
-    color: #333;
+    background: #f5f7fa;
+    color: #474e5d;
+    font-size: 15px;
+    border-bottom: 1px solid #eaeef3;
+    position: sticky;
+    top: 0;
+    z-index: 2;
   }
   
-  .table tbody tr:nth-child(even) {
-    background-color: #fafafa;
+  .table td {
+    border-bottom: 1px solid #f0f2f5;
   }
-  
-  .table tbody tr:hover {
-    background-color: #f1f1f1;
-  }
-  
-  .editButton {
-    background-color: #f0ad4e; 
-    color: white;
+
+  .table button {
+    padding: 9px;
     border: none;
-    padding: 6px 12px;
-    margin-right: 8px;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.3s ease;
+    margin: 5px 5px 0 0;
+    transition: all 0.3s ease;
+    min-width: 38px;
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
   
-  .editButton:hover {
-    background-color: #ec971f;
+  button.editButton {
+    border: 2px solid #ff9800;
+    color: #ff9800;
+    background: #fff;
   }
   
-  .deleteButton {
-    background-color: #6c757d; 
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.3s ease;
+  button.editButton:hover {
+    color: #fff;
+    background: #ff9800;
+    box-shadow: 0 4px 10px rgba(255, 152, 0, 0.3);
+    transform: translateY(-2px) scale(1.05);
   }
   
-  .deleteButton:hover {
-    background-color: #5a6268;
+  button.deleteButton {
+    border: 2px solid #f44336;
+    color: #f44336;
+    background: #fff;
+  }
+  
+  button.deleteButton:hover {
+    color: #fff;
+    background: #f44336;
+    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+    transform: translateY(-2px) scale(1.05);
   }
   
   /* modal overlay */
@@ -72,64 +95,109 @@
   
   /* modal box */
   .modal {
-    background-color: white;
-    padding: 20px 30px;
+    background: #f2f2f2;
+    padding: 24px;
     border-radius: 8px;
-    width: 400px;
-    max-width: 90%;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-height: 80vh;
+    overflow-y: auto;
   }
-  
+
+  /* title */
+  .modal .titleOverlayOfficer{
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 18px;
+    color: #333;
+    text-align: center;
+  }
+
+  /* ฟอร์มกลุ่ม/ป้าย/อินพุต */
   .formGroup {
-    margin-bottom: 15px;
+    margin-bottom: 18px;
   }
-  
   .formGroup label {
     display: block;
-    margin-bottom: 5px;
-    font-weight: 600;
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #555;
   }
-  
   .formGroup input {
     width: 100%;
-    padding: 8px 10px;
-    border: 1.5px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
+    padding: 8px 12px;
+    font-size: 1.06rem;
+    border: 1.5px solid #dde7fa;
+    border-radius: 0.8rem;
+    background: #f9fbfe;
+    transition: border 0.15s, box-shadow 0.16s;
+    outline: none;
+  }
+  .formGroup input:focus {
+    box-shadow: 0 0 4px #c8c8c8;
+    outline: none;
   }
   
+  /* error */
   .formError {
     color: #d93025;
     font-weight: 600;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    font-size: 1rem;
   }
   
+  /* action ปุ่ม */
   .modalActions {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
+    gap: 12px;
   }
   
-  .saveButton {
-    background-color: #007bff;
-    color: white;
-    padding: 8px 15px;
+  .saveButton,
+  .cancelButton {
+    padding: 8px 16px;
+    font-size: 14px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition:
+      background 0.2s,
+      color 0.17s,
+      box-shadow 0.18s,
+      border 0.18s,
+      transform 0.15s;
+  }
+  
+  .saveButton {
+    background: #4caf50;
+    color: #fff;
+  }
+  
+  .saveButton:hover:not(:disabled) {
+    background: #388e3c;
+    box-shadow: 0 4px 14px rgba(56, 142, 60, 0.16);
+    transform: translateY(-2px) scale(1.045);
   }
   
   .saveButton:disabled {
-    background-color: #6c757d;
+    background: #bcd2ea;
+    color: #f3f6fa;
     cursor: not-allowed;
   }
   
   .cancelButton {
-    background-color: #6c757d;
-    color: white;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    background: #ffeaea;           /* แดงอ่อน */
+    color: #d32f2f;                /* แดงเข้ม */
+    border: 1.5px solid #f2b3b3;   /* เส้นขอบแดงอ่อน */
   }
+  
+  .cancelButton:hover {
+    background: #f44336;           /* แดงสด */
+    color: #fff;
+    border: 1.5px solid #e57373;
+    box-shadow: 0 4px 14px rgba(211, 47, 47, 0.13);
+    transform: translateY(-2px) scale(1.045);
+  }
+  
   

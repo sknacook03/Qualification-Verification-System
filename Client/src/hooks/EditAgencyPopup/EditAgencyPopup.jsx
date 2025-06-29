@@ -53,8 +53,7 @@ export default function EditAgencyPopup({
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
-        <h2>แก้ไขข้อมูลหน่วยงาน</h2>
-
+        <h2 className={styles.titleEditAgency}>แก้ไขข้อมูลหน่วยงาน</h2>
         <div className={styles.formGroup}>
           <label>อีเมล*</label>
           <input

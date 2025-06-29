@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AgencyApproveTable from "../../hooks/AgencyApproveTable/AgencyApproveTable.jsx";
 import EditAgencyPopup from "../../hooks/EditAgencyPopup/EditAgencyPopup.jsx";
+import InfoAgencyPopup from "../InfoAgencyPopup/InfoAgencyPopup.jsx";
 import Loading from "../../components/Loading/Loading.jsx";
 import Popup from "../../components/Popup/Popup.jsx";
 import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
@@ -15,6 +16,8 @@ const AgencyApproval = ({ officer }) => {
   const [rejectionReason, setRejectionReason] = useState("");
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [editingAgency, setEditingAgency] = useState(null);
+  const [showInfoPopup, setShowInfoPopup] = useState(false);
+  const [infoAgency, setInfoAgency] = useState(null);
 
   useEffect(() => {
     const fetchAgencyAll = async () => {
@@ -148,7 +151,7 @@ const AgencyApproval = ({ officer }) => {
     setEditingAgency(target);
     setShowEditPopup(true);
   };
-  
+
   const submitEdit = async (id, updatedFields) => {
     try {
       await axios.put(
@@ -157,9 +160,7 @@ const AgencyApproval = ({ officer }) => {
         { withCredentials: true }
       );
       setAgency((prev) =>
-        prev.map((a) =>
-          a.id === id ? { ...a, ...updatedFields } : a
-        )
+        prev.map((a) => (a.id === id ? { ...a, ...updatedFields } : a))
       );
       setShowEditPopup(false);
       alert("แก้ไขเรียบร้อย");
@@ -171,7 +172,7 @@ const AgencyApproval = ({ officer }) => {
 
   const handleDelete = async (agencyId) => {
     if (!window.confirm("ยืนยันการลบ agency นี้หรือไม่?")) return;
-  
+
     try {
       const res = await axios.delete(
         API_BASE_URL + APIEndpoints.agency.deleteAgency(agencyId),
@@ -180,12 +181,19 @@ const AgencyApproval = ({ officer }) => {
       if (res.status !== 200 || !res.data.success) {
         throw new Error("Delete failed");
       }
-      setAgency(prev => prev.filter(a => a.id !== agencyId));
+      setAgency((prev) => prev.filter((a) => a.id !== agencyId));
       alert("ลบหน่วยงานเรียบร้อยแล้ว");
     } catch (error) {
       console.error("Failed to delete agency:", error);
       alert("เกิดข้อผิดพลาดในการลบหน่วยงาน");
     }
+  };
+
+  const handleShowInfo = (agencyId) => {
+    const target = agency.find((a) => a.id === agencyId);
+    if (!target) return;
+    setInfoAgency(target);
+    setShowInfoPopup(true);
   };
 
   const pendingAgencies = agency.filter(
@@ -202,6 +210,7 @@ const AgencyApproval = ({ officer }) => {
           onReject={handleReject}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          onShowInfo={handleShowInfo}
           disablePending
         />
       )}
@@ -224,6 +233,13 @@ const AgencyApproval = ({ officer }) => {
           agency={editingAgency}
           onCancel={() => setShowEditPopup(false)}
           onSave={submitEdit}
+        />
+      )}
+      {showInfoPopup && (
+        <InfoAgencyPopup
+          show={showInfoPopup}
+          agency={infoAgency}
+          onClose={() => setShowInfoPopup(false)}
         />
       )}
     </div>

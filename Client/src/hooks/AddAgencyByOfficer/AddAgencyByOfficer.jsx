@@ -164,7 +164,7 @@ const AddAgencyByOfficer = ({ officer }) => {
   return (
     <div className={styles.appContainer}>
       <div className={styles.appContent}>
-        <h3>เพิ่มหน่วยงาน</h3>
+        <h2>เพิ่มหน่วยงาน</h2>
         <form action="">
           <div className={styles.inputForm}>
             <div className={styles.inputRegister}>
@@ -175,7 +175,9 @@ const AddAgencyByOfficer = ({ officer }) => {
               <Textfield label="ที่อยู่ของหน่วยงาน*" type="text" value={orgaddress} onChange={(e) => setOrgaddress(e.target.value)} error={errors.orgaddress} />
             </div>
             <div className={styles.inputRegister}>
-              <ThailandAddress value={address} onAddressChange={handleAddressChange} error={errors} />
+              <div className={styles.inputAddress}>
+                <ThailandAddress value={address} onAddressChange={handleAddressChange} error={errors} />
+              </div>
               <OptionTypeAgency label="ประเภทหน่วยงาน*" value={orgType} onChange={(e) => setOrgType(e.target.value)} error={errors.orgType} />
             </div>
               <PasswordInput label="รหัสผ่านใหม่" id="password" value={password} onChange={(e) => setPassword(e.target.value)} error={errors.password} />

@@ -18,7 +18,6 @@
     max-height: 84vh;
     overflow-y: auto;
     position: relative;
-    animation: slideUpModal 0.16s;
   }
   .titleInfoAgency {
     font-size: 1.25rem;
