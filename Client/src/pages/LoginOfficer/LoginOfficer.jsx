@@ -22,7 +22,7 @@ function LoginAdmin() {
           { withCredentials: true }
         ),
         {
-          pending: "ระบบกำลังตรวจสอบข้อมูล..."
+          pending: "ระบบกำลังตรวจสอบข้อมูล...",
         }
       );
 
@@ -33,13 +33,18 @@ function LoginAdmin() {
         toast.error("เกิดข้อผิดพลาด: " + response.status);
       }
     } catch (error) {
-      if (error.response) {
+      console.error("Login Error:", error);
+      const msg = error.response?.status;
+      if (msg === 401) {
         toast.error(
-          "เกิดข้อผิดพลาด: " +
-            (error.response.data.message || "ไม่สามารถเข้าสู่ระบบได้")
+          "อีเมลหรือรหัสผ่านไม่ถูกต้อง โปรดตรวจสอบและลองใหม่อีกครั้ง"
         );
+      } else if (msg === 500) {
+        toast.error("เกิดข้อผิดพลาด: " + (msg || "ไม่สามารถเข้าสู่ระบบได้"));
       } else {
-        toast.error("เกิดข้อผิดพลาด: ไม่สามารถติดต่อเซิร์ฟเวอร์ได้");
+        toast.error(
+          "ไม่สามารถเข้าสู่ระบบได้: " + error.response?.data?.message
+        );
       }
     }
   };

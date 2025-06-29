@@ -130,8 +130,7 @@ const StudentSearch = ({ agency, forOfficer }) => {
         <Button onClick={handleSearch} text="ค้นหา" styleType="primary" />
       </div>
 
-      {error.general && <p className={styles.errorMessage}>{error.general}</p>}
-
+      {error.general && <p className={styles.errorMessage}>{error.general}</p>} 
 
       {loading && <p>Loading...</p>}
 

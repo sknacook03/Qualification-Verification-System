@@ -1,20 +1,20 @@
 import React from 'react';
-import './Input.css';
+import styles from './Input.module.css';
 
-const Input = ({ label, id, name, type = 'text', value, onChange, placeholder, error, ref }) => (
-  <div className="input-container">
-    <label className="input-label" htmlFor={id}>{label}</label>
+const Input = ({ label, id, name, type = 'text', value, onChange, placeholder, error, inputRef }) => (
+  <div className={styles.inputContainer}>
+    <label className={styles.inputLabel} htmlFor={id}>{label}</label>
     <input 
-      className={`input-field ${error ? 'input-error' : ''}`}
+      className={`${styles.inputField} ${error ? styles.inputError : ''}`}
       id={id}
       name={name}
       type={type} 
       value={value} 
-      ref={ref}
+      ref={inputRef}
       onChange={onChange}
       placeholder={placeholder}
     />
-    {error && <div className="error-message">{error}</div>}
+    {error && <div className={styles.errorMessage}>{error}</div>}
   </div>
 );
 

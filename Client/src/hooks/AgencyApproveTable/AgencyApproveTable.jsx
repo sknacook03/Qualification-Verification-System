@@ -27,6 +27,7 @@ function AgencyApproveTable({
 }) {
   const [loadingApproveId, setLoadingApproveId] = useState(null);
   const [loadingPendingId, setLoadingPendingId] = useState(null);
+
   const handleApprove = async (id) => {
     setLoadingApproveId(id);
     try {
@@ -133,7 +134,7 @@ function AgencyApproveTable({
                       disabled={loadingApproveId === agencyItem.id}
                     >
                       {loadingApproveId === agencyItem.id ? (
-                        <ClipLoader size={15} color="#fff" />
+                          <ClipLoader size={15} color="#000" />
                       ) : (
                         <FontAwesomeIcon icon={faSquareCheck} />
                       )}
@@ -148,7 +149,7 @@ function AgencyApproveTable({
                       disabled={loadingPendingId === agencyItem.id}
                     >
                       {loadingPendingId === agencyItem.id ? (
-                        <ClipLoader size={15} color="#fff" />
+                        <ClipLoader size={15} color="#000" />
                       ) : (
                         <FontAwesomeIcon icon={faClock} />
                       )}

@@ -62,10 +62,17 @@ function App() {
       }
     } catch (loginError) {
       console.error("Login Error:", loginError);
-      toast.error(
-        "เกิดข้อผิดพลาด: " +
-          (loginError.response?.data?.message || "ไม่สามารถเข้าสู่ระบบได้")
+      const msg = loginError.response?.status;
+      if (msg === 401) {
+        toast.error("อีเมลหรือรหัสผ่านไม่ถูกต้อง โปรดตรวจสอบและลองใหม่อีกครั้ง");
+      } else if (msg === 500) {
+        toast.error("เกิดข้อผิดพลาด: " + (msg || "ไม่สามารถเข้าสู่ระบบได้"));
+      } else {
+        toast.error(
+        "ไม่สามารถเข้าสู่ระบบได้: " +
+        (loginError.response?.data?.message)
       );
+      }
     }
   };
 
