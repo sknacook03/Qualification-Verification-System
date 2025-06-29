@@ -23,14 +23,13 @@ const loginHandler = async (req, res, loginFunction) => {
   } catch (error) {
     if (error.message === "Agency not found" || error.message === "Officer not found") {
       console.error("Login failed: Non-existing email:", req.body.email);
-      return res.status(401).json({ error: "ไม่พบข้อมูลในระบบ" });
+      return res.status(401).json({ error: "Agency not found" });
     }
 
     if (error.message === "Password is incorrect") {
       console.error("Login failed: Incorrect password for email:", req.body.email);
-      return res.status(401).json({ error: "รหัสผ่านไม่ถูกต้อง" });
+      return res.status(401).json({ error: "Password is incorrect" });
     }
-
     console.error("Unexpected error in loginHandler:", error);
     return res.status(500).json({ error: "Failed to login" });
   }

@@ -19,15 +19,6 @@
   gap: 1.2rem;
 }
 
-.searchForm input {
-  padding: 0.8rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 0.6rem;
-  font-size: 1rem;
-  transition: border 0.2s ease-in-out;
-}
-
-
 .searchForm .buttonSearch {
   background-color: #ff8800;
   color: white;

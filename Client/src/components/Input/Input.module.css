@@ -1,24 +1,31 @@
 @import url("https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-.input-container {
+.inputContainer {
     display: block;
     width: 100%;
 }
   
-.input-label {
+.inputLabel {
     display: block;
     color: #555;
     font-size: 16px;
 }
   
-.input-field {
+.inputField {
     width: 100%;
     border-radius: 0.5rem;
     border: solid #d9d9d9;
     padding: 12px;
     font-family: "Prompt", sans-serif;
 }
-.input-field:focus {
+.inputField:focus {
     box-shadow: 0 0 4px #c8c8c8;
     outline: none;
+}
+.inputError{
+    border: 1px solid red;
+}
+.errorMessage{
+    color: red;
+    font-size: 0.8em;
 }
   
