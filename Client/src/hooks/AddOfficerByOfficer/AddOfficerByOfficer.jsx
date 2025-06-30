@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import PasswordInput from "../../hooks/PasswordInput/PasswordInput.jsx";
 import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
 import styles from "./AddOfficerByOfficer.module.css";
 
@@ -11,8 +12,8 @@ function AddOfficerByOfficer() {
     password: "",
     confirm_password: "",
   });
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
@@ -20,8 +21,10 @@ function AddOfficerByOfficer() {
       ...prev,
       [e.target.name]: e.target.value,
     }));
-    // เคลียร์ข้อความ error และ message เมื่อแก้ไขข้อมูล
-    setError("");
+    setErrors((prev) => ({
+      ...prev,
+      [e.target.name]: "",
+    }));
     setMessage("");
   };
 
@@ -34,43 +37,39 @@ function AddOfficerByOfficer() {
       );
       return res.data.exists;
     } catch (e) {
-      // ถ้าเช็คไม่สำเร็จถือว่าไม่มีซ้ำ (ป้องกันการบล็อก)
       return false;
     }
   };
 
   const validateForm = async () => {
+    const newErrors = {};
     if (!form.first_name.trim() || form.first_name.includes(" ")) {
-      setError("ชื่อห้ามเว้นวรรคหรือเว้นว่าง");
-      return false;
+      newErrors.first_name = "ชื่อห้ามเว้นวรรคหรือเว้นว่าง";
     }
     if (!form.last_name.trim() || form.last_name.includes(" ")) {
-      setError("นามสกุลห้ามเว้นวรรคหรือเว้นว่าง");
-      return false;
+      newErrors.last_name = "นามสกุลห้ามเว้นวรรคหรือเว้นว่าง";
     }
-    if (form.password.length < 8) {
-      setError("รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร");
-      return false;
+    if (form.password.length < 8 || form.confirm_password.length < 8) {
+      newErrors.password = "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร";
+      newErrors.confirm_password = "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร";
     }
     if (form.password !== form.confirm_password) {
-      setError("รหัสผ่านไม่ตรงกัน กรุณาตรวจสอบ");
-      return false;
+      newErrors.confirm_password = "รหัสผ่านไม่ตรงกัน กรุณาตรวจสอบ";
     }
     if (!form.email) {
-      setError("กรุณากรอกอีเมล");
-      return false;
+      newErrors.email = "กรุณากรอกอีเมล";
+    } else {
+      const emailExists = await checkEmailExists(form.email);
+      if (emailExists) {
+        newErrors.email = "อีเมลนี้มีอยู่ในระบบแล้ว กรุณาใช้อีเมลอื่น";
+      }
     }
-    const emailExists = await checkEmailExists(form.email);
-    if (emailExists) {
-      setError("อีเมลนี้มีอยู่ในระบบแล้ว กรุณาใช้อีเมลอื่น");
-      return false;
-    }
-    return true;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     setMessage("");
 
     const isValid = await validateForm();
@@ -92,105 +91,110 @@ function AddOfficerByOfficer() {
         password: "",
         confirm_password: "",
       });
+      setErrors({});
     } catch {
-      setError("เพิ่มเจ้าหน้าที่ไม่สำเร็จ กรุณาลองใหม่");
+      setErrors({
+        form: "เพิ่มเจ้าหน้าที่ไม่สำเร็จ กรุณาลองใหม่"
+      });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className={styles["add-officer-container"]}>
-      <h2 className={styles["add-officer-title"]}>เพิ่มเจ้าหน้าที่ (Officer)</h2>
-      <form className={styles["add-officer-form"]} onSubmit={handleSubmit} noValidate>
-        <div className={styles["form-group"]}>
-          <label className={styles["form-label"]} htmlFor="first_name">
-            ชื่อ:
-          </label>
-          <input
-            id="first_name"
-            type="text"
-            name="first_name"
-            className={styles["form-input"]}
-            value={form.first_name}
-            onChange={handleChange}
-            required
-            autoComplete="given-name"
-          />
-        </div>
-        <div className={styles["form-group"]}>
-          <label className={styles["form-label"]} htmlFor="last_name">
-            นามสกุล:
-          </label>
-          <input
-            id="last_name"
-            type="text"
-            name="last_name"
-            className={styles["form-input"]}
-            value={form.last_name}
-            onChange={handleChange}
-            required
-            autoComplete="family-name"
-          />
-        </div>
-        <div className={styles["form-group"]}>
-          <label className={styles["form-label"]} htmlFor="email">
-            อีเมล:
-          </label>
-          <input
-            id="email"
-            type="email"
-            name="email"
-            className={styles["form-input"]}
-            value={form.email}
-            onChange={handleChange}
-            required
-            autoComplete="email"
-          />
-        </div>
-        <div className={styles["form-group"]}>
-          <label className={styles["form-label"]} htmlFor="password">
-            รหัสผ่าน:
-          </label>
-          <input
-            id="password"
-            type="password"
-            name="password"
-            className={styles["form-input"]}
-            value={form.password}
-            onChange={handleChange}
-            required
-            autoComplete="new-password"
-          />
-        </div>
-        <div className={styles["form-group"]}>
-          <label className={styles["form-label"]} htmlFor="confirm_password">
-            ยืนยันรหัสผ่าน:
-          </label>
-          <input
-            id="confirm_password"
-            type="password"
-            name="confirm_password"
-            className={styles["form-input"]}
-            value={form.confirm_password}
-            onChange={handleChange}
-            required
-            autoComplete="new-password"
-          />
-        </div>
-
-        {error && <p className={styles["form-error"]}>{error}</p>}
-        {message && <p className={styles["form-message"]}>{message}</p>}
-
-        <button
-          type="submit"
-          className={styles["submit-button"]}
-          disabled={loading}
-          aria-busy={loading}
+    <div className={styles.addOfficerContainer}>
+      <div className={styles.addOfficerContent}>
+        <h2 className={styles.addOfficerTitle}>เพิ่มเจ้าหน้าที่</h2>
+        <form
+          className={styles.addOfficerForm}
+          onSubmit={handleSubmit}
+          noValidate
         >
-          {loading ? "กำลังบันทึก..." : "เพิ่มเจ้าหน้าที่"}
-        </button>
-      </form>
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel} htmlFor="first_name">
+              ชื่อ*
+            </label>
+            <input
+              id="first_name"
+              type="text"
+              name="first_name"
+              className={styles.formInput}
+              value={form.first_name}
+              onChange={handleChange}
+              required
+              autoComplete="given-name"
+            />
+            {errors.first_name && (
+              <p className={styles.formError}>{errors.first_name}</p>
+            )}
+          </div>
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel} htmlFor="last_name">
+              นามสกุล:
+            </label>
+            <input
+              id="last_name"
+              type="text"
+              name="last_name"
+              className={styles.formInput}
+              value={form.last_name}
+              onChange={handleChange}
+              required
+              autoComplete="family-name"
+            />
+            {errors.last_name && (
+              <p className={styles.formError}>{errors.last_name}</p>
+            )}
+          </div>
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel} htmlFor="email">
+              อีเมล:
+            </label>
+            <input
+              id="email"
+              type="email"
+              name="email"
+              className={styles.formInput}
+              value={form.email}
+              onChange={handleChange}
+              required
+              autoComplete="email"
+            />
+            {errors.email && (
+              <p className={styles.formError}>{errors.email}</p>
+            )}
+          </div>
+          <div className={styles.formGroup}>
+            <PasswordInput
+              label="รหัสผ่าน*"
+              id="password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              error={errors.password}
+            />
+            <PasswordInput
+              label="ยืนยันรหัสผ่าน*"
+              id="confirm_password"
+              name="confirm_password"
+              value={form.confirm_password}
+              onChange={handleChange}
+              error={errors.confirm_password}
+            />
+          </div>
+          {errors.form && <p className={styles.formError}>{errors.form}</p>}
+          {message && <p className={styles.formMessage}>{message}</p>}
+
+          <button
+            type="submit"
+            className={styles.submitButton}
+            disabled={loading}
+            aria-busy={loading}
+          >
+            {loading ? "กำลังบันทึก..." : "เพิ่มเจ้าหน้าที่"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

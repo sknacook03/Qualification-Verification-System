@@ -17,7 +17,6 @@ import axios from "axios";
 const AddAgencyByOfficer = ({ officer }) => {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
-  const formData = location.state || {};
   const [errors, setErrors] = useState({});
   const [email, setEmail] = useState("");
   const [orgname, setOrgname] = useState("");
