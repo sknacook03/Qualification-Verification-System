@@ -114,6 +114,11 @@
   text-align: center;
 }
 
+.inputError {
+  border-color: #e53935 !important;
+  background: #fff7f7;
+}
+
 .formError {
   color: red;
   font-size: 0.8em;
