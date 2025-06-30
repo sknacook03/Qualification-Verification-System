@@ -59,24 +59,30 @@
   font-weight: 600;
   border-bottom: 2px solid #ddd;
 }
-
+.studentTable th:last-child{
+  text-align: center;
+}
 .studentTable td {
   background-color: white;
   padding: 12px;
   border-bottom: 1px solid #eee;
   border-radius: 0.5rem;
 }
-
+.studentTable td:last-child{
+  text-align: center;
+}
 .btnInfo {
   cursor: pointer;
-  border: none;
+  border: 2px solid #5a6f8f;
+  color: #5a6f8f;
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;
-  background-color: #ffd000;
+  background-color: white;
   font-weight: 500;
   transition: background-color 0.3s ease;
 }
 
 .btnInfo:hover {
-  background-color: #e0b700;
+  background-color: #5a6f8f;
+  color: white;
 }

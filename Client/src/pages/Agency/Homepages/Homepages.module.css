@@ -29,22 +29,30 @@
   border-bottom: 2px solid #ddd;
   text-align: left;
 }
+.studentTable th:last-child {
+  text-align: center;
+}
 .studentTable td {
   background-color: transparent;
   padding: 0.5rem;
   border-bottom: 2px solid #ddd;
 }
+.TdInfo{
+  text-align: center;
+}
 .studentTable .btnInfo {
   cursor: pointer;
-  border: none;
+  border: 2px solid #5a6f8f;
+  font-size: 14px;
+  color: #5a6f8f;
   border-radius: 0.3rem;
+  background-color: white;
   margin: 0;
   padding: 0.5rem 1rem 0.5rem 1rem;
-  font-family: "Prompt", sans-serif;
-  background-color: #ffd000;
   transition: ease-in-out 0.3s;
 }
 .studentTable .btnInfo:hover {
-  background-color: #dab200;
-
+  background-color: #5a6f8f;
+  color: white;
 }
+

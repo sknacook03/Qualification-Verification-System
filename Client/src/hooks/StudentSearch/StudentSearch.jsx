@@ -5,6 +5,8 @@ import Input from "../../components/Input/Input.jsx";
 import PopupStudent from "../../components/PopupStudent/PopupStudent.jsx";
 import Popup from "../../components/Popup/Popup.jsx";
 import Button from "../../components/button/Button.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import styles from "./StudentSearch.module.css";
 
 const StudentSearch = ({ agency, forOfficer }) => {
@@ -145,7 +147,7 @@ const StudentSearch = ({ agency, forOfficer }) => {
               <th>คณะ</th>
               <th>สาขา</th>
               <th>สถานะการศึกษา</th>
-              <th>เพิ่มเติม</th>
+              <th>ข้อมูลเพิ่มเติม</th>
             </tr>
           </thead>
           <tbody>
@@ -174,7 +176,7 @@ const StudentSearch = ({ agency, forOfficer }) => {
                     }
                     className={styles.btnInfo}
                   >
-                    Info
+                    <FontAwesomeIcon icon={faMagnifyingGlass} />
                   </button>
                   {!forOfficer && popupStudentId === student.id && (
                     <Popup

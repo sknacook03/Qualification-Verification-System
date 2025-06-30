@@ -73,7 +73,7 @@
   user-select: none;
 }
 
-.input, select {
+.input, .inputGroup select {
   padding: 10px 12px;
   font-size: 1rem;
   border: 1.8px solid #ccc;
@@ -83,7 +83,7 @@
   color: #333;
 }
 
-.input:focus, select:focus {
+.input:focus, .inputGroup select:focus {
   outline: none;
   border-color: #fb8c00;
   box-shadow: 0 0 8px rgba(251, 140, 0, 0.4);

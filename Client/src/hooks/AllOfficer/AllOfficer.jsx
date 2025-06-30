@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Loading from "../../components/Loading/Loading.jsx";
+import Pagination from "../../components/Pagination/Pagination.jsx";
 import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
 import styles from "./AllOfficer.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,6 +19,13 @@ function AllOfficer() {
   });
   const [editLoading, setEditLoading] = useState(false);
   const [editError, setEditError] = useState("");
+  const [currentPage, setCurrentPage] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const offset = currentPage * itemsPerPage;
+  const currentItems = officers
+    ? officers.slice(offset, offset + itemsPerPage)
+    : [];
+  const pageCount = officers ? Math.ceil(officers.length / itemsPerPage) : 0;
 
   useEffect(() => {
     const fetchOfficerAll = async () => {
@@ -107,7 +115,9 @@ function AllOfficer() {
       alert("Delete failed");
     }
   };
-
+  const handlePageClick = ({ selected }) => {
+    setCurrentPage(selected);
+  };
   return (
     <>
       {loading && <Loading />}
@@ -124,7 +134,7 @@ function AllOfficer() {
               </tr>
             </thead>
             <tbody>
-              {officers.map((officer, index) => (
+              {currentItems.map((officer, index) => (
                 <tr key={officer.id}>
                   <td>{index + 1}</td>
                   <td>{officer.first_name}</td>
@@ -148,12 +158,21 @@ function AllOfficer() {
               ))}
             </tbody>
           </table>
+          <Pagination
+          pageCount={pageCount}
+          onPageChange={handlePageClick}
+          itemsPerPage={itemsPerPage}
+          setItemsPerPage={setItemsPerPage}
+          setCurrentPage={setCurrentPage}
+        />
         </div>
       )}
       {editingOfficer && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
-            <h2 className={styles.titleOverlayOfficer}>แก้ไขข้อมูลเจ้าหน้าที่</h2>
+            <h2 className={styles.titleOverlayOfficer}>
+              แก้ไขข้อมูลเจ้าหน้าที่
+            </h2>
             <div className={styles.formGroup}>
               <label>ชื่อ:</label>
               <input

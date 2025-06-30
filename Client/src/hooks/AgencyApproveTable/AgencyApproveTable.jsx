@@ -12,6 +12,7 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 import { faInfo } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import Pagination from "../../components/Pagination/Pagination";
 import { API_BASE_URL, APIEndpoints } from "../../services/api";
 
 function AgencyApproveTable({
@@ -31,7 +32,13 @@ function AgencyApproveTable({
   const [loadingApproveId, setLoadingApproveId] = useState(null);
   const [loadingPendingId, setLoadingPendingId] = useState(null);
   const [typeAgencies, setTypeAgencies] = useState([]);
-
+  const [currentPage, setCurrentPage] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const offset = currentPage * itemsPerPage;
+  const currentItems = agencies
+    ? agencies.slice(offset, offset + itemsPerPage)
+    : [];
+  const pageCount = agencies ? Math.ceil(agencies.length / itemsPerPage) : 0;
   const handleApprove = async (id) => {
     setLoadingApproveId(id);
     try {
@@ -40,7 +47,9 @@ function AgencyApproveTable({
       setLoadingApproveId(null);
     }
   };
-
+  const handlePageClick = ({ selected }) => {
+    setCurrentPage(selected);
+  };
   const handlePending = async (id) => {
     setLoadingPendingId(id);
     try {
@@ -105,7 +114,7 @@ function AgencyApproveTable({
             </tr>
           </thead>
           <tbody>
-            {agencies.map((agencyItem, index) => (
+            {currentItems.map((agencyItem, index) => (
               <tr key={agencyItem.id || index}>
                 <td data-label="#"> {index + 1} </td>
                 <td data-label="ชื่อหน่วยงาน">
@@ -123,25 +132,23 @@ function AgencyApproveTable({
                     ?.type_name || agencyItem.type_id}
                 </td>
                 <td data-label="หนังสือรับรอง">
-                  <div className={styles.imageContainer}>
-                    {agencyItem.certificate ? (
-                      <button
-                        className={`${styles.button} ${styles.viewButton}`}
-                        title="ดูหนังสือรับรอง"
-                        onClick={() =>
-                          viewImage(
-                            `http://localhost:3000/${normalizeImagePath(
-                              agencyItem.certificate
-                            )}`
-                          )
-                        }
-                      >
-                        <FontAwesomeIcon icon={faEye} />
-                      </button>
-                    ) : (
-                      "No Certificate"
-                    )}
-                  </div>
+                  {agencyItem.certificate ? (
+                    <button
+                      className={`${styles.button} ${styles.viewButton}`}
+                      title="ดูหนังสือรับรอง"
+                      onClick={() =>
+                        viewImage(
+                          `http://localhost:3000/${normalizeImagePath(
+                            agencyItem.certificate
+                          )}`
+                        )
+                      }
+                    >
+                      <FontAwesomeIcon icon={faEye} />
+                    </button>
+                  ) : (
+                    "No Certificate"
+                  )}
                 </td>
                 <td data-label="สถานะ">
                   <div className={getStatus(agencyItem.status_approve)}>
@@ -158,7 +165,7 @@ function AgencyApproveTable({
                       disabled={loadingApproveId === agencyItem.id}
                     >
                       {loadingApproveId === agencyItem.id ? (
-                          <ClipLoader size={15} color="#000" />
+                        <ClipLoader size={15} color="#000" />
                       ) : (
                         <FontAwesomeIcon icon={faSquareCheck} />
                       )}
@@ -220,6 +227,13 @@ function AgencyApproveTable({
             ))}
           </tbody>
         </table>
+        <Pagination
+          pageCount={pageCount}
+          onPageChange={handlePageClick}
+          itemsPerPage={itemsPerPage}
+          setItemsPerPage={setItemsPerPage}
+          setCurrentPage={setCurrentPage}
+        />
       </div>
     </div>
   );

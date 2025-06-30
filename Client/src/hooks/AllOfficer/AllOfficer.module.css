@@ -24,7 +24,10 @@
     font-weight: 500;
     vertical-align: middle;
   }
-  
+  .table th:last-child,
+  .table td:last-child{
+    text-align: center;
+  }
   .table th {
     background: #f5f7fa;
     color: #474e5d;

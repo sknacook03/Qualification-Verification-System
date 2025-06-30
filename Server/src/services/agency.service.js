@@ -284,7 +284,7 @@ const AgencyService = {
     try {
       const Latest = await prisma.pageView.findMany({
         orderBy: {
-          created_at: "desc",
+          updated_at: "desc",
         },
         where: {
           agency_id: BigInt(id),

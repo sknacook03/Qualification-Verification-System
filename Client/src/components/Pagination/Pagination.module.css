@@ -1,0 +1,53 @@
+.paginationContainer {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+.dropdownContainer{
+  border: 2px solid #c2c2c2;
+  padding: 0 0.5rem;
+  border-radius: 0.5rem;
+}
+.dropdownContainer .select{
+  border: none;
+  padding: 0.5rem;
+  font-family: "Prompt", sans-serif;
+  font-size: 15px;
+}
+.dropdownContainer .select:focus{
+  border: none;
+  outline: none;
+}
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  justify-content: center;
+}
+
+.pagination li {
+  margin: 0 5px;
+  cursor: pointer;
+  background: #f0f0f0;
+  border-radius: 8px;
+}
+
+.pagination li a {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 8px;
+}
+
+.pagination li a:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+}
+.activePage {
+  background-color: #ff7100 !important;
+  color: white;
+  font-weight: bold;
+}
