@@ -129,7 +129,7 @@ function AgencyApproveTable({
                 </td>
                 <td data-label="ประเภทหน่วยงาน">
                   {typeAgencies.find((t) => t.id === agencyItem.type_id)
-                    ?.type_name || agencyItem.type_id}
+                    ?.type_name || "Loading..."}
                 </td>
                 <td data-label="หนังสือรับรอง">
                   {agencyItem.certificate ? (
