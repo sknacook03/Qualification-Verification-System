@@ -77,6 +77,157 @@ const PageviewService = {
       return { success: false, error: "Failed to fetch top agencies" };
     }
   },
+  getAllFaculties: async (req, res) => {
+    try {
+      const faculties = await prisma.pageView.findMany({
+        distinct: ["faculty"],
+        select: {
+          faculty: true,
+        },
+        where: {
+          faculty: {
+            not: "",
+          },
+        },
+      });
+
+      const cleaned = faculties.map((d) => d.faculty).filter((d) => !!d);
+      return cleaned;
+    } catch (error) {
+      console.error("Error fetching faculties:", error);
+      return res.status(500).json({ error: "Failed to fetch faculties" });
+    }
+  },
+  getAllDepartments: async (req, res) => {
+    try {
+      const departments = await prisma.pageView.findMany({
+        distinct: ["department"],
+        select: {
+          department: true,
+        },
+        where: {
+          department: {
+            not: "",
+          },
+        },
+      });
+
+      const cleaned = departments.map((d) => d.department).filter((d) => !!d);
+
+      return cleaned;
+    } catch (error) {
+      console.error("Error fetching faculties:", error);
+      return res.status(500).json({ error: "Failed to fetch faculties" });
+    }
+  },
+  getTopAgenciesByFaculty: async (faculty, limit = 5) => {
+    if (!faculty) {
+      return {
+        success: false,
+        error: "faculty parameter is required",
+      };
+    }
+
+    const take = Number(limit) || 5;
+
+    try {
+      const topAgencies = await prisma.pageView.groupBy({
+        by: ["agency_id"],
+        where: {
+          faculty: faculty,
+        },
+        _count: {
+          id: true,
+        },
+        orderBy: {
+          _count: {
+            id: "desc",
+          },
+        },
+        take: take,
+      });
+
+      const agencyIds = topAgencies.map((a) => a.agency_id);
+
+      const agencies = await prisma.agency.findMany({
+        where: {
+          id: { in: agencyIds },
+        },
+        select: {
+          id: true,
+          agency_name: true,
+        },
+      });
+
+      const result = topAgencies.map((item) => {
+        const matchedAgency = agencies.find((a) => a.id === item.agency_id);
+        return {
+          agency_id: Number(item.agency_id),
+          agency_name: matchedAgency?.agency_name || "ไม่ทราบชื่อ",
+          count: Number(item._count.id),
+        };
+      });
+
+      return { success: true, data: result };
+    } catch (error) {
+      console.error("Error in getTopAgenciesByFaculty:", error);
+      return { success: false, error: "Internal server error" };
+    }
+  },
+  getTopAgenciesByDepartment: async (department, limit = 5) => {
+    if (!department) {
+      return {
+        success: false,
+        error: "department parameter is required",
+      };
+    }
+
+    const take = Number(limit) || 5;
+
+    try {
+      const topAgencies = await prisma.pageView.groupBy({
+        by: ["agency_id"],
+        where: {
+          department: department,
+        },
+        _count: {
+          id: true,
+        },
+        orderBy: {
+          _count: {
+            id: "desc",
+          },
+        },
+        take: take,
+      });
+
+      const agencyIds = topAgencies.map((a) => a.agency_id);
+
+      const agencies = await prisma.agency.findMany({
+        where: {
+          id: { in: agencyIds },
+        },
+        select: {
+          id: true,
+          agency_name: true,
+        },
+      });
+
+      const result = topAgencies.map((item) => {
+        const matchedAgency = agencies.find((a) => a.id === item.agency_id);
+        return {
+          agency_id: Number(item.agency_id),
+          agency_name: matchedAgency?.agency_name || "ไม่ทราบชื่อ",
+          count: Number(item._count.id),
+        };
+      });
+
+      return { success: true, data: result };
+    } catch (error) {
+      console.error("Error in getTopAgenciesByDepartment:", error);
+      return { success: false, error: "Internal server error" };
+    }
+  },
   getStatisticsOverTime: async () => {
     try {
       const trend = await prisma.$queryRawUnsafe(`

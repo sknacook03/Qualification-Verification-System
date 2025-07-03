@@ -35,7 +35,9 @@ const PageviewController = {
       if (result.success) {
         res.json(result.data);
       } else {
-        res.status(500).json({ error: result.error || "Failed to fetch top faculty" });
+        res
+          .status(500)
+          .json({ error: result.error || "Failed to fetch top faculty" });
       }
     } catch (error) {
       console.error("Error in getTopFacultyViewsController:", error);
@@ -45,11 +47,13 @@ const PageviewController = {
   getTopAgencyViewsController: async (req, res) => {
     try {
       const result = await PageviewService.getTopAgencyViews();
-  
+
       if (result.success) {
-        res.json(result.data); 
+        res.json(result.data);
       } else {
-        res.status(500).json({ error: result.error || "Failed to fetch top agencies" });
+        res
+          .status(500)
+          .json({ error: result.error || "Failed to fetch top agencies" });
       }
     } catch (error) {
       console.error("Error in getTopAgencyViewsController:", error);
@@ -60,9 +64,9 @@ const PageviewController = {
     try {
       const result = await PageviewService.getStatisticsOverTime();
       res.json(result.data);
-      } catch (error) {
+    } catch (error) {
       console.error("Error in getStatisticsOverTimeController:", error);
-      }
+    }
   },
   getStatisticsController: async (req, res) => {
     try {
@@ -71,6 +75,50 @@ const PageviewController = {
     } catch (error) {
       console.error("Error in getStatisticsController:", error);
       return res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
+  getAllFacultiesController: async (req, res) => {
+    try {
+      const result = await PageviewService.getAllFaculties();
+      res.json(result);
+    } catch (error) {
+      console.error("Error in getAllFacultiesController", error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
+  getAllDepartmentsController: async (req, res) => {
+    try {
+      const result = await PageviewService.getAllDepartments();
+      res.json(result);
+    } catch (error) {
+      console.error("Error in getAllDepartmentsController", error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
+  getTopAgenciesByFacultyController: async (req, res) => {
+    try {
+      const { faculty, limit } = req.query;
+      const result = await PageviewService.getTopAgenciesByFaculty(
+        faculty,
+        limit
+      );
+      res.json(result);
+    } catch (error) {
+      console.error("Error in getTopAgenciesByFacultyController", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
+    getTopAgenciesByDepartmentController: async (req, res) => {
+    try {
+      const { department, limit } = req.query;
+      const result = await PageviewService.getTopAgenciesByDepartment(
+        department,
+        limit
+      );
+      res.json(result);
+    } catch (error) {
+      console.error("Error in getTopAgenciesByDepartmentController", error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
   },
   createPageview: async (req, res) => {

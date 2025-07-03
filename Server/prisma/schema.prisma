@@ -122,6 +122,8 @@ model Student {
 
   // Relations
   pageViews PageView[]
+
+  @@map("ESS_Student")
 }
 
 enum StatusApprove {
