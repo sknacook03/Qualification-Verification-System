@@ -139,6 +139,32 @@ function Homepages() {
     }
   };
 
+  const handleExportExcel = async () => {
+    if (selectedIds.length === 0) {
+      toast.warning("กรุณาเลือกข้อมูลอย่างน้อย 1 รายการ");
+      return;
+    }
+    try {
+      const response = await axios.post(
+        API_BASE_URL + APIEndpoints.exportFile.exportFileExcel, // "/export-excel"
+        { studentNos: selectedIds },
+        { responseType: "blob", withCredentials: true }
+      );
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "student_export.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      setSelectMode(false);
+      setSelectedIds([]);
+    } catch (err) {
+      toast.error("Export Excel ล้มเหลว");
+    }
+  };
+
   return (
     <>
       <LayoutAllPage
@@ -158,18 +184,33 @@ function Homepages() {
               <p>Role: {agency.role}</p>
             </div>
             <h4 className={styles.topic}>ข้อมูลของนักศึกษาที่เคยตรวจสอบ</h4>
-            <div style={{ marginBottom: 10 }}>
+            <div className={styles.selectedBox} style={{ marginBottom: 10 }}>
               {!selectMode ? (
-                <button onClick={handleToggleSelectMode}>เลือกข้อมูล</button>
+                <button
+                  className={styles.selectButton}
+                  onClick={handleToggleSelectMode}
+                >
+                  <FontAwesomeIcon icon={faInfo} style={{ marginRight: 8 }} />
+                  เลือกข้อมูล
+                </button>
               ) : (
                 <>
                   <button
+                    className={styles.exportButton}
                     onClick={handleExportPDF}
                     disabled={selectedIds.length === 0}
                   >
                     Export PDF
                   </button>
                   <button
+                    className={styles.exportButton}
+                    onClick={handleExportExcel}
+                    disabled={selectedIds.length === 0}
+                  >
+                    Export Excel
+                  </button>
+                  <button
+                    className={styles.cancelButton}
                     onClick={handleToggleSelectMode}
                     style={{ marginLeft: 10 }}
                   >
@@ -219,7 +260,9 @@ function Homepages() {
                             "Unknown"}
                         </td>
                         <td>
-                          {new Date(item.updated_at).toLocaleDateString("th-TH")}
+                          {new Date(item.updated_at).toLocaleDateString(
+                            "th-TH"
+                          )}
                         </td>
                         <td
                           style={{

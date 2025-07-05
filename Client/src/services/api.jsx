@@ -62,5 +62,6 @@ export const APIEndpoints = {
     },
     exportFile: {
       exportFilePDF: "/exportfile/export-pdf",
+      exportFileExcel: "/exportfile/export-excel",
     },
 };

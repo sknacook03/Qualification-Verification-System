@@ -1,4 +1,5 @@
 import PDFDocument from "pdfkit";
+import ExcelJS from "exceljs"
 import moment from "moment";
 import path from "path";
 import ExportFileService from "../services/exportFile.service.js";
@@ -98,6 +99,103 @@ const ExportFileController = {
       }
     } catch (error) {
       console.error("Controller error:", error);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  },
+  exportStudentExcel: async (req, res) => {
+    try {
+        const { studentNos } = req.body;
+      if (
+        !studentNos ||
+        !Array.isArray(studentNos) ||
+        studentNos.length === 0
+      ) {
+        return res.status(400).json({ message: "No studentNos provided" });
+      }
+
+      let students;
+      try {
+        students = await ExportFileService.getStudentsByNos(studentNos);
+      } catch (dbError) {
+        return res.status(500).json({ message: "Database error" });
+      }
+
+      // สร้าง workbook/worksheet
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Student Report");
+
+      // Header (รองรับภาษาไทย)
+      worksheet.addRow([
+        "ลำดับ",
+        "ปีการศึกษา",
+        "เทอม",
+        "รหัส",
+        "ชั้นปี",
+        "คำนำหน้า",
+        "ชื่อ",
+        "นามสกุล",
+        "GPA",
+        "สถานะ",
+        "สาขา"
+      ]);
+
+      // Rows
+      students.forEach((s, i) => {
+        worksheet.addRow([
+          i + 1,
+          s.year_no ?? "-",
+          s.semester_no ?? "-",
+          s.student_no,
+          s.std_year_no ?? "-",
+          s.prefix_name ?? "-",
+          s.name ?? "-",
+          s.lname ?? "-",
+          s.gpa ?? "-",
+          getGradStatus(s.status_graduate),
+          s.curr_name ?? "-"
+        ]);
+      });
+
+      worksheet.columns.forEach(column => {
+        column.width = 15;
+      });
+
+      // ใส่ border ทุกเซลล์ในตาราง
+      const totalRows = worksheet.rowCount;
+      for (let i = 1; i <= totalRows; i++) {
+        const row = worksheet.getRow(i);
+        row.eachCell({ includeEmpty: true }, (cell) => {
+          cell.border = {
+            top:    { style: 'thin' },
+            left:   { style: 'thin' },
+            bottom: { style: 'thin' },
+            right:  { style: 'thin' }
+          };
+          cell.alignment = {
+            vertical: 'middle', horizontal: 'center'
+          };
+        });
+      }
+
+      // Style header
+      worksheet.getRow(1).font = { bold: true, size: 12 };
+      worksheet.getColumn('K').width = 70;
+
+      // Export file buffer แล้วส่งให้ React
+      res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      );
+      res.setHeader(
+        "Content-Disposition",
+        "attachment; filename=student_export.xlsx"
+      );
+
+      await workbook.xlsx.write(res);
+      res.end();
+
+    } catch (error) {
+      console.error("Export Excel error:", error);
       return res.status(500).json({ message: "Internal Server Error" });
     }
   },
