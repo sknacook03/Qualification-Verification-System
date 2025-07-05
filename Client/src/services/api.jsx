@@ -60,4 +60,7 @@ export const APIEndpoints = {
       topFaculty: "/pageview/top-faculties",
       trend: "/pageview/trend",
     },
+    exportFile: {
+      exportFilePDF: "/exportfile/export-pdf",
+    },
 };

@@ -10,6 +10,7 @@ import styles from "./UploadExcelStudent.module.css";
 const UploadExcelStudent = () => {
   const [file, setFile] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
+  const [uploading, setUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
 
