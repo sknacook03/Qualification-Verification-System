@@ -43,7 +43,6 @@ function AccessStatisticsPage() {
     fetchUserData();
   }, [navigate]);
 
-
   const logout = async () => {
     try {
       await axios.post(
@@ -69,7 +68,7 @@ function AccessStatisticsPage() {
         icon={Icon}
         label="สถิติการเข้าถึง"
       >
-        <AccessStatistics />
+        <AccessStatistics agency={agency?.id}/>
       </LayoutAllPage>
     </>
   );

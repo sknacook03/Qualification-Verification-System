@@ -30,7 +30,8 @@ const upload = multer({
 const PageviewController = {
   getTopFacultyViewsController: async (req, res) => {
     try {
-      const result = await PageviewService.getTopFacultyViews();
+      const { startDate, endDate } = req.query;
+      const result = await PageviewService.getTopFacultyViews(startDate, endDate);
 
       if (result.success) {
         res.json(result.data);
@@ -44,9 +45,27 @@ const PageviewController = {
       res.status(500).json({ error: "Internal Server Error" });
     }
   },
+  getTopDepartmentsViewsController: async (req, res) => {
+    try {
+      const { startDate, endDate } = req.query;
+      const result = await PageviewService.getTopDepartmentsViews(startDate, endDate);
+
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        res
+          .status(500)
+          .json({ error: result.error || "Failed to fetch top departments" });
+      }
+    } catch (error) {
+      console.error("Error in getTopDepartmentsViewsController:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
   getTopAgencyViewsController: async (req, res) => {
     try {
-      const result = await PageviewService.getTopAgencyViews();
+      const { startDate, endDate } = req.query;
+      const result = await PageviewService.getTopAgencyViews(startDate, endDate);
 
       if (result.success) {
         res.json(result.data);
@@ -62,7 +81,8 @@ const PageviewController = {
   },
   getStatisticsOverTimeController: async (req, res) => {
     try {
-      const result = await PageviewService.getStatisticsOverTime();
+      const { startDate, endDate } = req.query;
+      const result = await PageviewService.getStatisticsOverTime(startDate, endDate);
       res.json(result.data);
     } catch (error) {
       console.error("Error in getStatisticsOverTimeController:", error);
@@ -70,7 +90,8 @@ const PageviewController = {
   },
   getStatisticsController: async (req, res) => {
     try {
-      const result = await PageviewService.getStatistics();
+      const { startDate, endDate } = req.query;
+      const result = await PageviewService.getStatistics(startDate, endDate);
       res.json(result.data);
     } catch (error) {
       console.error("Error in getStatisticsController:", error);
@@ -97,10 +118,12 @@ const PageviewController = {
   },
   getTopAgenciesByFacultyController: async (req, res) => {
     try {
-      const { faculty, limit } = req.query;
+      const { faculty, limit, startDate, endDate } = req.query;
       const result = await PageviewService.getTopAgenciesByFaculty(
         faculty,
-        limit
+        limit,
+        startDate, 
+        endDate
       );
       res.json(result);
     } catch (error) {
@@ -110,10 +133,12 @@ const PageviewController = {
   },
   getTopAgenciesByDepartmentController: async (req, res) => {
     try {
-      const { department, limit } = req.query;
+      const { department, limit, startDate, endDate } = req.query;
       const result = await PageviewService.getTopAgenciesByDepartment(
         department,
-        limit
+        limit,
+        startDate, 
+        endDate
       );
       res.json(result);
     } catch (error) {
@@ -132,6 +157,26 @@ const PageviewController = {
       return res.json(result.data);
     } catch (error) {
       console.error("Error in getDepartmentsByFacultyController", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
+  countStudentViewsByAgencyController: async (req, res) => {
+    try {
+      const { agency_id, startDate, endDate} = req.params;
+      const result = await PageviewService.countStudentViewsByAgency(agency_id, startDate, endDate);
+
+      if (!result.success) {
+        return res.status(400).json({ error: result.error });
+      }
+
+      const formatted = result.data.map((item) => ({
+        agency_id: item.agency_id.toString(),
+        count: Number(item._count.id),
+      }));
+
+      return res.json(formatted);
+    } catch (error) {
+      console.error("Error in countStudentViewsByAgencyController", error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   },

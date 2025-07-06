@@ -1,11 +1,27 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
+const buildDateFilter = (startDate, endDate) => {
+  if (startDate && endDate) {
+    return {
+      created_at: {
+        gte: new Date(startDate),
+        lte: new Date(endDate + "T23:59:59"),
+      },
+    };
+  }
+  return {};
+};
+
 const PageviewService = {
-  getTopFacultyViews: async () => {
+  getTopFacultyViews: async (startDate, endDate) => {
     try {
+      const dateFilter = buildDateFilter(startDate, endDate);
       const topFaculties = await prisma.pageView.groupBy({
         by: ["faculty"],
+        where: {
+          ...dateFilter,
+        },
         _count: {
           id: true,
         },
@@ -30,10 +46,46 @@ const PageviewService = {
       return { success: false, error: "Failed to fetch top faculties" };
     }
   },
-  getTopAgencyViews: async () => {
+  getTopDepartmentsViews: async (startDate, endDate) => {
     try {
+      const dateFilter = buildDateFilter(startDate, endDate);
+      const topDepartments = await prisma.pageView.groupBy({
+        by: ["department"],
+        where: {
+          ...dateFilter,
+        },
+        _count: {
+          id: true,
+        },
+        orderBy: {
+          _count: {
+            id: "desc",
+          },
+        },
+        take: 5,
+      });
+
+      const cleaned = topDepartments.map((item) => ({
+        department: item.department,
+        count: Number(item._count.id),
+      }));
+      return {
+        success: true,
+        data: cleaned,
+      };
+    } catch (error) {
+      console.error("Error in getTopDepartmentsViews:", error);
+      return { success: false, error: "Failed to fetch top departments" };
+    }
+  },
+  getTopAgencyViews: async (startDate, endDate) => {
+    try {
+      const dateFilter = buildDateFilter(startDate, endDate);
       const topAgencies = await prisma.pageView.groupBy({
         by: ["agency_id"],
+        where: {
+          ...dateFilter,
+        },
         _count: {
           id: true,
         },
@@ -120,7 +172,7 @@ const PageviewService = {
       return res.status(500).json({ error: "Failed to fetch faculties" });
     }
   },
-  getTopAgenciesByFaculty: async (faculty, limit = 5) => {
+  getTopAgenciesByFaculty: async (faculty, limit = 5, startDate, endDate) => {
     if (!faculty) {
       return {
         success: false,
@@ -129,12 +181,13 @@ const PageviewService = {
     }
 
     const take = Number(limit) || 5;
-
+    const dateFilter = buildDateFilter(startDate, endDate);
     try {
       const topAgencies = await prisma.pageView.groupBy({
         by: ["agency_id"],
         where: {
           faculty: faculty,
+          ...dateFilter,
         },
         _count: {
           id: true,
@@ -174,7 +227,12 @@ const PageviewService = {
       return { success: false, error: "Internal server error" };
     }
   },
-  getTopAgenciesByDepartment: async (department, limit = 5) => {
+  getTopAgenciesByDepartment: async (
+    department,
+    limit = 5,
+    startDate,
+    endDate
+  ) => {
     if (!department) {
       return {
         success: false,
@@ -183,12 +241,13 @@ const PageviewService = {
     }
 
     const take = Number(limit) || 5;
-
+    const dateFilter = buildDateFilter(startDate, endDate);
     try {
       const topAgencies = await prisma.pageView.groupBy({
         by: ["agency_id"],
         where: {
           department: department,
+          ...dateFilter,
         },
         _count: {
           id: true,
@@ -274,17 +333,51 @@ const PageviewService = {
       };
     }
   },
-  getStatisticsOverTime: async () => {
+  countStudentViewsByAgency: async (agency_id, startDate, endDate) => {
     try {
-      const trend = await prisma.$queryRawUnsafe(`
-      SELECT 
-        DATE(created_at) AS date,
-        COUNT(*) AS totalViews,
-        COUNT(DISTINCT student_id) AS uniqueStudents
-      FROM pageview
-      GROUP BY DATE(created_at)
-      ORDER BY DATE(created_at) ASC;
-    `);
+      const dateFilter = buildDateFilter(startDate, endDate);
+      const agency = await prisma.pageView.groupBy({
+        by: ["agency_id"],
+        where: {
+          agency_id: Number(agency_id),
+          ...dateFilter,
+        },
+        _count: {
+          id: true,
+        },
+      });
+      return { success: true, data: agency };
+    } catch (error) {
+      console.error("Error in getStudentByAgency", error);
+      return { success: false, error: "Internal server error" };
+    }
+  },
+  getStatisticsOverTime: async (startDate, endDate) => {
+    try {
+      let trend;
+
+      if (startDate && endDate) {
+        trend = await prisma.$queryRaw`
+        SELECT 
+          DATE(created_at) AS date,
+          COUNT(*) AS totalViews,
+          COUNT(DISTINCT student_id) AS uniqueStudents
+        FROM pageview
+        WHERE DATE(created_at) BETWEEN ${startDate} AND ${endDate}
+        GROUP BY DATE(created_at)
+        ORDER BY DATE(created_at) ASC;
+      `;
+      } else {
+        trend = await prisma.$queryRaw`
+        SELECT 
+          DATE(created_at) AS date,
+          COUNT(*) AS totalViews,
+          COUNT(DISTINCT student_id) AS uniqueStudents
+        FROM pageview
+        GROUP BY DATE(created_at)
+        ORDER BY DATE(created_at) ASC;
+      `;
+      }
 
       const cleaned = trend.map((item) => ({
         date: item.date,
@@ -302,11 +395,19 @@ const PageviewService = {
     }
   },
 
-  getStatistics: async () => {
+  getStatistics: async (startDate, endDate) => {
     try {
-      const totalViewsBigInt = await prisma.pageView.count();
+      const dateFilter = buildDateFilter(startDate, endDate);
+      const totalViewsBigInt = await prisma.pageView.count({
+        where: {
+          ...dateFilter,
+        },
+      });
       const grouped = await prisma.pageView.groupBy({
         by: ["student_id"],
+        where: {
+          ...dateFilter,
+        },
       });
       const uniqueStudentsBigInt = grouped.length;
       const totalViews = Number(totalViewsBigInt);
