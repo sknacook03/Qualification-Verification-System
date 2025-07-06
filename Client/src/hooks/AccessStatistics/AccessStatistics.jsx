@@ -41,11 +41,16 @@ defaults.plugins.title.font = {
   weight: "normal",
 };
 
-const AccessStatistics = () => {
+const AccessStatistics = ({ officer }) => {
   const [totalViews, setTotalViews] = useState(0);
   const [uniqueStudents, setUniqueStudents] = useState(0);
   const [topAgencies, setTopAgencies] = useState([]);
   const [topFaculties, setTopFaculties] = useState([]);
+  const [facultiesList, setFacultiesList] = useState([]);
+  const [departmentsList, setDepartmentsList] = useState([]);
+  const [selectedFaculty, setSelectedFaculty] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [loadingTopAgencies, setLoadingTopAgencies] = useState(false);
   const [trend, setTrend] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -66,13 +71,19 @@ const AccessStatistics = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [statisticsRes, agenciesRes, facultiesRes, trendRes] =
-          await Promise.all([
-            axios.get(API_BASE_URL + APIEndpoints.pageview.statistics),
-            axios.get(API_BASE_URL + APIEndpoints.pageview.topAgency),
-            axios.get(API_BASE_URL + APIEndpoints.pageview.topFaculty),
-            axios.get(API_BASE_URL + APIEndpoints.pageview.trend),
-          ]);
+        const [
+          statisticsRes,
+          agenciesRes,
+          facultiesRes,
+          trendRes,
+          facultiesListRes,
+        ] = await Promise.all([
+          axios.get(API_BASE_URL + APIEndpoints.pageview.statistics),
+          axios.get(API_BASE_URL + APIEndpoints.pageview.topAgency),
+          axios.get(API_BASE_URL + APIEndpoints.pageview.topFaculty),
+          axios.get(API_BASE_URL + APIEndpoints.pageview.trend),
+          axios.get(API_BASE_URL + APIEndpoints.pageview.allFaculties),
+        ]);
 
         setTotalViews(statisticsRes.data.totalViews);
         setUniqueStudents(statisticsRes.data.uniqueStudents);
@@ -81,6 +92,7 @@ const AccessStatistics = () => {
           Array.isArray(facultiesRes.data) ? facultiesRes.data : []
         );
         setTrend(Array.isArray(trendRes.data) ? trendRes.data : []);
+        setFacultiesList(facultiesListRes.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -90,6 +102,56 @@ const AccessStatistics = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (selectedFaculty) {
+      axios
+        .get(
+          `${
+            API_BASE_URL + APIEndpoints.pageview.departmentsByFaculty
+          }?faculty=${encodeURIComponent(selectedFaculty)}`
+        )
+        .then((res) => {
+          setDepartmentsList(res.data);
+        })
+        .catch((err) => console.error(err));
+    } else {
+      setDepartmentsList([]);
+      setSelectedDepartment("");
+    }
+  }, [selectedFaculty]);
+
+  useEffect(() => {
+    const fetchTopAgencies = async () => {
+      try {
+        let url = "";
+
+        if (selectedDepartment) {
+          url = `${API_BASE_URL}${
+            APIEndpoints.pageview.topAgenciesByDepartment
+          }?department=${encodeURIComponent(selectedDepartment)}&limit=5`;
+        } else if (selectedFaculty) {
+          url = `${API_BASE_URL}${
+            APIEndpoints.pageview.topAgenciesByFaculty
+          }?faculty=${encodeURIComponent(selectedFaculty)}&limit=5`;
+        } else {
+          url = `${API_BASE_URL}${APIEndpoints.pageview.topAgency}`;
+        }
+
+        setLoadingTopAgencies(true);
+        const res = await axios.get(url);
+        const data = Array.isArray(res.data.data) ? res.data.data : res.data;
+
+        setTopAgencies(data);
+      } catch (err) {
+        console.error("Error fetching top agencies:", err);
+      } finally {
+        setLoadingTopAgencies(false);
+      }
+    };
+
+    fetchTopAgencies();
+  }, [selectedFaculty, selectedDepartment]);
 
   const barChartData = {
     labels: topAgencies.map((item) => item.agency_name),
@@ -105,6 +167,13 @@ const AccessStatistics = () => {
     ],
   };
 
+  const getBarChartTitle = () => {
+    if (selectedDepartment)
+      return `Top 5 หน่วยงานที่มีการเข้าดูมากที่สุด (${selectedDepartment})`;
+    if (selectedFaculty)
+      return `Top 5 หน่วยงานที่มีการเข้าดูมากที่สุด (${selectedFaculty})`;
+    return "Top 5 หน่วยงานที่มีการเข้าดูมากที่สุด (ทั้งหมด)";
+  };
   const barChartOptions = {
     responsive: true,
     plugins: {
@@ -112,7 +181,7 @@ const AccessStatistics = () => {
       tooltip: { enabled: true },
       title: {
         display: true,
-        text: "Top 5 หน่วยงานที่มีการเข้าดูมากที่สุด",
+        text: getBarChartTitle(),
         color: "#333",
         padding: { top: 10, bottom: 20 },
       },
@@ -204,7 +273,7 @@ const AccessStatistics = () => {
             </h2>
           </div>
           <div className={styles.totalPageView}>
-            <p className={styles.titleTotalPageView}>นักศึกษาที่เข้าดูไม่ซ้ำ</p>
+            <p className={styles.titleTotalPageView}>นักศึกษาที่ถูกเข้าชม</p>
             <h2 className={styles.numberTotalPageView}>
               {uniqueStudents.toLocaleString()}
             </h2>
@@ -216,9 +285,45 @@ const AccessStatistics = () => {
       </div>
 
       <div className={styles.rightBoxState}>
+        <div className={styles.filterContainer}>
+          <select
+            value={selectedFaculty}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSelectedFaculty(value);
+              setSelectedDepartment("");
+            }}
+          >
+            <option value="">-- ทั้งหมด --</option>
+            {facultiesList.map((f) => (
+              <option key={f} value={f}>
+                {f}
+              </option>
+            ))}
+          </select>
+          {officer && (
+            <select
+              value={selectedDepartment}
+              onChange={(e) => setSelectedDepartment(e.target.value)}
+              disabled={!selectedFaculty}
+            >
+              <option value="">-- เลือกสาขา --</option>
+              {departmentsList.map((d) => (
+                <option key={d} value={d}>
+                  {d}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
         <div className={styles.topAgencyView}>
-          {topAgencies.length > 0 && (
+          {loadingTopAgencies && <div className={styles.loadingBox}></div>}
+          {!loadingTopAgencies && topAgencies.length > 0 ? (
             <BarChart data={barChartData} options={barChartOptions} />
+          ) : (
+            <div className={styles.noData}>
+              <p>ไม่พบข้อมูล</p>
+            </div>
           )}
         </div>
         <div className={styles.topFacultyView}>

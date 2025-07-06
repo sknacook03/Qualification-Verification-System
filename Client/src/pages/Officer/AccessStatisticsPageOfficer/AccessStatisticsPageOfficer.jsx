@@ -61,7 +61,7 @@ function AccessStatisticsPageOfficer() {
       icon={Icon}
       label="สถิติการเข้าถึง"
     >
-      <AccessStatistics />
+      <AccessStatistics officer/>
     </LayoutAllpage>
   );
 }

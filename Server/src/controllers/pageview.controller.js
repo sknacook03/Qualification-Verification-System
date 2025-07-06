@@ -108,7 +108,7 @@ const PageviewController = {
       res.status(500).json({ error: "Internal Server Error" });
     }
   },
-    getTopAgenciesByDepartmentController: async (req, res) => {
+  getTopAgenciesByDepartmentController: async (req, res) => {
     try {
       const { department, limit } = req.query;
       const result = await PageviewService.getTopAgenciesByDepartment(
@@ -118,6 +118,20 @@ const PageviewController = {
       res.json(result);
     } catch (error) {
       console.error("Error in getTopAgenciesByDepartmentController", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
+  getDepartmentsByFacultyController: async (req, res) => {
+    try {
+      const { faculty } = req.query;
+      const result = await PageviewService.getDepartmentsByFaculty(faculty);
+      if (!result.success) {
+        return res.status(400).json({ error: result.error });
+      }
+
+      return res.json(result.data);
+    } catch (error) {
+      console.error("Error in getDepartmentsByFacultyController", error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   },

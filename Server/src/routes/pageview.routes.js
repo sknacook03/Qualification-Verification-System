@@ -12,6 +12,7 @@ PageViewRouter.get("/all-faculties", PageviewController.getAllFacultiesControlle
 PageViewRouter.get("/all-departments", PageviewController.getAllDepartmentsController)
 PageViewRouter.get("/top-agencies-by-faculty", PageviewController.getTopAgenciesByFacultyController)
 PageViewRouter.get("/top-agencies-by-department", PageviewController.getTopAgenciesByDepartmentController)
+PageViewRouter.get("/departments-by-faculty", PageviewController.getDepartmentsByFacultyController)
 PageViewRouter.get("/trend", PageviewController.getStatisticsOverTimeController)
 
 export default PageViewRouter;

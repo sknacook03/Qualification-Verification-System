@@ -1,3 +1,5 @@
+import { all } from "axios";
+
 export const API_BASE_URL = "http://localhost:3000";
 
 export const APIEndpoints = {
@@ -59,5 +61,10 @@ export const APIEndpoints = {
       topAgency: "/pageview/top-agencies",
       topFaculty: "/pageview/top-faculties",
       trend: "/pageview/trend",
+      allFaculties: "/pageview/all-faculties",
+      allDepartments: "/pageview/all-departments",
+      topAgenciesByFaculty: "/pageview/top-agencies-by-faculty",
+      topAgenciesByDepartment: "/pageview/top-agencies-by-department",
+      departmentsByFaculty: "/pageview/departments-by-faculty",
     },
 };

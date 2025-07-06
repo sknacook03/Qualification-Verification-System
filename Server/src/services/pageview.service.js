@@ -228,6 +228,52 @@ const PageviewService = {
       return { success: false, error: "Internal server error" };
     }
   },
+  getDepartmentsByFaculty: async (faculty) => {
+    if (!faculty) {
+      return {
+        success: false,
+        error: "faculty parameter is required",
+      };
+    }
+
+    try {
+      const students = await prisma.student.findMany({
+        select: { curr_name: true },
+        where: {
+          curr_name: { not: null },
+        },
+      });
+
+      const rawList = students.map((s) => s.curr_name).filter(Boolean);
+
+      const parsedList = rawList
+        .map((curr) => {
+          const match = curr.match(/^(.+)\((.+)\)$/);
+          if (!match) return null;
+          return {
+            faculty: match[1].trim(),
+            department: match[2].trim(),
+          };
+        })
+        .filter(Boolean);
+
+      const departments = [
+        ...new Set(
+          parsedList
+            .filter((item) => item.faculty === faculty)
+            .map((item) => item.department)
+        ),
+      ];
+
+      return { success: true, data: departments };
+    } catch (error) {
+      console.error("Error parsing curr_name:", error);
+      return {
+        success: false,
+        error: "Failed to fetch departments",
+      };
+    }
+  },
   getStatisticsOverTime: async () => {
     try {
       const trend = await prisma.$queryRawUnsafe(`
