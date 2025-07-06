@@ -67,4 +67,8 @@ export const APIEndpoints = {
       topAgenciesByDepartment: "/pageview/top-agencies-by-department",
       departmentsByFaculty: "/pageview/departments-by-faculty",
     },
+    exportFile: {
+      exportFilePDF: "/exportfile/export-pdf",
+      exportFileExcel: "/exportfile/export-excel",
+    },
 };

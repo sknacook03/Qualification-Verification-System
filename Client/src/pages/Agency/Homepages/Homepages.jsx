@@ -16,6 +16,7 @@ import {
   topMenuItems,
   bottomMenuItems,
 } from "../../../constants/agencyMenuItems";
+
 function Homepages() {
   const [agency, setAgency] = useState(null);
   const [student, setStudent] = useState(null);
@@ -23,12 +24,16 @@ function Homepages() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [selectMode, setSelectMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([]);
+
   const navigate = useNavigate();
   const offset = currentPage * itemsPerPage;
   const currentItems = student
     ? student.slice(offset, offset + itemsPerPage)
     : [];
   const pageCount = student ? Math.ceil(student.length / itemsPerPage) : 0;
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -54,16 +59,13 @@ function Homepages() {
             API_BASE_URL + APIEndpoints.agency.latestSearch(res.data.data.id),
             { withCredentials: true }
           );
-          console.log(response.data.data);
           setStudent(response.data.data);
         } catch (err) {
-          console.warn("ไม่สามารถโหลดประวัตินักศึกษาได้:", err);
           setStudent(null);
         }
 
         setLoading(false);
       } catch (error) {
-        console.error("Failed to fetch agency data:", error);
         alert("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
         navigate("/");
         return;
@@ -85,7 +87,6 @@ function Homepages() {
 
       navigate("/");
     } catch (error) {
-      console.error("Failed to logout:", error);
       alert("เกิดข้อผิดพลาดในการออกจากระบบ");
     }
   };
@@ -95,10 +96,75 @@ function Homepages() {
   const handleShowPopup = async (student) => {
     setSelectedStudent(student);
   };
-
   const handleClosePopup = () => {
     setSelectedStudent(null);
   };
+
+  const handleToggleSelectMode = () => {
+    setSelectMode((prev) => !prev);
+    setSelectedIds([]);
+  };
+
+  const handleCheckboxChange = (student_no) => {
+    setSelectedIds((prev) =>
+      prev.includes(student_no)
+        ? prev.filter((id) => id !== student_no)
+        : [...prev, student_no]
+    );
+  };
+
+  const handleExportPDF = async () => {
+    if (selectedIds.length === 0) {
+      toast.warning("กรุณาเลือกข้อมูลอย่างน้อย 1 รายการ");
+      return;
+    }
+    try {
+      const response = await axios.post(
+        API_BASE_URL + APIEndpoints.exportFile.exportFilePDF,
+        { studentNos: selectedIds },
+        { responseType: "blob", withCredentials: true }
+      );
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "student_export.pdf");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      setSelectMode(false);
+      setSelectedIds([]);
+    } catch (err) {
+      toast.error("Export PDF ล้มเหลว");
+    }
+  };
+
+  const handleExportExcel = async () => {
+    if (selectedIds.length === 0) {
+      toast.warning("กรุณาเลือกข้อมูลอย่างน้อย 1 รายการ");
+      return;
+    }
+    try {
+      const response = await axios.post(
+        API_BASE_URL + APIEndpoints.exportFile.exportFileExcel, // "/export-excel"
+        { studentNos: selectedIds },
+        { responseType: "blob", withCredentials: true }
+      );
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "student_export.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      setSelectMode(false);
+      setSelectedIds([]);
+    } catch (err) {
+      toast.error("Export Excel ล้มเหลว");
+    }
+  };
+
   return (
     <>
       <LayoutAllPage
@@ -118,65 +184,110 @@ function Homepages() {
               <p>Role: {agency.role}</p>
             </div>
             <h4 className={styles.topic}>ข้อมูลของนักศึกษาที่เคยตรวจสอบ</h4>
+            <div className={styles.selectedBox} style={{ marginBottom: 10 }}>
+              {!selectMode ? (
+                <button
+                  className={styles.selectButton}
+                  onClick={handleToggleSelectMode}
+                >
+                  <FontAwesomeIcon icon={faInfo} style={{ marginRight: 8 }} />
+                  เลือกข้อมูล
+                </button>
+              ) : (
+                <>
+                  <button
+                    className={styles.exportButton}
+                    onClick={handleExportPDF}
+                    disabled={selectedIds.length === 0}
+                  >
+                    Export PDF
+                  </button>
+                  <button
+                    className={styles.exportButton}
+                    onClick={handleExportExcel}
+                    disabled={selectedIds.length === 0}
+                  >
+                    Export Excel
+                  </button>
+                  <button
+                    className={styles.cancelButton}
+                    onClick={handleToggleSelectMode}
+                    style={{ marginLeft: 10 }}
+                  >
+                    ยกเลิก
+                  </button>
+                </>
+              )}
+            </div>
             <div className={styles.boxHistory}>
               {student && (
-                <>
-                  <table className={styles.studentTable}>
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>รหัสนักศึกษา</th>
-                        <th>ชื่อ</th>
-                        <th>นามสกุล</th>
-                        <th>สาขา</th>
-                        <th>วันที่เข้าชม</th>
-                        <th>สถานะการศึกษา</th>
-                        <th>ข้อมูลเพิ่มเติม</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {currentItems.map((item, index) => (
-                        <tr key={item.student.student_no}>
-                          <td>{index + 1}</td>
-                          <td>{item.student.student_no}</td>
-                          <td>{item.student.name}</td>
-                          <td>{item.student.lname}</td>
-                          <td>
-                            {item.student.curr_name?.match?.(
-                              /\((.*?)\)/
-                            )?.[1] || "Unknown"}
-                          </td>
-
-                          <td>
-                            {new Date(item.updated_at).toLocaleDateString(
-                              "th-TH"
-                            )}
-                          </td>
-                          <td
-                            style={{
-                              color:
-                                item.student.status_graduate === 1
-                                  ? "green"
-                                  : "red",
-                            }}
+                <table className={styles.studentTable}>
+                  <thead>
+                    <tr>
+                      <th>{!selectMode ? "#" : "เลือก"}</th>
+                      <th>รหัสนักศึกษา</th>
+                      <th>ชื่อ</th>
+                      <th>นามสกุล</th>
+                      <th>สาขา</th>
+                      <th>วันที่เข้าชม</th>
+                      <th>สถานะการศึกษา</th>
+                      <th>ข้อมูลเพิ่มเติม</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentItems.map((item, index) => (
+                      <tr key={item.student.student_no}>
+                        <td>
+                          {!selectMode ? (
+                            index + 1
+                          ) : (
+                            <input
+                              type="checkbox"
+                              checked={selectedIds.includes(
+                                item.student.student_no
+                              )}
+                              onChange={() =>
+                                handleCheckboxChange(item.student.student_no)
+                              }
+                            />
+                          )}
+                        </td>
+                        <td>{item.student.student_no}</td>
+                        <td>{item.student.name}</td>
+                        <td>{item.student.lname}</td>
+                        <td>
+                          {item.student.curr_name?.match?.(/\((.*?)\)/)?.[1] ||
+                            "Unknown"}
+                        </td>
+                        <td>
+                          {new Date(item.updated_at).toLocaleDateString(
+                            "th-TH"
+                          )}
+                        </td>
+                        <td
+                          style={{
+                            color:
+                              item.student.status_graduate === 1
+                                ? "green"
+                                : "red",
+                          }}
+                        >
+                          {item.student.status_graduate === 1
+                            ? "สำเร็จการศึกษาแล้ว"
+                            : "ยังไม่สำเร็จการศึกษา"}
+                        </td>
+                        <td className={styles.TdInfo}>
+                          <button
+                            onClick={() => handleShowPopup(item.student)}
+                            className={styles.btnInfo}
                           >
-                            {item.student.status_graduate === 1
-                              ? "สำเร็จการศึกษาแล้ว"
-                              : "ยังไม่สำเร็จการศึกษา"}
-                          </td>
-                          <td className={styles.TdInfo}>
-                            <button
-                              onClick={() => handleShowPopup(item.student)}
-                              className={styles.btnInfo}
-                            >
-                              <FontAwesomeIcon icon={faInfo} />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </>
+                            <FontAwesomeIcon icon={faInfo} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               )}
               <Pagination
                 pageCount={pageCount}
@@ -194,6 +305,7 @@ function Homepages() {
             )}
           </>
         )}
+        <ToastContainer />
       </LayoutAllPage>
     </>
   );

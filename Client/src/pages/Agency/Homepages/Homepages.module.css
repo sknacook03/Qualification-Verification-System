@@ -56,3 +56,82 @@
   color: white;
 }
 
+.selectedBox button{
+  font-family: "Prompt", sans-serif;
+}
+
+.selectButton {
+  background: transparent;
+  color: #246bfd;
+  border: 2px solid #246bfd;
+  padding: 0.75rem 1.8rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-right: 10px;
+  transition: background 0.15s, color 0.15s, border 0.15s;
+  cursor: pointer;
+  outline: none;
+  box-shadow: none;
+  letter-spacing: 0.5px;
+}
+.selectButton:hover, .selectButton:focus {
+  background: #eef2ff;
+  color: #1846a3;
+  border-color: #1846a3;
+}
+
+.exportButton {
+  background: transparent;
+  color: #1b6fdc;
+  border: 2px solid #1b6fdc;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-right: 10px;
+  box-shadow: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border 0.15s;
+  outline: none;
+}
+.exportButton:hover:enabled, .exportButton:focus:enabled {
+  background: #e6f3ff;
+  color: #246bfd;
+  border-color: #246bfd;
+}
+.exportButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #e6e6e6;
+  color: #bcbcbc;
+  border-color: #e6e6e6;
+}
+
+.cancelButton {
+  background: transparent;
+  color: #ffae1f;
+  border: 2px solid #ffae1f;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border 0.15s;
+  margin-left: 10px;
+  box-shadow: none;
+}
+.cancelButton:hover, .cancelButton:focus {
+  background: #fff7e6;
+  color: #d68900;
+  border-color: #d68900;
+}
+
+.studentTable input[type="checkbox"] {
+  accent-color: #246bfd;
+  width: 1.2em;
+  height: 1.2em;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: accent-color 0.2s;
+}
