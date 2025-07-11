@@ -38,7 +38,6 @@ const AgencyController = {
   getAgencyController: async (req, res) => {
     try {
       const agency = req.agency;
-      console.log("Agency accessing this route:", agency);
       const agencys = await AgencyService.getAgencyAll();
 
       const responseData = JSON.parse(JSON.stringify(agencys, replacer));
@@ -46,6 +45,24 @@ const AgencyController = {
       res.status(200).json({
         success: true,
         data: responseData,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Failed to get agency" });
+    }
+  },
+  getAgencyAllForDropdownController: async (req, res) => {
+    try {
+      const agencys = await AgencyService.getAgencyAllForDropdown();
+
+      const cleaned = agencys.map((a) => ({
+        id: a.id.toString(),
+        agency_name: a.agency_name,
+      }));
+
+      res.status(200).json({
+        success: true,
+        data: cleaned,
       });
     } catch (error) {
       console.error(error);
@@ -288,7 +305,11 @@ const AgencyController = {
     try {
       const agencyId = req.params.id;
       const result = await AgencyService.latestSearch(agencyId);
-      res.json({ success: true, message: "บันทึกการค้นหาเรียบร้อย", data: result });
+      res.json({
+        success: true,
+        message: "บันทึกการค้นหาเรียบร้อย",
+        data: result,
+      });
     } catch (error) {
       console.error("Error saving latest search:", error);
       res.status(500).json({ error: "Internal Server Error" });

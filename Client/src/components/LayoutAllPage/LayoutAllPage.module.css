@@ -43,7 +43,7 @@
   }
   .dashboardLayout {
     display: flex;
-    padding: 1rem 10rem;
+    padding: 1rem 5rem;
     width: 100%;
     min-height: 100vh;
   }
@@ -57,5 +57,11 @@
   .mainContent {
     padding: 0;
     flex-grow: 1;
+  }
+}
+
+@media screen and (min-width: 1720px) {
+  .dashboardLayout {
+    padding: 1rem 10rem;
   }
 }

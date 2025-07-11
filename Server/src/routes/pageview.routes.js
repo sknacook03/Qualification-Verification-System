@@ -11,6 +11,7 @@ PageViewRouter.get("/top-faculties", PageviewController.getTopFacultyViewsContro
 PageViewRouter.get("/top-departments", PageviewController.getTopDepartmentsViewsController)
 PageViewRouter.get("/all-faculties", PageviewController.getAllFacultiesController)
 PageViewRouter.get("/all-departments", PageviewController.getAllDepartmentsController)
+PageViewRouter.get("/all-agencies", PageviewController.getAllAgenciesController)
 PageViewRouter.get("/top-agencies-by-faculty", PageviewController.getTopAgenciesByFacultyController)
 PageViewRouter.get("/top-agencies-by-department", PageviewController.getTopAgenciesByDepartmentController)
 PageViewRouter.get("/departments-by-faculty", PageviewController.getDepartmentsByFacultyController)

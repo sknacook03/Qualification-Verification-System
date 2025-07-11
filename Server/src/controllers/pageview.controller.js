@@ -30,8 +30,16 @@ const upload = multer({
 const PageviewController = {
   getTopFacultyViewsController: async (req, res) => {
     try {
-      const { startDate, endDate } = req.query;
-      const result = await PageviewService.getTopFacultyViews(startDate, endDate);
+      const { startDate, endDate, agencyId } = req.query;
+      const agencyIdParam =
+        agencyId && agencyId !== "null" && agencyId !== "undefined"
+          ? agencyId
+          : null;
+      const result = await PageviewService.getTopFacultyViews(
+        startDate,
+        endDate,
+        agencyIdParam
+      );
 
       if (result.success) {
         res.json(result.data);
@@ -47,8 +55,16 @@ const PageviewController = {
   },
   getTopDepartmentsViewsController: async (req, res) => {
     try {
-      const { startDate, endDate } = req.query;
-      const result = await PageviewService.getTopDepartmentsViews(startDate, endDate);
+      const { startDate, endDate, agencyId } = req.query;
+      const agencyIdParam =
+        agencyId && agencyId !== "null" && agencyId !== "undefined"
+          ? agencyId
+          : null;
+      const result = await PageviewService.getTopDepartmentsViews(
+        startDate,
+        endDate,
+        agencyIdParam
+      );
 
       if (result.success) {
         res.json(result.data);
@@ -65,7 +81,10 @@ const PageviewController = {
   getTopAgencyViewsController: async (req, res) => {
     try {
       const { startDate, endDate } = req.query;
-      const result = await PageviewService.getTopAgencyViews(startDate, endDate);
+      const result = await PageviewService.getTopAgencyViews(
+        startDate,
+        endDate
+      );
 
       if (result.success) {
         res.json(result.data);
@@ -82,7 +101,10 @@ const PageviewController = {
   getStatisticsOverTimeController: async (req, res) => {
     try {
       const { startDate, endDate } = req.query;
-      const result = await PageviewService.getStatisticsOverTime(startDate, endDate);
+      const result = await PageviewService.getStatisticsOverTime(
+        startDate,
+        endDate
+      );
       res.json(result.data);
     } catch (error) {
       console.error("Error in getStatisticsOverTimeController:", error);
@@ -116,13 +138,22 @@ const PageviewController = {
       return res.status(500).json({ error: "Internal Server Error" });
     }
   },
+  getAllAgenciesController: async (req, res) => {
+    try {
+      const result = await PageviewService.getAllAgencies();
+      res.json(result);
+    } catch (error) {
+      console.error("Error in getAllAgenciesController", error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
   getTopAgenciesByFacultyController: async (req, res) => {
     try {
       const { faculty, limit, startDate, endDate } = req.query;
       const result = await PageviewService.getTopAgenciesByFaculty(
         faculty,
         limit,
-        startDate, 
+        startDate,
         endDate
       );
       res.json(result);
@@ -137,7 +168,7 @@ const PageviewController = {
       const result = await PageviewService.getTopAgenciesByDepartment(
         department,
         limit,
-        startDate, 
+        startDate,
         endDate
       );
       res.json(result);
@@ -162,8 +193,12 @@ const PageviewController = {
   },
   countStudentViewsByAgencyController: async (req, res) => {
     try {
-      const { agency_id, startDate, endDate} = req.params;
-      const result = await PageviewService.countStudentViewsByAgency(agency_id, startDate, endDate);
+      const { agency_id, startDate, endDate } = req.params;
+      const result = await PageviewService.countStudentViewsByAgency(
+        agency_id,
+        startDate,
+        endDate
+      );
 
       if (!result.success) {
         return res.status(400).json({ error: result.error });

@@ -5,6 +5,7 @@ import authMiddleware from "../middlewares/auth.middleware.js";
 const AgencyRouter = express.Router();
 
 AgencyRouter.get("/agencies", AgencyController.getAgencyController)
+AgencyRouter.get("/agencies-dropdown", AgencyController.getAgencyAllForDropdownController)
 AgencyRouter.get("/logged-in",authMiddleware, AgencyController.getLoggedInController);
 AgencyRouter.post("/", AgencyController.createAgencyController)
 AgencyRouter.post('/check-email', AgencyController.checkEmailController);

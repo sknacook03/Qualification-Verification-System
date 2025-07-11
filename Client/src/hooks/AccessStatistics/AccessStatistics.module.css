@@ -10,7 +10,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
+  height: 1500px;
   gap: 2rem;
   background-color: #fafafa;
   border-radius: 0.5rem;
@@ -141,11 +141,32 @@
   border-color: #2196f3;
   background-color: #f0f8ff;
 }
+.filterContainer button{
+  padding: 0.5rem;
+  color: #78b4e6;
+  font-size: 16px;
+  background-color: white;
+  border: 2px solid #78b4e6;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.filterContainer button:hover{
+  background-color: #78b4e6;
+  color: white;
+}
 
+@media screen and (min-width: 768px) {
+  .containerStatistics {
+    max-height: 1700px;
+    overflow-y: auto;
+  }
+}
 
 @media screen and (min-width: 1440px) {
   .containerStatistics {
     flex-direction: row;
-    height: 700px;
+    max-height: 900px;
+    overflow-y: auto;
   }
 }

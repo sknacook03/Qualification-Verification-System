@@ -14,6 +14,22 @@ const AgencyService = {
       };
     }
   },
+  getAgencyAllForDropdown: async () => {
+    try {
+      return await prisma.agency.findMany({
+        select: {
+          id: true,
+          agency_name: true,
+        },
+      });
+    } catch (error) {
+      console.error("Error fetching agencies:", error);
+      throw {
+        status: 500,
+        message: "Failed to fetch agencies",
+      };
+    }
+  },
   getAgencyById: async (id) => {
     try {
       console.log("Fetching agency by ID:", id);

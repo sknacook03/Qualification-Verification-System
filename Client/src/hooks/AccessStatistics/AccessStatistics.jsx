@@ -50,6 +50,8 @@ const AccessStatistics = ({ officer, agency }) => {
   const [totalViews, setTotalViews] = useState(0);
   const [uniqueStudents, setUniqueStudents] = useState(0);
   const [topAgencies, setTopAgencies] = useState([]);
+  const [selectedAgencyId, setSelectedAgencyId] = useState("");
+  const [agencyDropdown, setAgencyDropdown] = useState([]);
   const [topFaculties, setTopFaculties] = useState([]);
   const [topDepartments, setTopDepartments] = useState([]);
   const [facultiesList, setFacultiesList] = useState([]);
@@ -60,11 +62,14 @@ const AccessStatistics = ({ officer, agency }) => {
   const [selectedView, setSelectedView] = useState("faculty");
   const [loadingTopAgencies, setLoadingTopAgencies] = useState(false);
   const [loadingTopDepartments, setLoadingTopDepartments] = useState(false);
+  const [tempStartDate, setTempStartDate] = useState("");
+  const [tempEndDate, setTempEndDate] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [trend, setTrend] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const selectedAgencyName = agencyDropdown.find((a) => a.id.toString() === selectedAgencyId)?.agency_name || "ทั้งหมด";
   const backgroundColor = [
     "rgba(255, 99, 132, 0.6)",
     "rgba(54, 162, 235, 0.6)",
@@ -88,14 +93,17 @@ const AccessStatistics = ({ officer, agency }) => {
           facultiesRes,
           trendRes,
           facultiesListRes,
+          allAgencyForDropdownRes,
         ] = await Promise.all([
           axios.get(API_BASE_URL + APIEndpoints.pageview.statistics),
           axios.get(API_BASE_URL + APIEndpoints.pageview.topAgency),
           axios.get(API_BASE_URL + APIEndpoints.pageview.topFaculty),
           axios.get(API_BASE_URL + APIEndpoints.pageview.trend),
           axios.get(API_BASE_URL + APIEndpoints.pageview.allFaculties),
+          axios.get(API_BASE_URL + APIEndpoints.agency.allAgencyForDropdown),
         ]);
 
+        setAgencyDropdown(allAgencyForDropdownRes.data.data);
         setTotalViews(statisticsRes.data.totalViews);
         setUniqueStudents(statisticsRes.data.uniqueStudents);
         setTopAgencies(Array.isArray(agenciesRes.data) ? agenciesRes.data : []);
@@ -115,12 +123,6 @@ const AccessStatistics = ({ officer, agency }) => {
   }, []);
 
   useEffect(() => {
-    if (startDate && endDate) {
-      handleApplyDateFilter();
-    }
-  }, [startDate, endDate]);
-
-  useEffect(() => {
     if (!agency) return;
     console.log("agency id in AccessStatistics:", agency);
     const fetchData = async () => {
@@ -138,7 +140,7 @@ const AccessStatistics = ({ officer, agency }) => {
       }
     };
     fetchData();
-  }, [agency, startDate, endDate]);
+  }, [agency]);
 
   useEffect(() => {
     if (selectedFaculty) {
@@ -162,7 +164,9 @@ const AccessStatistics = ({ officer, agency }) => {
     const fetchTopDepartments = async () => {
       try {
         let url = "";
-        const query = `startDate=${startDate}&endDate=${endDate}`;
+        const query = `startDate=${startDate}&endDate=${endDate}${
+          selectedAgencyId ? `&agencyId=${selectedAgencyId}` : ""
+        }`;
         if (selectedView === "faculty") {
           url = `${API_BASE_URL}${APIEndpoints.pageview.topFaculty}?${query}`;
         } else if (selectedView === "department") {
@@ -186,7 +190,7 @@ const AccessStatistics = ({ officer, agency }) => {
     };
 
     fetchTopDepartments();
-  }, [selectedView, startDate, endDate]);
+  }, [selectedView, startDate, endDate, selectedAgencyId]);
 
   useEffect(() => {
     const fetchTopAgencies = async () => {
@@ -220,7 +224,7 @@ const AccessStatistics = ({ officer, agency }) => {
     };
 
     fetchTopAgencies();
-  }, [selectedFaculty, selectedDepartment, startDate, endDate]);
+  }, [selectedFaculty, selectedDepartment]);
 
   const handleApplyDateFilter = async () => {
     try {
@@ -254,7 +258,13 @@ const AccessStatistics = ({ officer, agency }) => {
       setLoading(false);
     }
   };
-
+  useEffect(() => {
+    if (startDate === "" && endDate === "") {
+      handleApplyDateFilter();
+    } else if (startDate && endDate) {
+      handleApplyDateFilter();
+    }
+  }, [startDate, endDate]);
   const barChartData = {
     labels: topAgencies.map((item) => item.agency_name),
     datasets: [
@@ -321,8 +331,8 @@ const AccessStatistics = ({ officer, agency }) => {
         display: true,
         text:
           selectedView === "faculty"
-            ? "Top 5 คณะที่มีการเข้าดูมากที่สุด"
-            : "Top 5 สาขาที่มีการเข้าดูมากที่สุด",
+            ? `Top 5 คณะที่มีการเข้าดูมากที่สุด (${selectedAgencyName})`
+            : `Top 5 สาขาที่มีการเข้าดูมากที่สุด (${selectedAgencyName})`,
         color: "#333",
         padding: { top: 10, bottom: 20 },
       },
@@ -382,18 +392,27 @@ const AccessStatistics = ({ officer, agency }) => {
               จากวันที่:
               <input
                 type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
+                value={tempStartDate}
+                onChange={(e) => setTempStartDate(e.target.value)}
               />
             </label>
             <label>
               ถึงวันที่:
               <input
                 type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
+                value={tempEndDate}
+                onChange={(e) => setTempEndDate(e.target.value)}
               />
             </label>
+            <button
+              onClick={() => {
+                setStartDate(tempStartDate);
+                setEndDate(tempEndDate);
+                handleApplyDateFilter();
+              }}
+            >
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
+            </button>
           </div>
         )}
         <div className={styles.boxState}>
@@ -429,7 +448,7 @@ const AccessStatistics = ({ officer, agency }) => {
               setSelectedDepartment("");
             }}
           >
-            <option value="">-- ทั้งหมด --</option>
+            <option value="">-- เลือกคณะ --</option>
             {facultiesList.map((f) => (
               <option key={f} value={f}>
                 {f}
@@ -482,6 +501,19 @@ const AccessStatistics = ({ officer, agency }) => {
             />
             <span>ดูตามสาขา</span>
           </label>
+          {officer && (
+            <select
+              value={selectedAgencyId}
+              onChange={(e) => setSelectedAgencyId(e.target.value)}
+            >
+              <option value="">-- เลือกหน่วยงาน --</option>
+              {agencyDropdown.map((agency) => (
+                <option key={agency.id} value={agency.id}>
+                  {agency.agency_name}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
         <div className={styles.topFacultyView}>
           {(selectedView === "faculty" && topFaculties.length > 0) ||

@@ -14,13 +14,14 @@ const buildDateFilter = (startDate, endDate) => {
 };
 
 const PageviewService = {
-  getTopFacultyViews: async (startDate, endDate) => {
+  getTopFacultyViews: async (startDate, endDate, agencyId) => {
     try {
       const dateFilter = buildDateFilter(startDate, endDate);
       const topFaculties = await prisma.pageView.groupBy({
         by: ["faculty"],
         where: {
           ...dateFilter,
+          ...(agencyId && { agency_id: agencyId }),
         },
         _count: {
           id: true,
@@ -46,13 +47,14 @@ const PageviewService = {
       return { success: false, error: "Failed to fetch top faculties" };
     }
   },
-  getTopDepartmentsViews: async (startDate, endDate) => {
+  getTopDepartmentsViews: async (startDate, endDate, agencyId) => {
     try {
       const dateFilter = buildDateFilter(startDate, endDate);
       const topDepartments = await prisma.pageView.groupBy({
         by: ["department"],
         where: {
           ...dateFilter,
+          ...(agencyId && { agency_id: agencyId }),
         },
         _count: {
           id: true,

@@ -14,6 +14,7 @@ export const APIEndpoints = {
       createAgency: "/agency",
       fetchAll: "/agency/agencies",
       logged: "/agency/logged-in",
+      allAgencyForDropdown: "/agency/agencies-dropdown",
       verifyPassword: (agencyId) => `/agency/verify-password/${agencyId}`,
       updateAgency: (agencyId) => `/agency/update-agency/${agencyId}`,
       updateRejectAgency: (agencyId) => `/agency/update-reject-agency/${agencyId}`,
