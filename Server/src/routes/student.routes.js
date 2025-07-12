@@ -1,6 +1,7 @@
 import express from "express";
 import StudentController from "../controllers/student.controller.js";
 import authMiddleware from "../middlewares/auth.middleware.js";
+import handleUploadError from "../middlewares/error-handling.middleware.js";
 import multer from "multer";
 
 const StudentRouter = express.Router();
@@ -24,5 +25,5 @@ const upload = multer({
 });
 StudentRouter.get("/:id", authMiddleware,StudentController.getStudentByIdController);
 StudentRouter.post("/search", authMiddleware,StudentController.searchStudents);
-StudentRouter.post( "/upload-excel",authMiddleware,upload.single("file"),StudentController.uploadExcel);
+StudentRouter.post( "/upload-excel",authMiddleware,upload.single("file"),handleUploadError,StudentController.uploadExcel);
 export default StudentRouter;

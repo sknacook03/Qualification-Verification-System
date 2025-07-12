@@ -1,13 +1,15 @@
 import StudentService from "../services/student.service.js";
 import xlsx from "xlsx";
+import fs from "fs/promises";
 
 const StudentController = {
   uploadExcel: async (req, res) => {
+    let filePath;
     try {
       if (!req.file) {
         return res.status(400).json({ error: "No file uploaded" });
       }
-      const filePath = req.file.path;
+      filePath = req.file.path;
       const workbook = xlsx.readFile(filePath);
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
@@ -15,7 +17,6 @@ const StudentController = {
 
       const success = [];
       const failed = [];
-
       for (const row of data) {
         try {
           const studentData = {
@@ -81,6 +82,12 @@ const StudentController = {
       res
         .status(500)
         .json({ error: "Failed to upload and process Excel file" });
+    } finally {
+      try {
+        await fs.unlink(filePath);
+      } catch (unlinkErr) {
+        console.error("Error removing file:", unlinkErr);
+      }
     }
   },
   getStudentByIdController: async (req, res) => {
