@@ -136,35 +136,37 @@ function AllOfficer() {
             <tbody>
               {currentItems.map((officer, index) => (
                 <tr key={officer.id}>
-                  <td>{index + 1}</td>
-                  <td>{officer.first_name}</td>
-                  <td>{officer.last_name}</td>
-                  <td>{officer.email}</td>
-                  <td>
-                    <button
-                      className={`${styles.button} ${styles.editButton}`}
-                      onClick={() => openEditModal(officer)}
-                    >
-                      <FontAwesomeIcon icon={faPenToSquare} />
-                    </button>
-                    <button
-                      className={styles.deleteButton}
-                      onClick={() => handleDelete(officer.id)}
-                    >
-                      <FontAwesomeIcon icon={faTrashCan} />
-                    </button>
+                  <td data-label="#"> {index + 1} </td>
+                  <td data-label="ชื่อ"> {officer.first_name} </td>
+                  <td data-label="นามสกุล"> {officer.last_name} </td>
+                  <td data-label="อีเมล"> {officer.email} </td>
+                  <td data-label="จัดการเจ้าหน้าที่">
+                    <div className={styles.btnContainer}>
+                      <button
+                        className={`${styles.button} ${styles.editButton}`}
+                        onClick={() => openEditModal(officer)}
+                      >
+                        <FontAwesomeIcon icon={faPenToSquare} />
+                      </button>
+                      <button
+                        className={styles.deleteButton}
+                        onClick={() => handleDelete(officer.id)}
+                      >
+                        <FontAwesomeIcon icon={faTrashCan} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
           <Pagination
-          pageCount={pageCount}
-          onPageChange={handlePageClick}
-          itemsPerPage={itemsPerPage}
-          setItemsPerPage={setItemsPerPage}
-          setCurrentPage={setCurrentPage}
-        />
+            pageCount={pageCount}
+            onPageChange={handlePageClick}
+            itemsPerPage={itemsPerPage}
+            setItemsPerPage={setItemsPerPage}
+            setCurrentPage={setCurrentPage}
+          />
         </div>
       )}
       {editingOfficer && (
