@@ -1,9 +1,12 @@
 import React, { useState, useRef } from "react";
 import { API_BASE_URL, APIEndpoints } from "../../services/api";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import Icon from "../../assets/upload.png";
 import IconClose from "../../assets/close.png";
 import IconExcel from "../../assets/excel.png";
+import ClipLoader from "react-spinners/ClipLoader";
 import { filesize } from "filesize";
 import styles from "./UploadExcelStudent.module.css";
 
@@ -61,30 +64,54 @@ const UploadExcelStudent = () => {
   };
 
   const handleUpload = async () => {
+    toast.dismiss();
     if (!file) {
-      alert("กรุณาเลือกไฟล์ก่อนอัปโหลด");
+      toast.error("กรุณาเลือกไฟล์ก่อนอัปโหลด");
       return;
     }
     const formData = new FormData();
     formData.append("file", file);
-
+    setUploading(true);
     try {
-      const res = await axios.post(
-        API_BASE_URL + APIEndpoints.student.createStudent,
-        formData,
+      const res = await toast.promise(
+        axios.post(
+          API_BASE_URL + APIEndpoints.student.createStudent,
+          formData,
+          {
+            withCredentials: true,
+          }
+        ),
         {
-          withCredentials: true,
+          pending: "กำลังอัปโหลด...",
         }
       );
-      alert(`อัปโหลดสำเร็จ: ${res.data.successCount} รายการ`);
-      console.log("Failed rows:", res.data.failedData);
+      const { successCount, failedCount, failedData } = res.data;
+      const duplicateRows = failedData.filter(
+        (row) => row.error === "Student already exists"
+      );
+
+      toast.success(
+        <div>
+          <p>✅ อัปโหลดสำเร็จ: {successCount} รายการ</p>
+          {failedCount > 0 && (
+            <>
+              <p>❌ อัปโหลดไม่สำเร็จ: {failedCount} รายการ</p>
+              {duplicateRows.length > 0 && (
+                <p>📌 พบรายชื่อซ้ำ: {duplicateRows.length} รายการ</p>
+              )}
+            </>
+          )}
+        </div>
+      );
+      console.log("Failed rows:", failedData);
       setFile(null);
       setErrorMsg("");
       if (fileInputRef.current) {
         fileInputRef.current.value = null;
       }
+      setUploading(false);
     } catch (err) {
-      alert("Upload failed");
+      toast.error("Upload failed");
       console.error(err);
     }
   };
@@ -139,9 +166,22 @@ const UploadExcelStudent = () => {
         )}
         {errorMsg && <p className={styles.errorMsg}>{errorMsg}</p>}
       </div>
-      <button onClick={handleUpload} className={styles.btnUpload}>
-        Upload
-      </button>
+      {uploading && (
+        <div className={styles.loader}>
+          <ClipLoader size={15} color={"#FF7100"} />
+        </div>
+      )}
+      {!uploading && (
+        <button
+          onClick={handleUpload}
+          className={styles.btnUpload}
+          disabled={!file}
+          title={!file ? "กรุณาเลือกไฟล์ก่อนอัปโหลด" : ""}
+        >
+          Upload
+        </button>
+      )}
+      <ToastContainer position="top-center" />
     </div>
   );
 };

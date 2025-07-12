@@ -25,7 +25,10 @@ const StudentService = {
       });
     } catch (error) {
       console.error("Error creating student:", error);
-      throw error;
+      throw {
+        status: error.message === "Student already exists" ? 400 : 500,
+        message: error.message,
+      };
     }
   },
   getStudentById: async (id) => {
@@ -58,24 +61,30 @@ const StudentService = {
   getStudentByFilters: async (filterParams) => {
     try {
       const whereCondition = {};
-  
+
       console.log("Corrected Search Parameters:", filterParams);
-  
-      let name = typeof filterParams.name === "string" ? filterParams.name.trim() : "";
-      let lname = typeof filterParams.lname === "string" ? filterParams.lname.trim() : "";
-      let student_no = typeof filterParams.student_no === "string" ? filterParams.student_no.trim() : "";
-  
+
+      let name =
+        typeof filterParams.name === "string" ? filterParams.name.trim() : "";
+      let lname =
+        typeof filterParams.lname === "string" ? filterParams.lname.trim() : "";
+      let student_no =
+        typeof filterParams.student_no === "string"
+          ? filterParams.student_no.trim()
+          : "";
+
       // ตรวจสอบว่าครบทั้ง 3 ช่อง
       if (name === "" || lname === "" || student_no === "") {
         console.log("ต้องกรอก name, lname และ student_no ให้ครบ");
-        return []; 
+        return [];
       }
-  
+
       let studentNoFormatted = student_no;
       if (!student_no.includes("-") && student_no.length === 12) {
-        studentNoFormatted = student_no.slice(0, 11) + "-" + student_no.slice(11);
+        studentNoFormatted =
+          student_no.slice(0, 11) + "-" + student_no.slice(11);
       }
-  
+
       whereCondition.AND = [
         { name: { equals: name } },
         { lname: { equals: lname } },
@@ -86,11 +95,14 @@ const StudentService = {
           ],
         },
       ];
-  
-      console.log("Prisma Query Conditions:", JSON.stringify(whereCondition, null, 2));
-  
+
+      console.log(
+        "Prisma Query Conditions:",
+        JSON.stringify(whereCondition, null, 2)
+      );
+
       const students = await prisma.student.findMany({ where: whereCondition });
-  
+
       return students;
     } catch (error) {
       console.error("Error in getStudentByFilters:", error.message);
@@ -100,7 +112,7 @@ const StudentService = {
         error: error.message,
       };
     }
-  },  
+  },
 };
 
 export default StudentService;
