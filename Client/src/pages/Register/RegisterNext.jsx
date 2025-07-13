@@ -7,6 +7,7 @@ import Footer from "../../components/footer/footer";
 import Button from "../../components/button/Button";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ClipLoader from "react-spinners/ClipLoader";
 import styles from "./RegisterNext.module.css";
 import Popup from "../../components/Popup/Popup";
 import message from "../../assets/message.png";
@@ -16,6 +17,7 @@ import { API_BASE_URL, APIEndpoints } from "../../services/api";
 function RegisterNext() {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
+  const [loading, setLoading] = useState(false);
   const location = useLocation();
   const formData = location.state || {};
   const [password, setPassword] = useState("");
@@ -75,12 +77,17 @@ function RegisterNext() {
       }
 
       try {
+        setLoading(true);
         await toast.promise(
-          axios.post(API_BASE_URL + APIEndpoints.agency.createAgency, finalData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }),
+          axios.post(
+            API_BASE_URL + APIEndpoints.agency.createAgency,
+            finalData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          ),
           {
             pending: "กำลังสมัครสมาชิก...",
             success: "สมัครสมาชิกสำเร็จ!",
@@ -88,7 +95,7 @@ function RegisterNext() {
           }
         );
 
-        setShowPopup(true)
+        setShowPopup(true);
       } catch (error) {
         if (error.response) {
           console.error("Error response:", error.response.data);
@@ -103,6 +110,8 @@ function RegisterNext() {
           console.error("Error:", error.message);
           toast.error("เกิดข้อผิดพลาด: " + error.message);
         }
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -132,7 +141,7 @@ function RegisterNext() {
               name="password"
               value={password}
               onChange={(e) => {
-                setPassword(e.target.value)
+                setPassword(e.target.value);
                 setErrors((prev) => ({ ...prev, password: undefined }));
               }}
               placeholder="รหัสผ่าน"
@@ -144,8 +153,8 @@ function RegisterNext() {
               name="confirmPassword"
               value={confirmPassword}
               onChange={(e) => {
-                setConfirmPassword(e.target.value)
-                setErrors((prev) => ({ ...prev, confirmPassword: undefined }))
+                setConfirmPassword(e.target.value);
+                setErrors((prev) => ({ ...prev, confirmPassword: undefined }));
               }}
               placeholder="ยืนยันรหัสผ่าน"
               error={errors.confirmPassword}
@@ -158,28 +167,39 @@ function RegisterNext() {
           <Input
             type="file"
             onChange={(e) => {
-              setFile(e.target.files[0])
-              setErrors((prev) => ({ ...prev, file: undefined }))
+              setFile(e.target.files[0]);
+              setErrors((prev) => ({ ...prev, file: undefined }));
             }}
             error={errors.file}
           />
           <div className={styles.buttonSubmit}>
-            <Button text="ยืนยันการสมัครสมาชิก" styleType="third" />
+            <Button
+              text={
+                loading ? (
+                  <ClipLoader color="#fff" size={20} />
+                ) : (
+                  "ยืนยันการสมัครสมาชิก"
+                )
+              }
+              styleType="third"
+              disabled={loading}
+            />
+
             <Link to="/Register" style={{ textDecoration: "none" }}>
-              <Button text="ย้อนกลับ" styleType="back" />
+              <Button text="ย้อนกลับ" styleType="back" disabled={loading} />
             </Link>
           </div>
         </form>
       </div>
-          {showPopup && (
-            <Popup
-              topic="สมัครสมาชิกสำเร็จ!"
-              info="รอการตรวจสอบจากเจ้าหน้าที่ เมื่อตรวจสอบสำเร็จแล้วจะส่งผลการตรวจสอบไปยังอีเมลของคุณ"
-              img={message}
-              successPopup={closePopup}
-              textButtonSuccess="กลับไปยังหน้าเข้าสู่ระบบ"
-            />
-          )}
+      {showPopup && (
+        <Popup
+          topic="สมัครสมาชิกสำเร็จ!"
+          info="รอการตรวจสอบจากเจ้าหน้าที่ เมื่อตรวจสอบสำเร็จแล้วจะส่งผลการตรวจสอบไปยังอีเมลของคุณ"
+          img={message}
+          successPopup={closePopup}
+          textButtonSuccess="กลับไปยังหน้าเข้าสู่ระบบ"
+        />
+      )}
       <ToastContainer position="top-center" />
       <Footer />
     </div>

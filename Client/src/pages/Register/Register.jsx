@@ -9,12 +9,14 @@ import OptionTypeAgency from "../../components/OptionTypeAgency/OptionTypeAgency
 import styles from "./Register.module.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ClipLoader from "react-spinners/ClipLoader";
 import { Link, useNavigate } from "react-router-dom";
 import { API_BASE_URL, APIEndpoints } from "../../services/api";
 import axios from "axios";
 
 function Register() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [email, setEmail] = useState("");
   const [orgname, setOrgname] = useState("");
@@ -77,11 +79,15 @@ function Register() {
   };
 
   const handleNext = async () => {
+    setLoading(true);
+    toast.dismiss();
+
     if (validateForm()) {
       try {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
           toast.error("รูปแบบอีเมลไม่ถูกต้อง");
+          setLoading(false);
           return;
         }
 
@@ -95,32 +101,29 @@ function Register() {
           toast.error(
             "กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง (เบอร์มือถือหรือเบอร์บ้าน/สำนักงาน)"
           );
+          setLoading(false);
           return;
         }
 
-        const checkEmailResponse = await toast.promise( axios.post(
-          API_BASE_URL + APIEndpoints.agency.checkEmail,
-          { email }
-        ),
-      {
-        pending: "กำลังตรวจสอบข้อมูล..."
-      }
-      );
+        const checkEmailResponse = await toast.promise(
+          axios.post(API_BASE_URL + APIEndpoints.agency.checkEmail, { email }),
+          { pending: "กำลังตรวจสอบข้อมูล..." }
+        );
         if (checkEmailResponse.data.exists) {
           toast.error("อีเมลนี้ถูกใช้ไปแล้ว");
+          setLoading(false);
           return;
         }
 
-        const checkTelResponse = await toast.promise( axios.post(
-          API_BASE_URL + APIEndpoints.agency.checkTelphone,
-          { telephone_number: telphone }
-        ),
-      {
-        pending: "กำลังตรวจสอบข้อมูล..."
-      }
-      );
+        const checkTelResponse = await toast.promise(
+          axios.post(API_BASE_URL + APIEndpoints.agency.checkTelphone, {
+            telephone_number: telphone,
+          }),
+          { pending: "กำลังตรวจสอบข้อมูล..." }
+        );
         if (checkTelResponse.data.exists) {
           toast.error("เบอร์โทรศัพท์นี้ถูกใช้ไปแล้ว");
+          setLoading(false);
           return;
         }
 
@@ -138,7 +141,12 @@ function Register() {
       } catch (error) {
         console.error("Error handling next:", error);
         toast.error(error.message || "เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+      } finally {
+        setLoading(false);
       }
+    } else {
+      toast.error("กรุณากรอกข้อมูลให้ครบถ้วน");
+      setLoading(false);
     }
   };
 
@@ -170,7 +178,7 @@ function Register() {
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
-                  setErrors((prev) => ({ ...prev, email: undefined }));     
+                  setErrors((prev) => ({ ...prev, email: undefined }));
                 }}
                 error={errors.email}
               />
@@ -181,7 +189,7 @@ function Register() {
                 type="text"
                 value={orgname}
                 onChange={(e) => {
-                  setOrgname(e.target.value)
+                  setOrgname(e.target.value);
                   setErrors((prev) => ({ ...prev, orgname: undefined }));
                 }}
                 error={errors.orgname}
@@ -193,8 +201,8 @@ function Register() {
                 type="text"
                 value={department}
                 onChange={(e) => {
-                  setDepartment(e.target.value)
-                  setErrors((prev) => ({ ...prev, department: undefined }));              
+                  setDepartment(e.target.value);
+                  setErrors((prev) => ({ ...prev, department: undefined }));
                 }}
                 error={errors.department}
               />
@@ -205,8 +213,8 @@ function Register() {
                 type="text"
                 value={telphone}
                 onChange={(e) => {
-                  setTelphone(e.target.value)
-                  setErrors((prev) => ({ ...prev, telphone: undefined }));  
+                  setTelphone(e.target.value);
+                  setErrors((prev) => ({ ...prev, telphone: undefined }));
                 }}
                 error={errors.telphone}
               />
@@ -217,8 +225,8 @@ function Register() {
                 type="text"
                 value={orgaddress}
                 onChange={(e) => {
-                  setOrgaddress(e.target.value)
-                  setErrors((prev) => ({ ...prev, orgaddress: undefined }));  
+                  setOrgaddress(e.target.value);
+                  setErrors((prev) => ({ ...prev, orgaddress: undefined }));
                 }}
                 error={errors.orgaddress}
               />
@@ -239,8 +247,8 @@ function Register() {
                 name="optionTypeAgency"
                 id="optionTypeAgency"
                 value={orgType}
-                onChange={(e) => { 
-                  setOrgType(e.target.value)
+                onChange={(e) => {
+                  setOrgType(e.target.value);
                   setErrors((prev) => ({ ...prev, orgType: undefined }));
                 }}
                 placeholder="กรุณาเลือกประเภทหน่วยงาน"
@@ -253,8 +261,17 @@ function Register() {
           <Link to="/" style={{ textDecoration: "none" }}>
             <ArrowButton direction="left" color="grey" />
           </Link>
-          <button type="button" onClick={handleNext} style={{ border: "none" }}>
-            <ArrowButton direction="right" color="orange" />
+          <button
+            type="button"
+            onClick={handleNext}
+            style={{ border: "none", position: "relative" }}
+            disabled={loading}
+          >
+            {loading ? (
+              <ClipLoader color="#FF9900" size={20} />
+            ) : (
+              <ArrowButton direction="right" color="orange" />
+            )}
           </button>
         </div>
       </div>

@@ -3,11 +3,10 @@ import { Link } from "react-router-dom";
 import Input from "../../components/Input/Input";
 import PasswordInput from "../PasswordInput/PasswordInput";
 import Button from "../../components/button/Button";
+import ClipLoader from "react-spinners/ClipLoader";
 import "./LoginForm.css";
 
-
-
-const LoginForm = ({ onSubmit }) => {
+const LoginForm = ({ onSubmit, loading }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
@@ -39,8 +38,8 @@ const LoginForm = ({ onSubmit }) => {
         type="email"
         value={email}
         onChange={(e) => {
-          setEmail(e.target.value)
-          setErrors((prev) => ({ ...prev, email: undefined }));  
+          setEmail(e.target.value);
+          setErrors((prev) => ({ ...prev, email: undefined }));
         }}
         placeholder=" "
         error={errors.email}
@@ -51,8 +50,8 @@ const LoginForm = ({ onSubmit }) => {
         name="password"
         value={password}
         onChange={(e) => {
-          setPassword(e.target.value)
-          setErrors((prev) => ({ ...prev, password: undefined }));  
+          setPassword(e.target.value);
+          setErrors((prev) => ({ ...prev, password: undefined }));
         }}
         placeholder=" "
         error={errors.password}
@@ -60,7 +59,12 @@ const LoginForm = ({ onSubmit }) => {
       <Link to="/ForgetPassword" className="forgetPass">
         ลืมรหัสผ่าน?
       </Link>
-      <Button type="submit" text="เข้าสู่ระบบ" styleType="primary" />
+      <Button
+        type="submit"
+        text={loading ? <ClipLoader color="#fff" size={20} /> : "เข้าสู่ระบบ"}
+        styleType="primary"
+        disabled={loading}
+      />
     </form>
   );
 };

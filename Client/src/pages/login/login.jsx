@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,8 +11,10 @@ import styles from "./login.module.css";
 import { API_BASE_URL, APIEndpoints } from "../../services/api";
 function App() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async ({ email, password }) => {
+    setLoading(true);
     toast.dismiss();
     try {
       const loginResponse = await toast.promise(
@@ -64,15 +66,18 @@ function App() {
       console.error("Login Error:", loginError);
       const msg = loginError.response?.status;
       if (msg === 401) {
-        toast.error("อีเมลหรือรหัสผ่านไม่ถูกต้อง โปรดตรวจสอบและลองใหม่อีกครั้ง");
+        toast.error(
+          "อีเมลหรือรหัสผ่านไม่ถูกต้อง โปรดตรวจสอบและลองใหม่อีกครั้ง"
+        );
       } else if (msg === 500) {
         toast.error("เกิดข้อผิดพลาด: " + (msg || "ไม่สามารถเข้าสู่ระบบได้"));
       } else {
         toast.error(
-        "ไม่สามารถเข้าสู่ระบบได้: " +
-        (loginError.response?.data?.message)
-      );
+          "ไม่สามารถเข้าสู่ระบบได้: " + loginError.response?.data?.message
+        );
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -83,7 +88,7 @@ function App() {
           <HeaderLogin />
           <div className={styles.form}>
             <div className={styles.btnLeft}>
-              <LoginForm onSubmit={handleSubmit} />
+              <LoginForm onSubmit={handleSubmit} loading={loading}/>
             </div>
             <div className={styles.btnRight}>
               <Link

@@ -3,7 +3,24 @@ const prisma = new PrismaClient();
 const TypeAgencyService = {
   getTypeAll: async () => {
     try {
-      return await prisma.typeAgency.findMany();
+      const agencies = await prisma.typeAgency.findMany({
+        orderBy: [
+          {
+            type_name: "asc",
+          },
+        ],
+      });
+
+      agencies.sort((a, b) => {
+        if (a.type_name === "อื่นๆ") return 1;
+        if (b.type_name === "อื่นๆ") return -1;
+        return 0;
+      });
+
+      return agencies.map((agency) => ({
+        ...agency,
+        id: agency.id.toString(),
+      }));
     } catch (error) {
       console.error("Error fetching type agencies:", error);
       throw {
@@ -19,14 +36,14 @@ const TypeAgencyService = {
           id: BigInt(id),
         },
       });
-  
+
       if (!agency) {
         throw {
           status: 404,
           message: `ไม่พบประเภทหน่วยงานที่มี ID = ${id}`,
         };
       }
-  
+
       return agency;
     } catch (error) {
       console.error("Error fetching type agency by ID:", error);
@@ -35,12 +52,12 @@ const TypeAgencyService = {
         message: "ไม่สามารถดึงข้อมูลประเภทหน่วยงานได้",
       };
     }
-  },     
+  },
   createTypeAgency: async (data) => {
     try {
       const now = new Date();
       const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
-      
+
       const newAgency = await prisma.typeAgency.create({
         data: {
           ...data,
@@ -108,7 +125,6 @@ const TypeAgencyService = {
       });
 
       return updatedTypeAgency;
-
     } catch (error) {
       console.error("Failed to update type agency:", error);
       throw error;

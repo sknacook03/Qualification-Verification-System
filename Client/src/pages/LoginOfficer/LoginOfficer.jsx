@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Header from "../../components/header/header";
@@ -11,8 +11,10 @@ import { API_BASE_URL, APIEndpoints } from "../../services/api";
 
 function LoginAdmin() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async ({ email, password }) => {
+    setLoading(true);
     toast.dismiss();
     try {
       const response = await toast.promise(
@@ -46,6 +48,8 @@ function LoginAdmin() {
           "ไม่สามารถเข้าสู่ระบบได้: " + error.response?.data?.message
         );
       }
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -55,7 +59,7 @@ function LoginAdmin() {
         <div className={styles.boxContent}>
           <div className={styles.boxIn}>
             <h2>เจ้าหน้าที่ทะเบียน</h2>
-            <LoginForm onSubmit={handleSubmit} />
+            <LoginForm onSubmit={handleSubmit} loading={loading} />
           </div>
         </div>
         <Footer />

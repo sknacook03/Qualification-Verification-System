@@ -19,6 +19,7 @@ function GeneralControlPanel() {
   const [officer, setOfficer] = useState(null);
   const [activeTab, setActiveTab] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [btnLoading, setBtnLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [typeAgency, setTypeAgency] = useState([]);
   const [editData, setEditData] = useState({ type_name: "" });
@@ -121,6 +122,7 @@ function GeneralControlPanel() {
   };
 
   const handleSave = async () => {
+    setBtnLoading(true);
     const newErrors = {};
     if (!editData.type_name || editData.type_name.trim() === "") {
       newErrors.type_name = "กรุณากรอกชื่อประเภทหน่วยงาน";
@@ -164,6 +166,8 @@ function GeneralControlPanel() {
       } else {
         alert("เกิดข้อผิดพลาดในการบันทึก");
       }
+    } finally {
+      setBtnLoading(false);
     }
   };
 
@@ -225,6 +229,7 @@ function GeneralControlPanel() {
           topic={isEditMode ? "แก้ไขประเภทหน่วยงาน" : "เพิ่มประเภทหน่วยงาน"}
           closePopup={handleClosePopup}
           successPopup={handleSave}
+          loading={btnLoading}
           textButtonSuccess="บันทึก"
         >
           <Input
