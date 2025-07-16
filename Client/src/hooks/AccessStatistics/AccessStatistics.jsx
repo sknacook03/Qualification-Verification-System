@@ -69,7 +69,9 @@ const AccessStatistics = ({ officer, agency }) => {
   const [trend, setTrend] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const selectedAgencyName = agencyDropdown.find((a) => a.id.toString() === selectedAgencyId)?.agency_name || "ทั้งหมด";
+  const selectedAgencyName =
+    agencyDropdown.find((a) => a.id.toString() === selectedAgencyId)
+      ?.agency_name || "ทั้งหมด";
   const backgroundColor = [
     "rgba(255, 99, 132, 0.6)",
     "rgba(54, 162, 235, 0.6)",
@@ -387,9 +389,10 @@ const AccessStatistics = ({ officer, agency }) => {
     <div className={styles.containerStatistics}>
       <div className={styles.leftBoxState}>
         {officer && (
-          <div className={styles.filterContainer}>
+          <div className={styles.filter}>
+            <div className={styles.filterDate}>
             <label>
-              จากวันที่:
+              จากวันที่: 
               <input
                 type="date"
                 value={tempStartDate}
@@ -410,8 +413,28 @@ const AccessStatistics = ({ officer, agency }) => {
                 setEndDate(tempEndDate);
                 handleApplyDateFilter();
               }}
-            >
+              >
               <FontAwesomeIcon icon={faMagnifyingGlass} />
+            </button>
+              </div>
+            <button
+              className={styles.resetButton}
+              onClick={() => {
+                setStartDate("");
+                setEndDate("");
+                setSelectedFaculty("");
+                setSelectedDepartment("");
+                setSelectedView("faculty");
+                setSelectedAgencyId("");
+                setStartDate("");
+                setEndDate("");
+                setTempStartDate("");
+                setTempEndDate("");
+                handleApplyDateFilter();
+              }}
+            >
+              {" "}
+              ล้างการค้นหา{" "}
             </button>
           </div>
         )}

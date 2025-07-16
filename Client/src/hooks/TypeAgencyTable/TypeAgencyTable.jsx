@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import styles from "./TypeAgencyTable.module.css";
 import Pagination from "../../components/Pagination/Pagination.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashCan, faPenToSquare } from "@fortawesome/free-regular-svg-icons";
-
+import { faTrashCan, faPenToSquare} from "@fortawesome/free-regular-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 const TypeAgencyTable = ({ typeAgency, editType, deleteType, addType }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -22,7 +22,7 @@ const TypeAgencyTable = ({ typeAgency, editType, deleteType, addType }) => {
     <>
       <div className={styles.containerTypeAgency}>
         <button className={styles.btnAddTypeAgency} onClick={addType}>
-          <span>+</span>เพิ่มประเภทหน่วยงาน
+          <FontAwesomeIcon icon={faPlus} />เพิ่มประเภทหน่วยงาน
         </button>
         <div className={styles.tableWrapper}>
           <table className={styles.tableTypeAgency}>
