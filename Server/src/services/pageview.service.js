@@ -12,7 +12,6 @@ const buildDateFilter = (startDate, endDate) => {
   }
   return {};
 };
-
 const PageviewService = {
   getTopFacultyViews: async (startDate, endDate, agencyId) => {
     try {
@@ -131,25 +130,46 @@ const PageviewService = {
       return { success: false, error: "Failed to fetch top agencies" };
     }
   },
-  getAllFaculties: async (req, res) => {
+  getAllFaculties: async () => {
     try {
-      const faculties = await prisma.pageView.findMany({
-        distinct: ["faculty"],
-        select: {
-          faculty: true,
-        },
+      const students = await prisma.student.findMany({
         where: {
-          faculty: {
-            not: "",
-          },
+          curr_name: { not: null },
+          dept_code: { not: null },
+        },
+        select: {
+          curr_name: true,
+          dept_code: true,
         },
       });
 
-      const cleaned = faculties.map((d) => d.faculty).filter((d) => !!d);
-      return cleaned;
+      const mapped = students
+        .map((s) => {
+          const faculty = s.curr_name?.split("(")[0].trim();
+          const code = Number(s.dept_code);
+          if (!faculty || !code) return null;
+
+          const normalizedCode = Math.floor(code / 100) * 100;
+
+          return {
+            code: normalizedCode,
+            faculty,
+          };
+        })
+        .filter(Boolean);
+
+      const uniqueSet = new Set();
+      const result = mapped.filter((item) => {
+        const key = `${item.code}__${item.faculty}`;
+        if (uniqueSet.has(key)) return false;
+        uniqueSet.add(key);
+        return true;
+      });
+
+      return result; 
     } catch (error) {
       console.error("Error fetching faculties:", error);
-      return res.status(500).json({ error: "Failed to fetch faculties" });
+      throw error; 
     }
   },
   getAllDepartments: async (req, res) => {

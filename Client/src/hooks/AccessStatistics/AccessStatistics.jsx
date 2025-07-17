@@ -66,6 +66,9 @@ const AccessStatistics = ({ officer, agency }) => {
   const [tempEndDate, setTempEndDate] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [selectedFacultyCodeName, setSelectedFacultyCodeName] = useState("");
+  const [selectedFacultyDisplayName, setSelectedFacultyDisplayName] =
+    useState("");
   const [trend, setTrend] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -85,6 +88,34 @@ const AccessStatistics = ({ officer, agency }) => {
     "rgba(255, 206, 86, 1)",
     "rgba(75, 192, 192, 1)",
     "rgba(153, 102, 255, 1)",
+  ];
+  const facultyCodeMap = {
+    103: "คณะระบบรางและการขนส่ง",
+    104: "คณะนวัตกรรมและเทคโนโลยีการเกษตร",
+    15: "คณะบริหารธุรกิจ",
+    16: "คณะวิทยาศาสตร์และศิลปศาสตร์",
+    17: "คณะวิศวกรรมศาสตร์และเทคโนโลยี",
+    18: "คณะสถาปัตยกรรมศาสตร์และศิลปกรรมสร้างสรรค์",
+    19: "สถาบันสหสรรพศาสตร์",
+  };
+  const displayNameToCodeNameMap = {
+    คณะระบบรางและการขนส่ง: "ระบบรางและการขนส่งบัณฑิต",
+    คณะนวัตกรรมและเทคโนโลยีการเกษตร: "นวัตกรรมและเทคโนโลยีการเกษตรบัณฑิต",
+    คณะบริหารธุรกิจ: "บริหารธุรกิจบัณฑิต",
+    คณะวิทยาศาสตร์และศิลปศาสตร์: "วิทยาศาสตร์และศิลปศาสตร์บัณฑิต",
+    คณะวิศวกรรมศาสตร์และเทคโนโลยี: "วิศวกรรมศาสตรบัณฑิต",
+    คณะสถาปัตยกรรมศาสตร์และศิลปกรรมสร้างสรรค์: "สถาปัตยกรรมศาสตรบัณฑิต",
+    สถาบันสหสรรพศาสตร์: "สหสรรพศาสตร์บัณฑิต",
+  };
+
+  const mappedFaculties = [
+    ...new Map(
+      facultiesList.map((item) => {
+        const code2digit = Math.floor(item.code / 100);
+        const displayName = facultyCodeMap[code2digit];
+        return [code2digit, { faculty: displayName, displayName }];
+      })
+    ).values(),
   ];
   useEffect(() => {
     const fetchData = async () => {
@@ -145,12 +176,12 @@ const AccessStatistics = ({ officer, agency }) => {
   }, [agency]);
 
   useEffect(() => {
-    if (selectedFaculty) {
+    if (selectedFacultyCodeName) {
       axios
         .get(
           `${
             API_BASE_URL + APIEndpoints.pageview.departmentsByFaculty
-          }?faculty=${encodeURIComponent(selectedFaculty)}`
+          }?faculty=${encodeURIComponent(selectedFacultyCodeName)}`
         )
         .then((res) => {
           setDepartmentsList(res.data);
@@ -160,7 +191,7 @@ const AccessStatistics = ({ officer, agency }) => {
       setDepartmentsList([]);
       setSelectedDepartment("");
     }
-  }, [selectedFaculty]);
+  }, [selectedFacultyCodeName]);
 
   useEffect(() => {
     const fetchTopDepartments = async () => {
@@ -205,10 +236,12 @@ const AccessStatistics = ({ officer, agency }) => {
           }?department=${encodeURIComponent(
             selectedDepartment
           )}&limit=5&${query}`;
-        } else if (selectedFaculty) {
+        } else if (selectedFacultyDisplayName) {
           url = `${API_BASE_URL}${
             APIEndpoints.pageview.topAgenciesByFaculty
-          }?faculty=${encodeURIComponent(selectedFaculty)}&limit=5&${query}`;
+          }?faculty=${encodeURIComponent(
+            selectedFacultyDisplayName
+          )}&limit=5&${query}`;
         } else {
           url = `${API_BASE_URL}${APIEndpoints.pageview.topAgency}?${query}`;
         }
@@ -226,7 +259,7 @@ const AccessStatistics = ({ officer, agency }) => {
     };
 
     fetchTopAgencies();
-  }, [selectedFaculty, selectedDepartment]);
+  }, [selectedFacultyDisplayName, selectedDepartment]);
 
   const handleApplyDateFilter = async () => {
     try {
@@ -267,8 +300,13 @@ const AccessStatistics = ({ officer, agency }) => {
       handleApplyDateFilter();
     }
   }, [startDate, endDate]);
+
   const barChartData = {
-    labels: topAgencies.map((item) => item.agency_name),
+    labels: topAgencies.map((item) =>
+      item.agency_name.length > 12
+        ? item.agency_name.substring(0, 12) + "..."
+        : item.agency_name
+    ),
     datasets: [
       {
         label: "จำนวนการเข้าดู",
@@ -284,15 +322,25 @@ const AccessStatistics = ({ officer, agency }) => {
   const getBarChartTitle = () => {
     if (selectedDepartment)
       return `Top 5 หน่วยงานที่มีการเข้าดูมากที่สุด (${selectedDepartment})`;
-    if (selectedFaculty)
-      return `Top 5 หน่วยงานที่มีการเข้าดูมากที่สุด (${selectedFaculty})`;
+    if (selectedFacultyDisplayName)
+      return `Top 5 หน่วยงานที่มีการเข้าดูมากที่สุด (${selectedFacultyDisplayName})`;
     return "Top 5 หน่วยงานที่มีการเข้าดูมากที่สุด (ทั้งหมด)";
   };
   const barChartOptions = {
     responsive: true,
     plugins: {
       legend: { display: false },
-      tooltip: { enabled: true },
+      tooltip: {
+        enabled: true,
+        callbacks: {
+          label: function (context) {
+            const index = context.dataIndex;
+            const value = context.dataset.data[index];
+            const fullLabel = topAgencies[index].agency_name;
+            return `${fullLabel}: ${value}`;
+          },
+        },
+      },
       title: {
         display: true,
         text: getBarChartTitle(),
@@ -304,11 +352,15 @@ const AccessStatistics = ({ officer, agency }) => {
       y: { beginAtZero: true },
     },
   };
+  const fullLabels =
+    selectedView === "faculty"
+      ? topFaculties.map((item) => item.faculty)
+      : topDepartments.map((item) => item.department);
+  const shortenedLabels = fullLabels.map((label) =>
+    label.length > 12 ? label.substring(0, 12) + "..." : label
+  );
   const pieChartData = {
-    labels:
-      selectedView === "faculty"
-        ? topFaculties.map((item) => item.faculty)
-        : topDepartments.map((item) => item.department),
+    labels: shortenedLabels,
     datasets: [
       {
         label: "จำนวนการเข้าดู",
@@ -328,7 +380,17 @@ const AccessStatistics = ({ officer, agency }) => {
     responsive: true,
     plugins: {
       legend: { display: false },
-      tooltip: { enabled: true },
+      tooltip: {
+        enabled: true,
+        callbacks: {
+          label: function (context) {
+            const index = context.dataIndex;
+            const value = context.dataset.data[index];
+            const fullLabel = fullLabels[index]; 
+            return `${fullLabel}: ${value}`;
+          },
+        },
+      },
       title: {
         display: true,
         text:
@@ -391,32 +453,32 @@ const AccessStatistics = ({ officer, agency }) => {
         {officer && (
           <div className={styles.filter}>
             <div className={styles.filterDate}>
-            <label>
-              จากวันที่: 
-              <input
-                type="date"
-                value={tempStartDate}
-                onChange={(e) => setTempStartDate(e.target.value)}
-              />
-            </label>
-            <label>
-              ถึงวันที่:
-              <input
-                type="date"
-                value={tempEndDate}
-                onChange={(e) => setTempEndDate(e.target.value)}
-              />
-            </label>
-            <button
-              onClick={() => {
-                setStartDate(tempStartDate);
-                setEndDate(tempEndDate);
-                handleApplyDateFilter();
-              }}
+              <label>
+                จากวันที่:
+                <input
+                  type="date"
+                  value={tempStartDate}
+                  onChange={(e) => setTempStartDate(e.target.value)}
+                />
+              </label>
+              <label>
+                ถึงวันที่:
+                <input
+                  type="date"
+                  value={tempEndDate}
+                  onChange={(e) => setTempEndDate(e.target.value)}
+                />
+              </label>
+              <button
+                onClick={() => {
+                  setStartDate(tempStartDate);
+                  setEndDate(tempEndDate);
+                  handleApplyDateFilter();
+                }}
               >
-              <FontAwesomeIcon icon={faMagnifyingGlass} />
-            </button>
-              </div>
+                <FontAwesomeIcon icon={faMagnifyingGlass} />
+              </button>
+            </div>
             <button
               className={styles.resetButton}
               onClick={() => {
@@ -464,25 +526,29 @@ const AccessStatistics = ({ officer, agency }) => {
       <div className={styles.rightBoxState}>
         <div className={styles.filterContainer}>
           <select
-            value={selectedFaculty}
+            value={selectedFacultyDisplayName}
             onChange={(e) => {
-              const value = e.target.value;
-              setSelectedFaculty(value);
+              const selectedDisplay = e.target.value;
+              const actualCode =
+                displayNameToCodeNameMap[selectedDisplay] || "";
+              setSelectedFacultyDisplayName(selectedDisplay);
+              setSelectedFacultyCodeName(actualCode);
               setSelectedDepartment("");
             }}
           >
             <option value="">-- เลือกคณะ --</option>
-            {facultiesList.map((f) => (
-              <option key={f} value={f}>
-                {f}
+            {Object.keys(displayNameToCodeNameMap).map((display) => (
+              <option key={display} value={display}>
+                {display}
               </option>
             ))}
           </select>
+
           {officer && (
             <select
               value={selectedDepartment}
               onChange={(e) => setSelectedDepartment(e.target.value)}
-              disabled={!selectedFaculty}
+              disabled={!selectedFacultyDisplayName}
             >
               <option value="">-- เลือกสาขา --</option>
               {departmentsList.map((d) => (

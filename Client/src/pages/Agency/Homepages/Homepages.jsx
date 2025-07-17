@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfo } from "@fortawesome/free-solid-svg-icons";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "./Homepages.module.css";
+import moment from "moment";
 import axios from "axios";
 import { API_BASE_URL, APIEndpoints } from "../../../services/api";
 import {
@@ -60,6 +61,7 @@ function Homepages() {
             { withCredentials: true }
           );
           setStudent(response.data.data);
+          console.log(response.data.data);
         } catch (err) {
           setStudent(null);
         }
@@ -146,7 +148,7 @@ function Homepages() {
     }
     try {
       const response = await axios.post(
-        API_BASE_URL + APIEndpoints.exportFile.exportFileExcel, // "/export-excel"
+        API_BASE_URL + APIEndpoints.exportFile.exportFileExcel,
         { studentNos: selectedIds },
         { responseType: "blob", withCredentials: true }
       );
@@ -256,13 +258,15 @@ function Homepages() {
                         <td>{item.student.name}</td>
                         <td>{item.student.lname}</td>
                         <td>
-                          {item.student.curr_name?.match?.(/\((.*?)\)/)?.[1] ||
+                          {item.student.curr_name?.match(/\((.*)\)/)?.[1] ||
                             "Unknown"}
                         </td>
                         <td>
-                          {new Date(item.updated_at).toLocaleDateString(
-                            "th-TH"
-                          )}
+                          {moment.utc(item.updated_at).format("DD/MM") +
+                            "/" +
+                            (moment.utc(item.updated_at).year() + 543)
+                              .toString()
+                              .slice(-2)}
                         </td>
                         <td
                           style={{

@@ -22,6 +22,15 @@ const StudentSearch = ({ agency, forOfficer }) => {
   const [fileMap, setFileMap] = useState({});
   const [selectedStudent, setSelectedStudent] = useState(null);
 
+  const extractDepartment = (currName) => {
+    const firstOpen = currName.indexOf("(");
+    const lastClose = currName.lastIndexOf(")");
+    if (firstOpen !== -1 && lastClose !== -1 && lastClose > firstOpen) {
+      return currName.slice(firstOpen + 1, lastClose).trim();
+    }
+    return "Unknown";
+  };
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
@@ -73,14 +82,8 @@ const StudentSearch = ({ agency, forOfficer }) => {
 
     const formData = new FormData();
     formData.append("student_id", student.id);
-    formData.append(
-      "faculty",
-      student.curr_name.split("(")[0].trim() || "Unknown"
-    );
-    formData.append(
-      "department",
-      student.curr_name.match(/\((.*?)\)/)?.[1] || "Unknown"
-    );
+    formData.append("faculty", student.dept_code);
+    formData.append("department", extractDepartment(student.curr_name));
     formData.append("action_type", "VIEW");
 
     const selectedFile = fileMap[student.id];
@@ -132,82 +135,82 @@ const StudentSearch = ({ agency, forOfficer }) => {
         <Button onClick={handleSearch} text="ค้นหา" styleType="primary" />
       </div>
 
-      {error.general && <p className={styles.errorMessage}>{error.general}</p>} 
+      {error.general && <p className={styles.errorMessage}>{error.general}</p>}
 
       {loading && <p>Loading...</p>}
 
       {!loading && students.length > 0 && (
         <div className={styles.studentTableContainer}>
-        <table className={styles.studentTable}>
-          <thead>
-            <tr>
-              <th>รหัสนักศึกษา</th>
-              <th>ชื่อ</th>
-              <th>นามสกุล</th>
-              <th>คณะ</th>
-              <th>สาขา</th>
-              <th>สถานะการศึกษา</th>
-              <th>ข้อมูลเพิ่มเติม</th>
-            </tr>
-          </thead>
-          <tbody>
-            {students.map((student) => (
-              <tr key={student.student_no}>
-                <td>{student.student_no}</td>
-                <td>{student.name}</td>
-                <td>{student.lname}</td>
-                <td>{student.curr_name.split("(")[0].trim() || "Unknown"}</td>
-                <td>{student.curr_name.match(/\((.*?)\)/)?.[1] || "Unknown"}</td>
-                <td
-                  style={{
-                    color: student.status_graduate == 1 ? "green" : "red",
-                  }}
-                >
-                  {student.status_graduate == 1
-                    ? "สำเร็จการศึกษาแล้ว"
-                    : "ยังไม่สำเร็จการศึกษา"}
-                </td>
-                <td>
-                  <button
-                    onClick={
-                      forOfficer
-                        ? () => handleShowPopup(student)
-                        : () => setPopupStudentId(student.id)
-                    }
-                    className={styles.btnInfo}
-                  >
-                    <FontAwesomeIcon icon={faMagnifyingGlass} />
-                  </button>
-                  {!forOfficer && popupStudentId === student.id && (
-                    <Popup
-                      topic="อัปโหลดหนังสือยิมยอม"
-                      info={
-                        <>
-                          อัพโหลดหนังสือยินยอมของนักศึกษา (ถ้ามี)
-                          <br />
-                          (รองรับไฟล์ .pdf .png .jpg ขนาดไม่เกิน 10 MB)
-                        </>
-                      }
-                      successPopup={() => handleShowPopup(student)}
-                      textButtonSuccess="ยืนยัน"
-                      closePopup={() => setPopupStudentId(null)}
-                    >
-                      <Input
-                        type="file"
-                        onChange={(e) =>
-                          setFileMap((prev) => ({
-                            ...prev,
-                            [student.id]: e.target.files[0],
-                          }))
-                        }
-                      />
-                    </Popup>
-                  )}
-                </td>
+          <table className={styles.studentTable}>
+            <thead>
+              <tr>
+                <th>รหัสนักศึกษา</th>
+                <th>ชื่อ</th>
+                <th>นามสกุล</th>
+                <th>คณะ</th>
+                <th>สาขา</th>
+                <th>สถานะการศึกษา</th>
+                <th>ข้อมูลเพิ่มเติม</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {students.map((student) => (
+                <tr key={student.student_no}>
+                  <td>{student.student_no}</td>
+                  <td>{student.name}</td>
+                  <td>{student.lname}</td>
+                  <td>{student.curr_name.split("(")[0].trim() || "Unknown"}</td>
+                  <td>{extractDepartment(student.curr_name)}</td>
+                  <td
+                    style={{
+                      color: student.status_graduate == 1 ? "green" : "red",
+                    }}
+                  >
+                    {student.status_graduate == 1
+                      ? "สำเร็จการศึกษาแล้ว"
+                      : "ยังไม่สำเร็จการศึกษา"}
+                  </td>
+                  <td>
+                    <button
+                      onClick={
+                        forOfficer
+                          ? () => handleShowPopup(student)
+                          : () => setPopupStudentId(student.id)
+                      }
+                      className={styles.btnInfo}
+                    >
+                      <FontAwesomeIcon icon={faMagnifyingGlass} />
+                    </button>
+                    {!forOfficer && popupStudentId === student.id && (
+                      <Popup
+                        topic="อัปโหลดหนังสือยิมยอม"
+                        info={
+                          <>
+                            อัพโหลดหนังสือยินยอมของนักศึกษา (ถ้ามี)
+                            <br />
+                            (รองรับไฟล์ .pdf .png .jpg ขนาดไม่เกิน 10 MB)
+                          </>
+                        }
+                        successPopup={() => handleShowPopup(student)}
+                        textButtonSuccess="ยืนยัน"
+                        closePopup={() => setPopupStudentId(null)}
+                      >
+                        <Input
+                          type="file"
+                          onChange={(e) =>
+                            setFileMap((prev) => ({
+                              ...prev,
+                              [student.id]: e.target.files[0],
+                            }))
+                          }
+                        />
+                      </Popup>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
       {selectedStudent && (

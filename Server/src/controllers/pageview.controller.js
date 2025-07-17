@@ -27,6 +27,28 @@ const upload = multer({
   },
 }).single("student_certificate");
 
+const facultyMap = {
+  103: "คณะระบบรางและการขนส่ง",
+  104: "คณะนวัตกรรมและเทคโนโลยีการเกษตร",
+  15: "คณะบริหารธุรกิจ",
+  16: "คณะวิทยาศาสตร์และศิลปศาสตร์",
+  17: "คณะวิศวกรรมศาสตร์และเทคโนโลยี",
+  18: "คณะสถาปัตยกรรมศาสตร์และศิลปกรรมสร้างสรรค์",
+  19: "สถาบันสหสรรพศาสตร์",
+};
+
+const getFacultyName = (deptCode) => {
+  const code = deptCode.toString();
+  if (facultyMap[code.substring(0, 3)]) {
+    return facultyMap[code.substring(0, 3)];
+  }
+
+  if (facultyMap[code.substring(0, 2)]) {
+    return facultyMap[code.substring(0, 2)];
+  }
+
+  return "-";
+};
 const PageviewController = {
   getTopFacultyViewsController: async (req, res) => {
     try {
@@ -233,11 +255,12 @@ const PageviewController = {
         if (!agency_id || !studentId) {
           return res.status(401).json({ error: "Invalid ID format" });
         }
+        const facultyName = getFacultyName(faculty);
 
         const result = await PageviewService.createPageview({
           agency_id,
           student_id: studentId,
-          faculty,
+          faculty: facultyName,
           department,
           student_certificate,
           action_type,
