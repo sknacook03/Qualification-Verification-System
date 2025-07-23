@@ -23,6 +23,12 @@ import LineChart from "./LineChart.jsx";
 import BarChart from "./BarChart.jsx";
 import PieChart from "./PieChart.jsx";
 import { use } from "react";
+import Popup from "../../components/Popup/Popup.jsx";
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import pdfMake from "../../public/pdfFonts.js";
 
 ChartJS.register(
   CategoryScale,
@@ -54,10 +60,8 @@ const AccessStatistics = ({ officer, agency }) => {
   const [agencyDropdown, setAgencyDropdown] = useState([]);
   const [topFaculties, setTopFaculties] = useState([]);
   const [topDepartments, setTopDepartments] = useState([]);
-  const [facultiesList, setFacultiesList] = useState([]);
   const [viewedStudents, setViewedStudents] = useState([]);
   const [departmentsList, setDepartmentsList] = useState([]);
-  const [selectedFaculty, setSelectedFaculty] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [selectedView, setSelectedView] = useState("faculty");
   const [loadingTopAgencies, setLoadingTopAgencies] = useState(false);
@@ -71,7 +75,21 @@ const AccessStatistics = ({ officer, agency }) => {
     useState("");
   const [trend, setTrend] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [popUpExport, setPopUpExport] = useState(false);
 
+  const [exportStartDate, setExportStartDate] = useState("");
+  const [exportEndDate, setExportEndDate] = useState("");
+  const [exportFaculty, setExportFaculty] = useState("");
+  const [exportDepartment, setExportDepartment] = useState("");
+  const [exportAgencyId, setExportAgencyId] = useState("");
+
+  const [exportPDF, setExportPDF] = useState(false);
+  const [exportExcel, setExportExcel] = useState(false);
+  const [exportBar, setExportBar] = useState(false);
+  const [exportPie, setExportPie] = useState(false);
+  const [exportTopFaculty, setExportTopFaculty] = useState(false);
+  const [exportTopDepartment, setExportTopDepartment] = useState(false);
+  const [exportLoading, setExportLoading] = useState(false);
   const selectedAgencyName =
     agencyDropdown.find((a) => a.id.toString() === selectedAgencyId)
       ?.agency_name || "ทั้งหมด";
@@ -108,15 +126,6 @@ const AccessStatistics = ({ officer, agency }) => {
     สถาบันสหสรรพศาสตร์: "สหสรรพศาสตร์บัณฑิต",
   };
 
-  const mappedFaculties = [
-    ...new Map(
-      facultiesList.map((item) => {
-        const code2digit = Math.floor(item.code / 100);
-        const displayName = facultyCodeMap[code2digit];
-        return [code2digit, { faculty: displayName, displayName }];
-      })
-    ).values(),
-  ];
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -125,14 +134,12 @@ const AccessStatistics = ({ officer, agency }) => {
           agenciesRes,
           facultiesRes,
           trendRes,
-          facultiesListRes,
           allAgencyForDropdownRes,
         ] = await Promise.all([
           axios.get(API_BASE_URL + APIEndpoints.pageview.statistics),
           axios.get(API_BASE_URL + APIEndpoints.pageview.topAgency),
           axios.get(API_BASE_URL + APIEndpoints.pageview.topFaculty),
           axios.get(API_BASE_URL + APIEndpoints.pageview.trend),
-          axios.get(API_BASE_URL + APIEndpoints.pageview.allFaculties),
           axios.get(API_BASE_URL + APIEndpoints.agency.allAgencyForDropdown),
         ]);
 
@@ -144,7 +151,6 @@ const AccessStatistics = ({ officer, agency }) => {
           Array.isArray(facultiesRes.data) ? facultiesRes.data : []
         );
         setTrend(Array.isArray(trendRes.data) ? trendRes.data : []);
-        setFacultiesList(facultiesListRes.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -301,6 +307,86 @@ const AccessStatistics = ({ officer, agency }) => {
     }
   }, [startDate, endDate]);
 
+  const handleExport = async () => {
+    try {
+      setExportLoading(true);
+      const query = `startDate=${tempStartDate}&endDate=${tempEndDate}${
+        exportAgencyId ? `&agencyId=${exportAgencyId}` : ""
+      }`;
+
+      let exportData = [];
+
+      if (exportTopFaculty) {
+        const res = await axios.get(
+          `${API_BASE_URL}${APIEndpoints.pageview.topFaculty}?${query}`
+        );
+        exportData = res.data.map((item) => ({
+          ชื่อคณะ: item.faculty,
+          จำนวนการเข้าดู: item.count,
+        }));
+      }
+
+      if (exportTopDepartment) {
+        const res = await axios.get(
+          `${API_BASE_URL}${APIEndpoints.pageview.topDepartment}?${query}`
+        );
+        exportData = res.data.map((item) => ({
+          ชื่อสาขา: item.department,
+          จำนวนการเข้าดู: item.count,
+        }));
+      }
+
+      if (exportExcel && exportData.length > 0) {
+        const ws = XLSX.utils.json_to_sheet(exportData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "สถิติการเข้าดู");
+        const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+        const blob = new Blob([excelBuffer], {
+          type: "application/octet-stream",
+        });
+        saveAs(blob, "access_statistics.xlsx");
+      }
+
+      if (exportPDF && exportData.length > 0) {
+        const docDefinition = {
+          content: [
+            { text: "รายงานสถิติการเข้าดู (Top 5)", style: "header" },
+            {
+              table: {
+                headerRows: 1,
+                widths: ["*", "*"],
+                body: [
+                  Object.keys(exportData[0]),
+                  ...exportData.map((item) => Object.values(item)),
+                ],
+              },
+            },
+          ],
+          defaultStyle: {
+            font: "THSarabun",
+            fontSize: 16,
+          },
+          styles: {
+            header: {
+              fontSize: 18,
+              bold: true,
+              margin: [0, 0, 0, 10],
+            },
+          },
+        };
+
+        pdfMake.createPdf(docDefinition).download("access_statistics.pdf");
+      }
+
+      alert("ส่งออกข้อมูลสำเร็จ");
+      setPopUpExport(false);
+    } catch (error) {
+      console.error("Export Error:", error);
+      alert("เกิดข้อผิดพลาดในการส่งออกข้อมูล");
+    } finally {
+      setExportLoading(false);
+    }
+  };
   const barChartData = {
     labels: topAgencies.map((item) =>
       item.agency_name.length > 12
@@ -386,7 +472,7 @@ const AccessStatistics = ({ officer, agency }) => {
           label: function (context) {
             const index = context.dataIndex;
             const value = context.dataset.data[index];
-            const fullLabel = fullLabels[index]; 
+            const fullLabel = fullLabels[index];
             return `${fullLabel}: ${value}`;
           },
         },
@@ -484,7 +570,6 @@ const AccessStatistics = ({ officer, agency }) => {
               onClick={() => {
                 setStartDate("");
                 setEndDate("");
-                setSelectedFaculty("");
                 setSelectedDepartment("");
                 setSelectedView("faculty");
                 setSelectedAgencyId("");
@@ -492,11 +577,20 @@ const AccessStatistics = ({ officer, agency }) => {
                 setEndDate("");
                 setTempStartDate("");
                 setTempEndDate("");
+                setSelectedFacultyDisplayName("");
+                setSelectedFacultyCodeName("");
                 handleApplyDateFilter();
               }}
             >
               {" "}
               ล้างการค้นหา{" "}
+            </button>
+            <button
+              className={styles.exportButton}
+              variant="outline"
+              onClick={() => setPopUpExport(true)}
+            >
+              ส่งออกข้อมูล
             </button>
           </div>
         )}
@@ -504,7 +598,7 @@ const AccessStatistics = ({ officer, agency }) => {
           <div className={styles.totalPageView}>
             <p className={styles.titleTotalPageView}>จำนวนการเข้าดูทั้งหมด</p>
             <h2 className={styles.numberTotalPageView}>
-              {totalViews.toLocaleString()}
+              {totalViews.toLocaleString()} ครั้ง
             </h2>
           </div>
           <div className={styles.totalPageView}>
@@ -514,7 +608,8 @@ const AccessStatistics = ({ officer, agency }) => {
             <h2 className={styles.numberTotalPageView}>
               {agency
                 ? viewedStudents.toLocaleString()
-                : uniqueStudents.toLocaleString()}
+                : uniqueStudents.toLocaleString()}{" "}
+              คน
             </h2>
           </div>
         </div>
@@ -615,6 +710,147 @@ const AccessStatistics = ({ officer, agency }) => {
           )}
         </div>
       </div>
+      {popUpExport && (
+        <Popup
+          topic="ส่งออกข้อมูล"
+          closePopup={() => setPopUpExport(false)}
+          textButtonSuccess="ส่งออก"
+          successPopup={handleExport}
+          loading={exportLoading}
+        >
+          <div className={styles.exportForm}>
+            <div className={styles.exportDateForm}>
+              <label>
+                <p>จากวันที่:</p>
+                <input
+                  type="date"
+                  value={exportStartDate}
+                  onChange={(e) => setExportStartDate(e.target.value)}
+                />
+              </label>
+              <label>
+                <p>ถึงวันที่:</p>
+                <input
+                  type="date"
+                  value={exportEndDate}
+                  onChange={(e) => setExportEndDate(e.target.value)}
+                />
+              </label>
+            </div>
+            <div className={styles.containerFieldset}>
+              <fieldset>
+                <legend>หน่วยงานที่มีการเข้าดูมากที่สุด Top 5 </legend>
+                <div className={styles.exportDateForm}>
+                  <label>
+                    <p>คณะ:</p>
+                    <select
+                      value={exportFaculty}
+                      onChange={(e) => setExportFaculty(e.target.value)}
+                    >
+                      <option value="">-- เลือกคณะ --</option>
+                      {Object.keys(displayNameToCodeNameMap).map((name) => (
+                        <option key={name} value={name}>
+                          {name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    <p>สาขา:</p>
+                    <select
+                      value={exportDepartment}
+                      onChange={(e) => setExportDepartment(e.target.value)}
+                    >
+                      <option value="">-- เลือกสาขา --</option>
+                      {Object.keys(departmentsList).map((name) => (
+                        <option key={name} value={name}>
+                          {name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>คณะ/สาขาที่มีการเข้ามากที่สุด Top 5 </legend>
+                <div className={styles.exportDateForm}>
+                  <label>
+                    <p>หน่วยงาน:</p>
+                    <select
+                      value={exportAgencyId}
+                      onChange={(e) => setExportAgencyId(e.target.value)}
+                    >
+                      <option value="">-- เลือกหน่วยงาน --</option>
+                      {agencyDropdown.map((a) => (
+                        <option key={a.id} value={a.id}>
+                          {a.agency_name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+                <div className={styles.exportCheckbox}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={exportTopFaculty}
+                      onChange={(e) => setExportTopFaculty(e.target.checked)}
+                    />{" "}
+                    Top 5 คณะที่เข้าดูสูงสุด
+                  </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={exportTopDepartment}
+                      onChange={(e) => setExportTopDepartment(e.target.checked)}
+                    />{" "}
+                    Top 5 สาขาที่เข้าดูสูงสุด
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>ประเภทไฟล์ที่ต้องการส่งออก</legend>
+                <div className={styles.exportCheckBoxFile}>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={exportPDF}
+                    onChange={(e) => setExportPDF(e.target.checked)}
+                  />{" "}
+                  PDF
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={exportExcel}
+                    onChange={(e) => setExportExcel(e.target.checked)}
+                  />{" "}
+                  Excel
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={exportBar}
+                    onChange={(e) => setExportBar(e.target.checked)}
+                  />{" "}
+                  กราฟแท่ง
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={exportPie}
+                    onChange={(e) => setExportPie(e.target.checked)}
+                  />{" "}
+                  กราฟวงกลม
+                </label>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </Popup>
+      )}
     </div>
   );
 };
