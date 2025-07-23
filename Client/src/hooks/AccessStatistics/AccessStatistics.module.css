@@ -18,7 +18,7 @@
 }
 .boxState {
   display: flex;
-  gap: 3rem;
+  gap: 1rem;
 }
 .totalPageView {
   width: 100%;

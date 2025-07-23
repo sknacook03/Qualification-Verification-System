@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import styles from "./AccessStatistics.module.css";
 import Loading from "../../components/Loading/Loading.jsx";
 import axios from "axios";
@@ -17,11 +17,14 @@ import {
   Title,
   defaults,
   Filler,
+  ArcElement,
 } from "chart.js";
-
+import ChartDataLabels from "chartjs-plugin-datalabels";
+import { useRef } from "react";
 import LineChart from "./LineChart.jsx";
 import BarChart from "./BarChart.jsx";
 import PieChart from "./PieChart.jsx";
+import html2canvas from "html2canvas";
 import { use } from "react";
 import Popup from "../../components/Popup/Popup.jsx";
 import { saveAs } from "file-saver";
@@ -39,7 +42,9 @@ ChartJS.register(
   Tooltip,
   Legend,
   Title,
-  Filler
+  Filler,
+  ArcElement,
+  ChartDataLabels
 );
 
 defaults.maintainAspectRatio = false;
@@ -90,6 +95,13 @@ const AccessStatistics = ({ officer, agency }) => {
   const [exportTopFaculty, setExportTopFaculty] = useState(false);
   const [exportTopDepartment, setExportTopDepartment] = useState(false);
   const [exportLoading, setExportLoading] = useState(false);
+
+  const getChartBase64ById = async (id) => {
+    const element = document.getElementById(id);
+    if (!element) return null;
+    const canvas = await html2canvas(element);
+    return canvas.toDataURL("image/png");
+  };
   const selectedAgencyName =
     agencyDropdown.find((a) => a.id.toString() === selectedAgencyId)
       ?.agency_name || "ทั้งหมด";
@@ -310,33 +322,43 @@ const AccessStatistics = ({ officer, agency }) => {
   const handleExport = async () => {
     try {
       setExportLoading(true);
-      const query = `startDate=${tempStartDate}&endDate=${tempEndDate}${
-        exportAgencyId ? `&agencyId=${exportAgencyId}` : ""
-      }`;
+
+      const query = `startDate=${exportStartDate}&endDate=${exportEndDate}`;
 
       let exportData = [];
 
-      if (exportTopFaculty) {
+      const noSelectionMade = !exportTopFaculty && !exportTopDepartment;
+      const noFileSelected = !exportExcel && !exportPDF;
+
+      if (exportTopFaculty || noSelectionMade) {
         const res = await axios.get(
-          `${API_BASE_URL}${APIEndpoints.pageview.topFaculty}?${query}`
+          `${API_BASE_URL}${APIEndpoints.pageview.topFaculty}?${query}` +
+            (exportAgencyId ? `&agencyId=${exportAgencyId}` : "")
         );
-        exportData = res.data.map((item) => ({
-          ชื่อคณะ: item.faculty,
-          จำนวนการเข้าดู: item.count,
-        }));
+        exportData.push(
+          ...res.data.map((item) => ({
+            ประเภท: "คณะ",
+            ชื่อ: item.faculty,
+            จำนวนการเข้าดู: item.count,
+          }))
+        );
       }
 
-      if (exportTopDepartment) {
+      if (exportTopDepartment || noSelectionMade) {
         const res = await axios.get(
-          `${API_BASE_URL}${APIEndpoints.pageview.topDepartment}?${query}`
+          `${API_BASE_URL}${APIEndpoints.pageview.topDepartment}?${query}` +
+            (exportAgencyId ? `&agencyId=${exportAgencyId}` : "")
         );
-        exportData = res.data.map((item) => ({
-          ชื่อสาขา: item.department,
-          จำนวนการเข้าดู: item.count,
-        }));
+        exportData.push(
+          ...res.data.map((item) => ({
+            ประเภท: "สาขา",
+            ชื่อ: item.department,
+            จำนวนการเข้าดู: item.count,
+          }))
+        );
       }
 
-      if (exportExcel && exportData.length > 0) {
+      if (exportExcel || noFileSelected) {
         const ws = XLSX.utils.json_to_sheet(exportData);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "สถิติการเข้าดู");
@@ -347,35 +369,116 @@ const AccessStatistics = ({ officer, agency }) => {
         saveAs(blob, "access_statistics.xlsx");
       }
 
-      if (exportPDF && exportData.length > 0) {
-        const docDefinition = {
-          content: [
-            { text: "รายงานสถิติการเข้าดู (Top 5)", style: "header" },
-            {
-              table: {
-                headerRows: 1,
-                widths: ["*", "*"],
-                body: [
-                  Object.keys(exportData[0]),
-                  ...exportData.map((item) => Object.values(item)),
+      if (exportPDF || noFileSelected) {
+        let content = [
+          {
+            text:
+              exportStartDate && exportEndDate
+                ? `ช่วงวันที่: ${exportStartDate} ถึง ${exportEndDate}`
+                : "ช่วงวันที่: ทุกช่วงเวลา",
+            alignment: "right",
+            margin: [0, 0, 0, 10],
+          },
+
+          { text: "รายงานสถิติการเข้าดู", style: "header" },
+          {
+            canvas: [
+              { type: "line", x1: 0, y1: 0, x2: 520, y2: 0, lineWidth: 1 },
+            ],
+            margin: [0, 0, 0, 10],
+          },
+          {
+            layout: "customLayout",
+            table: {
+              headerRows: 1,
+              widths: [60, 332, 100],
+              body: [
+                [
+                  { text: "ประเภท", style: "tableHeader" },
+                  { text: "ชื่อ", style: "tableHeader" },
+                  { text: "จำนวนการเข้าดู", style: "tableHeader" },
                 ],
-              },
+                ...exportData.map((item) => [
+                  { text: item.ประเภท, style: "tableCell" },
+                  { text: item.ชื่อ, style: "tableCell" },
+                  {
+                    text: item.จำนวนการเข้าดู.toLocaleString(),
+                    style: "tableCell",
+                    alignment: "right",
+                  },
+                ]),
+              ],
             },
-          ],
+          },
+        ];
+        content.push({ text: "", pageBreak: "before" });
+        if (exportBar) {
+          const barChartBase64 = await getChartBase64ById("barChartContainer");
+          if (barChartBase64) {
+            content.push({ text: "กราฟแท่ง (Bar Chart)", style: "header" });
+            content.push({ image: barChartBase64, width: 500 });
+          }
+        }
+
+        if (exportPie) {
+          const pieChartBase64 = await getChartBase64ById("pieChartContainer");
+          if (pieChartBase64) {
+            content.push({ text: "กราฟวงกลม (Pie Chart)", style: "header" });
+            content.push({ image: pieChartBase64, width: 500 });
+          }
+        }
+        content.push({
+          text: `วันที่ส่งออกรายงาน: ${new Date().toLocaleDateString("th-TH")}`,
+          alignment: "right",
+          margin: [0, 20, 0, 0],
+          fontSize: 10,
+          color: "#666666",
+        });
+
+        const docDefinition = {
+          content,
           defaultStyle: {
             font: "THSarabun",
-            fontSize: 16,
+            fontSize: 12,
+            lineHeight: 1.2,
           },
           styles: {
             header: {
               fontSize: 18,
               bold: true,
+              alignment: "center",
               margin: [0, 0, 0, 10],
+            },
+            tableHeader: {
+              bold: true,
+              fontSize: 14,
+              fillColor: "#d9edf7",
+              alignment: "center",
+            },
+            tableCell: {
+              fontSize: 12,
+              margin: [0, 2, 0, 2],
+            },
+          },
+          tableLayouts: {
+            customLayout: {
+              hLineWidth: () => 0.5,
+              vLineWidth: () => 0.5,
+              hLineColor: () => "#ccc",
+              vLineColor: () => "#ccc",
+              paddingLeft: () => 6,
+              paddingRight: () => 6,
+              paddingTop: () => 4,
+              paddingBottom: () => 4,
             },
           },
         };
 
-        pdfMake.createPdf(docDefinition).download("access_statistics.pdf");
+        const pdfName =
+          exportStartDate && exportEndDate
+            ? `access_statistics_${exportStartDate}_to_${exportEndDate}.pdf`
+            : `access_statistics_all.pdf`;
+        pdfMake.createPdf(docDefinition).download(pdfName);
       }
 
       alert("ส่งออกข้อมูลสำเร็จ");
@@ -387,149 +490,189 @@ const AccessStatistics = ({ officer, agency }) => {
       setExportLoading(false);
     }
   };
-  const barChartData = {
-    labels: topAgencies.map((item) =>
-      item.agency_name.length > 12
-        ? item.agency_name.substring(0, 12) + "..."
-        : item.agency_name
-    ),
-    datasets: [
-      {
-        label: "จำนวนการเข้าดู",
-        data: topAgencies.map((item) => item.count),
-        backgroundColor: backgroundColor,
-        borderColor: borderColor,
-        borderWidth: 1,
-        borderRadius: 5,
-      },
-    ],
-  };
+  const barChartData = useMemo(() => {
+    return {
+      labels: topAgencies.map((item) =>
+        item.agency_name.length > 12
+          ? item.agency_name.substring(0, 12) + "..."
+          : item.agency_name
+      ),
+      datasets: [
+        {
+          label: "จำนวนการเข้าดู",
+          data: topAgencies.map((item) => item.count),
+          backgroundColor: backgroundColor,
+          borderColor: borderColor,
+          borderWidth: 1,
+          borderRadius: 5,
+        },
+      ],
+    };
+  }, [topAgencies, backgroundColor, borderColor]);
 
-  const getBarChartTitle = () => {
-    if (selectedDepartment)
-      return `Top 5 หน่วยงานที่มีการเข้าดูมากที่สุด (${selectedDepartment})`;
-    if (selectedFacultyDisplayName)
-      return `Top 5 หน่วยงานที่มีการเข้าดูมากที่สุด (${selectedFacultyDisplayName})`;
-    return "Top 5 หน่วยงานที่มีการเข้าดูมากที่สุด (ทั้งหมด)";
-  };
-  const barChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        enabled: true,
-        callbacks: {
-          label: function (context) {
-            const index = context.dataIndex;
-            const value = context.dataset.data[index];
-            const fullLabel = topAgencies[index].agency_name;
-            return `${fullLabel}: ${value}`;
+  const barChartOptions = useMemo(() => {
+    const getBarChartTitle = () => {
+      if (selectedDepartment)
+        return `Top 5 หน่วยงานที่มีการเข้าดูมากที่สุด (${selectedDepartment})`;
+      if (selectedFacultyDisplayName)
+        return `Top 5 หน่วยงานที่มีการเข้าดูมากที่สุด (${selectedFacultyDisplayName})`;
+      return "Top 5 หน่วยงานที่มีการเข้าดูมากที่สุด (ทั้งหมด)";
+    };
+    return {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          enabled: true,
+          callbacks: {
+            label: function (context) {
+              const index = context.dataIndex;
+              const value = context.dataset.data[index];
+              const fullLabel = topAgencies[index]?.agency_name;
+              return `${fullLabel}: ${value}`;
+            },
+          },
+        },
+        title: {
+          display: true,
+          text: getBarChartTitle(),
+          color: "#333",
+          padding: { top: 10, bottom: 20 },
+        },
+        datalabels: {
+          display: false,
+        },
+      },
+      scales: {
+        y: { beginAtZero: true },
+      },
+    };
+  }, [selectedDepartment, selectedFacultyDisplayName, topAgencies]);
+
+  const pieChartData = useMemo(() => {
+    const fullLabels =
+      selectedView === "faculty"
+        ? topFaculties.map((item) => item.faculty)
+        : topDepartments.map((item) => item.department);
+    const shortenedLabels = fullLabels.map((label) =>
+      label.length > 12 ? label.substring(0, 12) + "..." : label
+    );
+    return {
+      labels: shortenedLabels,
+      datasets: [
+        {
+          label: "จำนวนการเข้าดู",
+          data:
+            selectedView === "faculty"
+              ? topFaculties.map((item) => item.count)
+              : topDepartments.map((item) => item.count),
+          backgroundColor: backgroundColor,
+          borderColor: "#ffffff",
+          borderWidth: 2,
+          hoverOffset: 10,
+        },
+      ],
+    };
+  }, [
+    selectedView,
+    topFaculties,
+    topDepartments,
+    backgroundColor,
+    borderColor,
+  ]);
+
+  const pieChartOptions = useMemo(() => {
+    const fullLabels =
+      selectedView === "faculty"
+        ? topFaculties.map((item) => item.faculty)
+        : topDepartments.map((item) => item.department);
+    return {
+      responsive: true,
+      plugins: {
+        legend: { display: true, position: "top" },
+        tooltip: {
+          enabled: true,
+          callbacks: {
+            label: function (context) {
+              const index = context.dataIndex;
+              const value = context.dataset.data[index];
+              const fullLabel = fullLabels[index];
+              return `${fullLabel}: ${value}`;
+            },
+          },
+        },
+        title: {
+          display: true,
+          text:
+            selectedView === "faculty"
+              ? `Top 5 คณะที่มีการเข้าดูมากที่สุด (${selectedAgencyName})`
+              : `Top 5 สาขาที่มีการเข้าดูมากที่สุด (${selectedAgencyName})`,
+          color: "#333",
+          padding: { top: 10, bottom: 6 },
+        },
+        datalabels: {
+          color: "rgba(90, 90, 90, 1)",
+          font: {
+            weight: "bold",
+            size: 12,
+          },
+          formatter: (value, context) => {
+            const data = context.chart.data.datasets[0].data;
+            const total = data.reduce((a, b) => a + b, 0);
+            const percentage = ((value / total) * 100).toFixed(1);
+            return `${percentage}%`;
           },
         },
       },
-      title: {
-        display: true,
-        text: getBarChartTitle(),
-        color: "#333",
-        padding: { top: 10, bottom: 20 },
-      },
-    },
-    scales: {
-      y: { beginAtZero: true },
-    },
-  };
-  const fullLabels =
-    selectedView === "faculty"
-      ? topFaculties.map((item) => item.faculty)
-      : topDepartments.map((item) => item.department);
-  const shortenedLabels = fullLabels.map((label) =>
-    label.length > 12 ? label.substring(0, 12) + "..." : label
-  );
-  const pieChartData = {
-    labels: shortenedLabels,
-    datasets: [
-      {
-        label: "จำนวนการเข้าดู",
-        data:
-          selectedView === "faculty"
-            ? topFaculties.map((item) => item.count)
-            : topDepartments.map((item) => item.count),
-        backgroundColor: backgroundColor,
-        borderColor: borderColor,
-        borderWidth: 1,
-        borderRadius: 5,
-      },
-    ],
-  };
+    };
+  }, [selectedView, selectedAgencyName, topFaculties, topDepartments]);
 
-  const pieChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        enabled: true,
-        callbacks: {
-          label: function (context) {
-            const index = context.dataIndex;
-            const value = context.dataset.data[index];
-            const fullLabel = fullLabels[index];
-            return `${fullLabel}: ${value}`;
-          },
+  const lineChartData = useMemo(() => {
+    return {
+      labels: trend.map((item) => item.date.slice(0, 10)),
+      datasets: [
+        {
+          label: "จำนวนการเข้าดูทั้งหมด",
+          data: trend.map((item) => item.totalViews),
+          borderColor: "rgba(54, 162, 235, 1)",
+          backgroundColor: "rgba(54, 162, 235, 0.2)",
+          tension: 0.4,
+          fill: true,
+        },
+        {
+          label: "นักศึกษาที่เข้าดูไม่ซ้ำ",
+          data: trend.map((item) => item.uniqueStudents),
+          borderColor: "rgba(255, 99, 132, 1)",
+          backgroundColor: "rgba(255, 99, 132, 0.2)",
+          tension: 0.4,
+          fill: true,
+        },
+      ],
+    };
+  }, [trend]);
+
+  const lineChartOptions = useMemo(() => {
+    return {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: "แนวโน้มการเข้าดูรายวัน",
+          color: "#333",
+          padding: { top: 10, bottom: 20 },
+        },
+        legend: {
+          position: "top",
+        },
+        datalabels: {
+          display: false,
         },
       },
-      title: {
-        display: true,
-        text:
-          selectedView === "faculty"
-            ? `Top 5 คณะที่มีการเข้าดูมากที่สุด (${selectedAgencyName})`
-            : `Top 5 สาขาที่มีการเข้าดูมากที่สุด (${selectedAgencyName})`,
-        color: "#333",
-        padding: { top: 10, bottom: 20 },
+      scales: {
+        y: { beginAtZero: true },
       },
-    },
-    scales: {
-      y: { beginAtZero: true },
-    },
-  };
-  const lineChartData = {
-    labels: trend.map((item) => item.date.slice(0, 10)),
-    datasets: [
-      {
-        label: "จำนวนการเข้าดูทั้งหมด",
-        data: trend.map((item) => item.totalViews),
-        borderColor: "rgba(54, 162, 235, 1)",
-        backgroundColor: "rgba(54, 162, 235, 0.2)",
-        tension: 0.4,
-        fill: true,
-      },
-      {
-        label: "นักศึกษาที่เข้าดูไม่ซ้ำ",
-        data: trend.map((item) => item.uniqueStudents),
-        borderColor: "rgba(255, 99, 132, 1)",
-        backgroundColor: "rgba(255, 99, 132, 0.2)",
-        tension: 0.4,
-        fill: true,
-      },
-    ],
-  };
-
-  const lineChartOptions = {
-    responsive: true,
-    plugins: {
-      title: {
-        display: true,
-        text: "แนวโน้มการเข้าดูรายวัน",
-        color: "#333",
-        padding: { top: 10, bottom: 20 },
-      },
-      legend: {
-        position: "top",
-      },
-    },
-    scales: {
-      y: { beginAtZero: true },
-    },
-  };
+    };
+  }, []);
 
   return loading ? (
     <Loading />
@@ -596,14 +739,18 @@ const AccessStatistics = ({ officer, agency }) => {
         )}
         <div className={styles.boxState}>
           <div className={styles.totalPageView}>
-            <p className={styles.titleTotalPageView}>จำนวนการเข้าดูทั้งหมด</p>
+            <p className={styles.titleTotalPageView}>
+              จำนวนการตรวจสอบคุณวุฒิทั้งหมด
+            </p>
             <h2 className={styles.numberTotalPageView}>
               {totalViews.toLocaleString()} ครั้ง
             </h2>
           </div>
           <div className={styles.totalPageView}>
             <p className={styles.titleTotalPageView}>
-              {agency ? "จำนวนนักศึกษาที่คุณเข้าชม" : "นักศึกษาที่ถูกเข้าชม"}
+              {agency
+                ? "จำนวนนักศึกษาที่คุณตรวจสอบทั้งหมด"
+                : "นักศึกษาที่ถูกตรวจสอบคุณวุฒิทั้งหมด"}
             </p>
             <h2 className={styles.numberTotalPageView}>
               {agency
@@ -654,7 +801,7 @@ const AccessStatistics = ({ officer, agency }) => {
             </select>
           )}
         </div>
-        <div className={styles.topAgencyView}>
+        <div className={styles.topAgencyView} id="barChartContainer">
           {loadingTopAgencies && <div className={styles.loadingBox}></div>}
           {!loadingTopAgencies && topAgencies.length > 0 ? (
             <BarChart data={barChartData} options={barChartOptions} />
@@ -699,9 +846,11 @@ const AccessStatistics = ({ officer, agency }) => {
             </select>
           )}
         </div>
-        <div className={styles.topFacultyView}>
-          {(selectedView === "faculty" && topFaculties.length > 0) ||
-          (selectedView === "department" && topDepartments.length > 0) ? (
+        <div className={styles.topFacultyView} id="pieChartContainer">
+          {loadingTopDepartments ? (
+            <div className={styles.loadingBox}></div>
+          ) : (selectedView === "faculty" && topFaculties.length > 0) ||
+            (selectedView === "department" && topDepartments.length > 0) ? (
             <PieChart data={pieChartData} options={pieChartOptions} />
           ) : (
             <div className={styles.noData}>
@@ -739,7 +888,7 @@ const AccessStatistics = ({ officer, agency }) => {
             </div>
             <div className={styles.containerFieldset}>
               <fieldset>
-                <legend>หน่วยงานที่มีการเข้าดูมากที่สุด Top 5 </legend>
+                <legend>หน่วยงานที่มีการตรวจสอบคุณวุฒิมากที่สุด Top 5 </legend>
                 <div className={styles.exportDateForm}>
                   <label>
                     <p>คณะ:</p>
@@ -773,7 +922,7 @@ const AccessStatistics = ({ officer, agency }) => {
               </fieldset>
 
               <fieldset>
-                <legend>คณะ/สาขาที่มีการเข้ามากที่สุด Top 5 </legend>
+                <legend>คณะ/สาขา ที่ถูกตรวจสอบคุณวุฒิมากที่สุด Top 5 </legend>
                 <div className={styles.exportDateForm}>
                   <label>
                     <p>หน่วยงาน:</p>
@@ -813,38 +962,40 @@ const AccessStatistics = ({ officer, agency }) => {
               <fieldset>
                 <legend>ประเภทไฟล์ที่ต้องการส่งออก</legend>
                 <div className={styles.exportCheckBoxFile}>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={exportPDF}
-                    onChange={(e) => setExportPDF(e.target.checked)}
-                  />{" "}
-                  PDF
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={exportExcel}
-                    onChange={(e) => setExportExcel(e.target.checked)}
-                  />{" "}
-                  Excel
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={exportBar}
-                    onChange={(e) => setExportBar(e.target.checked)}
-                  />{" "}
-                  กราฟแท่ง
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={exportPie}
-                    onChange={(e) => setExportPie(e.target.checked)}
-                  />{" "}
-                  กราฟวงกลม
-                </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={exportPDF}
+                      onChange={(e) => setExportPDF(e.target.checked)}
+                    />{" "}
+                    PDF
+                  </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={exportExcel}
+                      onChange={(e) => setExportExcel(e.target.checked)}
+                    />{" "}
+                    Excel
+                  </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={exportBar}
+                      disabled={!exportPDF}
+                      onChange={(e) => setExportBar(e.target.checked)}
+                    />{" "}
+                    กราฟแท่ง
+                  </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={exportPie}
+                      disabled={!exportPDF}
+                      onChange={(e) => setExportPie(e.target.checked)}
+                    />{" "}
+                    กราฟวงกลม
+                  </label>
                 </div>
               </fieldset>
             </div>
