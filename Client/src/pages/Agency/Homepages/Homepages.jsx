@@ -226,7 +226,29 @@ function Homepages() {
                 <table className={styles.studentTable}>
                   <thead>
                     <tr>
-                      <th>{!selectMode ? "#" : "เลือก"}</th>
+                      <th>
+                        {!selectMode ? (
+                          "#"
+                        ) : (
+                          <input
+                            type="checkbox"
+                            checked={
+                              student &&
+                              selectedIds.length > 0 &&
+                              selectedIds.length === student.length
+                            }
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedIds(
+                                  student.map((s) => s.student.student_no)
+                                );
+                              } else {
+                                setSelectedIds([]);
+                              }
+                            }}
+                          />
+                        )}
+                      </th>
                       <th>รหัสนักศึกษา</th>
                       <th>ชื่อ</th>
                       <th>นามสกุล</th>
