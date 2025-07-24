@@ -115,6 +115,16 @@ function Homepages() {
     );
   };
 
+  const dateTimetoExport = () => {
+    const date = new Date();
+  
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+  
+    return `${day}_${month}_${year}`; // รูปแบบ DD-MM-YYYY
+  };
+
   const handleExportPDF = async () => {
     if (selectedIds.length === 0) {
       toast.warning("กรุณาเลือกข้อมูลอย่างน้อย 1 รายการ");
@@ -129,7 +139,7 @@ function Homepages() {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "student_export.pdf");
+      link.setAttribute("download", `student_report_${dateTimetoExport()}.pdf`);
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -155,7 +165,7 @@ function Homepages() {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "student_export.xlsx");
+      link.setAttribute("download", `student_report_${dateTimetoExport()}.xlsx`);
       document.body.appendChild(link);
       link.click();
       link.remove();

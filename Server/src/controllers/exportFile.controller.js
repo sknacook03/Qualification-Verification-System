@@ -1,5 +1,4 @@
 import PdfPrinter from "pdfmake";
-import fs from "fs";
 import ExcelJS from "exceljs";
 import path from "path";
 import ExportFileService from "../services/exportFile.service.js";
@@ -42,6 +41,16 @@ const splitDegreeAndDepartment = (currName) => {
   const match = currName.match(/\((.*?)\)/);
   const dept = match ? match[1].trim() : "";
   return { degree, dept };
+};
+
+const dateTimetoExport = () => {
+  const date = new Date();
+
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+
+  return `${day}-${month}-${year}`; // รูปแบบ DD-MM-YYYY
 };
 
 const ExportFileController = {
@@ -300,7 +309,7 @@ const ExportFileController = {
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader(
         "Content-Disposition",
-        'attachment; filename="student_export.pdf"'
+        `attachment; filename="student_export_${dateTimetoExport()}.pdf"`
       );
 
       // Pipe PDF to response
@@ -408,7 +417,7 @@ const ExportFileController = {
       );
       res.setHeader(
         "Content-Disposition",
-        "attachment; filename=student_export.xlsx"
+        `attachment; filename="student_export_${dateTimetoExport()}.xlsx"`
       );
 
       await workbook.xlsx.write(res);
