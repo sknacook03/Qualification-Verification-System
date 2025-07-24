@@ -1,6 +1,6 @@
-import PDFDocument from "pdfkit";
-import ExcelJS from "exceljs"
-import moment from "moment";
+import PdfPrinter from "pdfmake";
+import fs from "fs";
+import ExcelJS from "exceljs";
 import path from "path";
 import ExportFileService from "../services/exportFile.service.js";
 
@@ -9,9 +9,39 @@ const fontSarabun = path.resolve("fonts/THSarabunNew.ttf");
 const fontSarabunBold = path.resolve("fonts/THSarabunNew Bold.ttf");
 
 const getGradStatus = (status) => {
-  if (status === 1) return "สำเร็จ";
-  if (status === 0) return "ไม่สำเร็จ";
+  if (status === 1) return "สำเร็จการศึกษา";
+  if (status === 0) return "กำลังศึกษา";
+  return "ไม่ระบุสถานะ";
+};
+
+const facultyMap = {
+  103: "คณะระบบรางและการขนส่ง",
+  104: "คณะนวัตกรรมและเทคโนโลยีการเกษตร",
+  15: "คณะบริหารธุรกิจ",
+  16: "คณะวิทยาศาสตร์และศิลปศาสตร์",
+  17: "คณะวิศวกรรมศาสตร์และเทคโนโลยี",
+  18: "คณะสถาปัตยกรรมศาสตร์และศิลปกรรมสร้างสรรค์",
+  19: "สถาบันสหสรรพศาสตร์",
+};
+
+const getFacultyName = (deptCode) => {
+  const code = deptCode.toString();
+  if (facultyMap[code.substring(0, 3)]) {
+    return facultyMap[code.substring(0, 3)];
+  }
+
+  if (facultyMap[code.substring(0, 2)]) {
+    return facultyMap[code.substring(0, 2)];
+  }
+
   return "-";
+};
+
+const splitDegreeAndDepartment = (currName) => {
+  const degree = currName.split("(")[0].trim();
+  const match = currName.match(/\((.*?)\)/);
+  const dept = match ? match[1].trim() : "";
+  return { degree, dept };
 };
 
 const ExportFileController = {
@@ -33,78 +63,257 @@ const ExportFileController = {
         return res.status(500).json({ message: "Database error" });
       }
 
-      try {
-        const doc = new PDFDocument({ margin: 36, size: "A4" });
+      // Group ข้อมูล
+      const grouped = {};
+      students.forEach((s) => {
+        const fac = getFacultyName(s.dept_code);
+        const { degree, dept } = splitDegreeAndDepartment(s.curr_name);
+        const year = s.year_no || "-";
+        const sem = s.semester_no || "-";
+        const std_year = s.std_year_no || "-";
+        const status = getGradStatus(s.status_graduate);
+        if (!grouped[fac]) grouped[fac] = {};
+        if (!grouped[fac][dept]) grouped[fac][dept] = {};
+        if (!grouped[fac][dept][degree]) grouped[fac][dept][degree] = {};
+        if (!grouped[fac][dept][degree][year])
+          grouped[fac][dept][degree][year] = {};
+        if (!grouped[fac][dept][degree][year][sem])
+          grouped[fac][dept][degree][year][sem] = {};
+        if (!grouped[fac][dept][degree][year][sem][std_year])
+          grouped[fac][dept][degree][year][sem][std_year] = {};
+        if (!grouped[fac][dept][degree][year][sem][std_year][status])
+          grouped[fac][dept][degree][year][sem][std_year][status] = [];
+        grouped[fac][dept][degree][year][sem][std_year][status].push(s);
+      });
 
-        // Register THSarabunNew font
-        doc.registerFont("sarabun", fontSarabun);
-        doc.registerFont("sarabun-bold", fontSarabunBold);
+      // Define fonts for pdfmake
+      const fonts = {
+        Sarabun: {
+          normal: fontSarabun, // path to your Sarabun font file
+          bold: fontSarabunBold, // path to your Sarabun Bold font file
+        },
+      };
 
-        // ใช้ sarabun หรือ sarabun-bold กับทุก .text()
-        doc.font("sarabun-bold").fontSize(22).text("รายงานข้อมูลนักศึกษา", { align: "center" });
-        doc.moveDown();
+      // Create printer with fonts
+      const printer = new PdfPrinter(fonts);
 
-        // Table header
-        doc.font("sarabun-bold").fontSize(14).text(
-          "ลำดับ | ปีการศึกษา | เทอม | รหัส | ชั้นปี | คำนำหน้า | ชื่อ | นามสกุล | GPA | สถานะ | สาขา",
-          { underline: true }
-        );
-        doc.moveDown(0.4);
-        doc.moveTo(doc.x, doc.y).lineTo(doc.page.width - doc.page.margins.right, doc.y).stroke();
-        doc.moveDown(0.2);
+      // Document content array
+      const content = [];
 
-        students.forEach((s, i) => {
-          doc.font("sarabun").fontSize(13).text(
-            `${i + 1} | ${s.year_no ?? "-"} | ${s.semester_no ?? "-"} | ${s.student_no} | ${s.std_year_no ?? "-"} | ${s.prefix_name ?? "-"} | ${s.name ?? "-"} | ${s.lname ?? "-"} | ${s.gpa ?? "-"} | ${getGradStatus(s.status_graduate)} | ${s.curr_name ?? "-"}`
-          );
-        });
+      // --- Header ---
+      content.push({
+        image: "./images/logo_header.png",
+        width: 35,
+        height: 70,
+        alignment: "center",
+        margin: [0, 0, 0, 10],
+      });
 
-        doc.addPage();
-        doc.moveDown(1.5).font("sarabun-bold").fontSize(16).text("รายละเอียดเพิ่มเติม");
+      content.push({
+        text: "มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน วิทยาเขตนครราชสีมา",
+        style: "header1",
+        alignment: "center",
+        margin: [0, 0, 0, 0],
+      });
 
-        students.forEach((s, i) => {
-          doc.moveDown(0.8);
-          doc.font("sarabun-bold").fontSize(13).text(
-            `ลำดับที่ ${i + 1} : ${s.prefix_name ?? ""}${s.name ?? ""} ${s.lname ?? ""} (${s.student_no})`
-          );
-          doc.font("sarabun").fontSize(13)
-            .text(`ปีการศึกษา: ${s.year_no ?? "-"}   เทอม: ${s.semester_no ?? "-"}   ชั้นปี: ${s.std_year_no ?? "-"}`)
-            .text(`GPA: ${s.gpa ?? "-"}   CCA: ${s.cca ?? "-"}`)
-            .text(`สถานะการศึกษา: ${getGradStatus(s.status_graduate)}`)
-            .text(`วันที่จบ: ${s.graduate_date ? moment(s.graduate_date).format("DD/MM/YYYY") : "-"}`)
-            .text(`ปริญญา: ${s.deg_name ?? "-"}`)
-            .text(`เกียรตินิยม: ${s.honors ?? "-"}`)
-            .text(`หัวข้อวิทยานิพนธ์ (TH): ${s.thesis_topic_th ?? "-"}`)
-            .text(`หัวข้อวิทยานิพนธ์ (EN): ${s.thesis_topic_en ?? "-"}`)
-            .text(`รหัสแผนก: ${s.dept_code ?? "-"}`)
-            .text(`ชื่อหลักสูตร: ${s.curr_name ?? "-"}`);
-          doc.moveDown(0.4);
-          doc.moveTo(doc.x, doc.y).lineTo(doc.page.width - doc.page.margins.right, doc.y).strokeColor("#cccccc").stroke();
-        });
+      content.push({
+        text: "รายงานสรุปผลข้อมูลนักศึกษา",
+        style: "header2",
+        alignment: "center",
+        margin: [0, 0, 0, 15],
+      });
 
-        let buffers = [];
-        doc.on("data", buffers.push.bind(buffers));
-        doc.on("end", () => {
-          const pdfData = Buffer.concat(buffers);
-          res.set({
-            "Content-Type": "application/pdf",
-            "Content-Disposition": `attachment; filename="student_export.pdf"`,
-          }).send(pdfData);
-        });
+      // --- วนแต่ละกลุ่มแล้ว render กลุ่ม + table ---
+      const maxRowsPerPage = 20;
 
-        doc.end();
-      } catch (pdfError) {
-        console.error("PDFKit error:", pdfError);
-        return res.status(500).json({ message: "Export PDF failed" });
+      for (const [fac, depts] of Object.entries(grouped)) {
+        for (const [dept, degrees] of Object.entries(depts)) {
+          for (const [degree, years] of Object.entries(degrees)) {
+            for (const [year, sems] of Object.entries(years)) {
+              for (const [sem, std_years] of Object.entries(sems)) {
+                for (const [std_year, statuss] of Object.entries(std_years)) {
+                  for (const [status, studentsInGroup] of Object.entries(
+                    statuss
+                  )) {
+                    const sectionTitle1 = `คณะ: ${fac} | สาขา: ${dept}`;
+                    const sectionTitle2 = `วุฒิการศึกษา: ${degree} | ปีการศึกษา: ${year} | ภาคเรียนที่: ${sem} | ชั้นปี: ${std_year} | สถานะ: ${status}`;
+
+                    // เตรียมข้อมูลตาราง
+                    const rows = studentsInGroup.map((s, i) => [
+                      { text: (i + 1).toString(), alignment: "center" },
+                      { text: s.student_no ?? "-", alignment: "center" },
+                      {
+                        text: `${s.prefix_name ?? ""}${s.name ?? ""} ${s.lname ?? ""}`.trim(),
+                        alignment: "left",
+                      },
+                      { text: s.gpa ?? "-", alignment: "center" },
+                      { text: s.honors ?? "-", alignment: "left" },
+                      { text: s.thesis_topic_th ?? "-", alignment: "left" },
+                    ]);
+
+                    // วนแบ่ง rows ทีละ maxRowsPerPage
+                    for (let i = 0; i < rows.length; i += maxRowsPerPage) {
+                      const rowsForPage = rows.slice(i, i + maxRowsPerPage);
+
+                      // Section titles
+                      content.push({
+                        text: sectionTitle1,
+                        style: "sectionTitle",
+                        margin: [0, 10, 0, 0],
+                      });
+
+                      content.push({
+                        text: sectionTitle2,
+                        style: "sectionTitle",
+                        margin: [0, 0, 0, 10],
+                      });
+
+                      // Table headers
+                      const tableHeaders = [
+                        {
+                          text: "ลำดับ",
+                          style: "tableHeader",
+                          alignment: "center",
+                        },
+                        {
+                          text: "รหัสนักศึกษา",
+                          style: "tableHeader",
+                          alignment: "center",
+                        },
+                        {
+                          text: "ชื่อ - นามสกุล",
+                          style: "tableHeader",
+                          alignment: "center",
+                        },
+                        {
+                          text: "GPA",
+                          style: "tableHeader",
+                          alignment: "center",
+                        },
+                        {
+                          text: "เกียรตินิยม",
+                          style: "tableHeader",
+                          alignment: "center",
+                        },
+                        {
+                          text: "หัวข้อวิทยานิพนธ์",
+                          style: "tableHeader",
+                          alignment: "center",
+                        },
+                      ];
+
+                      // Create table
+                      content.push({
+                        table: {
+                          headerRows: 1,
+                          widths: [30, 85, 100, 35, 80, "*"], // '*' for remaining width
+                          body: [tableHeaders, ...rowsForPage],
+                        },
+                        layout: {
+                          hLineWidth: function (i, node) {
+                            return 1.5;
+                          },
+                          vLineWidth: function (i, node) {
+                            return 1.5;
+                          },
+                          hLineColor: function (i, node) {
+                            return "#000";
+                          },
+                          vLineColor: function (i, node) {
+                            return "#000";
+                          },
+                          paddingLeft: function (i, node) {
+                            return 2;
+                          },
+                          paddingRight: function (i, node) {
+                            return 2;
+                          },
+                          paddingTop: function (i, node) {
+                            return 2;
+                          },
+                          paddingBottom: function (i, node) {
+                            return 2;
+                          },
+                        },
+                        style: "tableContent",
+                        margin: [0, 0, 0, 10],
+                      });
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
+
+      // Document definition
+      const docDefinition = {
+        content: content,
+        defaultStyle: {
+          font: "Sarabun",
+          fontSize: 12,
+        },
+        styles: {
+          header1: {
+            fontSize: 20,
+            bold: true,
+            font: "Sarabun",
+          },
+          header2: {
+            fontSize: 18,
+            bold: true,
+            font: "Sarabun",
+          },
+          sectionTitle: {
+            fontSize: 16,
+            font: "Sarabun",
+          },
+          tableHeader: {
+            fontSize: 12,
+            bold: true,
+            font: "Sarabun",
+          },
+          tableContent: {
+            fontSize: 12,
+            font: "Sarabun",
+          },
+        },
+        pageSize: "A4",
+        pageMargins: [30, 50, 30, 50],
+        footer: function (currentPage, pageCount) {
+          return {
+            text: `~ ${currentPage} ~`,
+            alignment: "center",
+            fontSize: 12,
+            font: "Sarabun",
+            color: "#333333",
+            margin: [0, 0, 0, 30],
+          };
+        },
+      };
+
+      // Generate PDF
+      const pdfDoc = printer.createPdfKitDocument(docDefinition);
+
+      // Set response headers
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        'attachment; filename="student_export.pdf"'
+      );
+
+      // Pipe PDF to response
+      pdfDoc.pipe(res);
+      pdfDoc.end();
     } catch (error) {
-      console.error("Controller error:", error);
+      console.error("Export PDF Error:", error);
       return res.status(500).json({ message: "Internal Server Error" });
     }
   },
   exportStudentExcel: async (req, res) => {
     try {
-        const { studentNos } = req.body;
+      const { studentNos } = req.body;
       if (
         !studentNos ||
         !Array.isArray(studentNos) ||
@@ -135,8 +344,12 @@ const ExportFileController = {
         "ชื่อ",
         "นามสกุล",
         "GPA",
+        "CCA",
         "สถานะ",
-        "สาขา"
+        "สาขา",
+        "เกียรตินิยม",
+        "หัวข้อวิจัย (TH)",
+        "หัวข้อวิจัย (EN)",
       ]);
 
       // Rows
@@ -151,12 +364,16 @@ const ExportFileController = {
           s.name ?? "-",
           s.lname ?? "-",
           s.gpa ?? "-",
+          s.cca ?? "-",
           getGradStatus(s.status_graduate),
-          s.curr_name ?? "-"
+          s.curr_name ?? "-",
+          s.honors ?? "-",
+          s.thesis_topic_th ?? "-",
+          s.thesis_topic_en ?? "-",
         ]);
       });
 
-      worksheet.columns.forEach(column => {
+      worksheet.columns.forEach((column) => {
         column.width = 15;
       });
 
@@ -166,20 +383,23 @@ const ExportFileController = {
         const row = worksheet.getRow(i);
         row.eachCell({ includeEmpty: true }, (cell) => {
           cell.border = {
-            top:    { style: 'thin' },
-            left:   { style: 'thin' },
-            bottom: { style: 'thin' },
-            right:  { style: 'thin' }
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
           };
           cell.alignment = {
-            vertical: 'middle', horizontal: 'center'
+            vertical: "middle",
+            horizontal: "center",
           };
         });
       }
 
       // Style header
       worksheet.getRow(1).font = { bold: true, size: 12 };
-      worksheet.getColumn('K').width = 70;
+      worksheet.getColumn("L").width = 60;
+      worksheet.getColumn("N").width = 60;
+      worksheet.getColumn("O").width = 60;
 
       // Export file buffer แล้วส่งให้ React
       res.setHeader(
@@ -193,7 +413,6 @@ const ExportFileController = {
 
       await workbook.xlsx.write(res);
       res.end();
-
     } catch (error) {
       console.error("Export Excel error:", error);
       return res.status(500).json({ message: "Internal Server Error" });
