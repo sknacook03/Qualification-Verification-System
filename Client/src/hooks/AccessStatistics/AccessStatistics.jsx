@@ -319,49 +319,156 @@ const AccessStatistics = ({ officer, agency }) => {
     }
   }, [startDate, endDate]);
 
+  const resetExportState = () => {
+    setStartDate("");
+    setEndDate("");
+    setSelectedDepartment("");
+    setSelectedView("faculty");
+    setSelectedAgencyId("");
+    setTempStartDate("");
+    setTempEndDate("");
+    setSelectedFacultyDisplayName("");
+    setSelectedFacultyCodeName("");
+    handleApplyDateFilter();
+    setExportStartDate("");
+    setExportEndDate("");
+    setExportFaculty("");
+    setExportDepartment("");
+    setExportAgencyId("");
+    setExportPDF(false);
+    setExportExcel(false);
+    setExportBar(false);
+    setExportPie(false);
+    setExportTopFaculty(false);
+    setExportTopDepartment(false);
+  };
+  const prepareAndExport = async () => {
+    if (exportStartDate) setStartDate(exportStartDate);
+    if (exportEndDate) setEndDate(exportEndDate);
+    if (exportFaculty) {
+      const code = displayNameToCodeNameMap[exportFaculty];
+      setSelectedFacultyDisplayName(exportFaculty);
+      setSelectedFacultyCodeName(code);
+    }
+    if (exportDepartment) setSelectedDepartment(exportDepartment);
+    if (exportAgencyId) setSelectedAgencyId(exportAgencyId);
+
+    if (exportTopFaculty) setSelectedView("faculty");
+    else if (exportTopDepartment) setSelectedView("department");
+    await new Promise((res) => setTimeout(res, 1000));
+
+    // now export
+    await handleExport();
+  };
   const handleExport = async () => {
     try {
       setExportLoading(true);
 
       const query = `startDate=${exportStartDate}&endDate=${exportEndDate}`;
 
-      let exportData = [];
+      let exportTables = [];
 
-      const noSelectionMade = !exportTopFaculty && !exportTopDepartment;
-      const noFileSelected = !exportExcel && !exportPDF;
+      if (!exportFaculty && !exportDepartment) {
+        const res = await axios.get(
+          `${API_BASE_URL}${APIEndpoints.pageview.topAgency}?${query}`
+        );
+        const list = Array.isArray(res.data.data) ? res.data.data : res.data;
+        exportTables.push({
+          title: `5 อันดับหน่วยงานที่มีการตรวสอบคุณวุฒิมากที่สุด (ทั้งหมด)`,
+          rows: list.map((item, index) => [
+            index + 1,
+            item.agency_name,
+            item.count,
+          ]),
+        });
+      }
 
-      if (exportTopFaculty || noSelectionMade) {
+      if (exportFaculty) {
+        const res = await axios.get(
+          `${API_BASE_URL}${
+            APIEndpoints.pageview.topAgenciesByFaculty
+          }?faculty=${encodeURIComponent(selectedFacultyDisplayName)}&${query}`
+        );
+        const list = Array.isArray(res.data.data) ? res.data.data : [];
+        exportTables.push({
+          title: `5 อันดับหน่วยงานที่มีการตรวสอบคุณวุฒิมากที่สุด (${exportFaculty})`,
+          rows: list.map((item, index) => [
+            index + 1,
+            item.agency_name,
+            item.count,
+          ]),
+        });
+      }
+
+      if (exportDepartment) {
+        const res = await axios.get(
+          `${API_BASE_URL}${
+            APIEndpoints.pageview.topAgenciesByDepartment
+          }?department=${encodeURIComponent(selectedDepartment)}&${query}`
+        );
+        const list = Array.isArray(res.data.data) ? res.data.data : [];
+        exportTables.push({
+          title: `5 อันดับหน่วยงานที่มีการตรวสอบคุณวุฒิมากที่สุด (${exportDepartment})`,
+          rows: list.map((item, index) => [
+            index + 1,
+            item.agency_name,
+            item.count,
+          ]),
+        });
+      }
+
+      if (exportTopFaculty) {
         const res = await axios.get(
           `${API_BASE_URL}${APIEndpoints.pageview.topFaculty}?${query}` +
             (exportAgencyId ? `&agencyId=${exportAgencyId}` : "")
         );
-        exportData.push(
-          ...res.data.map((item) => ({
-            ประเภท: "คณะ",
-            ชื่อ: item.faculty,
-            จำนวนการเข้าดู: item.count,
-          }))
-        );
+        const list = Array.isArray(res.data) ? res.data : [];
+        exportTables.push({
+          title: `5 อันดับคณะที่มีการตรวสอบคุณวุฒิมากที่สุด (${
+            exportAgencyId ? `${selectedAgencyName}` : "ทั้งหมด"
+          })`,
+          rows: list.map((item, index) => [
+            index + 1,
+            item.faculty,
+            item.count,
+          ]),
+        });
       }
 
-      if (exportTopDepartment || noSelectionMade) {
+      if (exportTopDepartment) {
         const res = await axios.get(
           `${API_BASE_URL}${APIEndpoints.pageview.topDepartment}?${query}` +
             (exportAgencyId ? `&agencyId=${exportAgencyId}` : "")
         );
-        exportData.push(
-          ...res.data.map((item) => ({
-            ประเภท: "สาขา",
-            ชื่อ: item.department,
-            จำนวนการเข้าดู: item.count,
-          }))
-        );
+        const list = Array.isArray(res.data) ? res.data : [];
+        exportTables.push({
+          title: `5 อันดับสาขาที่มีการตรวสอบคุณวุฒิมากที่สุด (${
+            exportAgencyId ? `${selectedAgencyName}` : "ทั้งหมด"
+          })`,
+          rows: list.map((item, index) => [
+            index + 1,
+            item.department,
+            item.count,
+          ]),
+        });
       }
 
-      if (exportExcel || noFileSelected) {
-        const ws = XLSX.utils.json_to_sheet(exportData);
+      if (exportExcel) {
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "สถิติการเข้าดู");
+
+        exportTables.forEach((table) => {
+          const sheetData = [
+            ["ลำดับ", "ชื่อ", "จำนวนการเข้าดู"],
+            ...table.rows.map((r) => [r[0], r[1], r[2]]),
+          ];
+          const ws = XLSX.utils.aoa_to_sheet(sheetData);
+          XLSX.utils.book_append_sheet(
+            wb,
+            ws,
+            table.title.substring(0, 31) // ชื่อ sheet ต้องไม่เกิน 31 ตัวอักษร
+          );
+        });
+
         const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
         const blob = new Blob([excelBuffer], {
           type: "application/octet-stream",
@@ -369,7 +476,7 @@ const AccessStatistics = ({ officer, agency }) => {
         saveAs(blob, "access_statistics.xlsx");
       }
 
-      if (exportPDF || noFileSelected) {
+      if (exportPDF) {
         let content = [
           {
             text:
@@ -379,84 +486,127 @@ const AccessStatistics = ({ officer, agency }) => {
             alignment: "right",
             margin: [0, 0, 0, 10],
           },
-
-          { text: "รายงานสถิติการเข้าดู", style: "header" },
+          { text: "รายงานสถิติการตรวจสอบคุณวุฒิ", style: "header" },
           {
             canvas: [
               { type: "line", x1: 0, y1: 0, x2: 520, y2: 0, lineWidth: 1 },
             ],
             margin: [0, 0, 0, 10],
           },
-          {
-            layout: "customLayout",
-            table: {
-              headerRows: 1,
-              widths: [60, 332, 100],
-              body: [
-                [
-                  { text: "ประเภท", style: "tableHeader" },
-                  { text: "ชื่อ", style: "tableHeader" },
-                  { text: "จำนวนการเข้าดู", style: "tableHeader" },
-                ],
-                ...exportData.map((item) => [
-                  { text: item.ประเภท, style: "tableCell" },
-                  { text: item.ชื่อ, style: "tableCell" },
-                  {
-                    text: item.จำนวนการเข้าดู.toLocaleString(),
-                    style: "tableCell",
-                    alignment: "right",
-                  },
-                ]),
-              ],
-            },
-          },
         ];
-        content.push({ text: "", pageBreak: "before" });
+
+        for (const section of exportTables) {
+          content.push(
+            {
+              text: section.title,
+              style: "headerTable",
+              margin: [0, 10, 0, 5],
+            },
+            {
+              layout: "customLayout",
+              table: {
+                headerRows: 1,
+                widths: [50, 344, 100],
+                body: [
+                  [
+                    { text: "ลำดับ", style: "tableHeader" },
+                    { text: "ชื่อ", style: "tableHeader" },
+                    { text: "จำนวนการเข้าดู", style: "tableHeader" },
+                  ],
+                  ...section.rows.map((r) => [
+                    {
+                      text: r[0].toString(),
+                      style: "tableCell",
+                      alignment: "center",
+                    },
+                    { text: r[1], style: "tableCell" },
+                    {
+                      text: r[2].toLocaleString(),
+                      style: "tableCell",
+                      alignment: "right",
+                    },
+                  ]),
+                ],
+              },
+            }
+          );
+        }
+        if (!exportBar && !exportPie) {
+          content.push({
+            text: `วันที่ส่งออกรายงาน: ${new Date().toLocaleDateString(
+              "th-TH"
+            )}`,
+            alignment: "right",
+            margin: [0, 20, 0, 0],
+            fontSize: 10,
+            color: "#666666",
+          });
+        }
+        if (exportBar || exportPie) {
+          content.push({ text: "", pageBreak: "before" });
+        }
         if (exportBar) {
           const barChartBase64 = await getChartBase64ById("barChartContainer");
           if (barChartBase64) {
-            content.push({ text: "กราฟแท่ง (Bar Chart)", style: "header" });
-            content.push({ image: barChartBase64, width: 500 });
+            content.push({
+              text: "กราฟแท่ง (Bar Chart)",
+              style: "headerTable",
+            });
+            content.push({ image: barChartBase64, fit: [500, 1500] });
           }
         }
 
         if (exportPie) {
           const pieChartBase64 = await getChartBase64ById("pieChartContainer");
           if (pieChartBase64) {
-            content.push({ text: "กราฟวงกลม (Pie Chart)", style: "header" });
-            content.push({ image: pieChartBase64, width: 500 });
+            content.push({
+              text: "กราฟวงกลม (Pie Chart)",
+              style: "headerTable",
+              margin: [0, 10, 0, 10],
+            });
+            content.push({ image: pieChartBase64, fit: [500, 1500] });
           }
         }
-        content.push({
-          text: `วันที่ส่งออกรายงาน: ${new Date().toLocaleDateString("th-TH")}`,
-          alignment: "right",
-          margin: [0, 20, 0, 0],
-          fontSize: 10,
-          color: "#666666",
-        });
+        if (exportBar || exportPie) {
+          content.push({
+            text: `วันที่ส่งออกรายงาน: ${new Date().toLocaleDateString(
+              "th-TH"
+            )}`,
+            alignment: "right",
+            margin: [0, 20, 0, 0],
+            fontSize: 10,
+            color: "#666666",
+          });
+        }
 
         const docDefinition = {
           content,
           defaultStyle: {
             font: "THSarabun",
             fontSize: 12,
-            lineHeight: 1.2,
+            lineHeight: 1,
           },
           styles: {
             header: {
-              fontSize: 18,
+              fontSize: 14,
+              bold: true,
+              alignment: "center",
+              margin: [0, 0, 0, 10],
+            },
+            headerTable: {
+              fontSize: 12,
               bold: true,
               alignment: "center",
               margin: [0, 0, 0, 10],
             },
             tableHeader: {
               bold: true,
-              fontSize: 14,
+              fontSize: 12,
               fillColor: "#d9edf7",
               alignment: "center",
             },
             tableCell: {
-              fontSize: 12,
+              fontSize: 10,
               margin: [0, 2, 0, 2],
             },
           },
@@ -483,6 +633,7 @@ const AccessStatistics = ({ officer, agency }) => {
 
       alert("ส่งออกข้อมูลสำเร็จ");
       setPopUpExport(false);
+      resetExportState();
     } catch (error) {
       console.error("Export Error:", error);
       alert("เกิดข้อผิดพลาดในการส่งออกข้อมูล");
@@ -490,6 +641,40 @@ const AccessStatistics = ({ officer, agency }) => {
       setExportLoading(false);
     }
   };
+  useEffect(() => {
+    if (exportFaculty) {
+      const facultyCode = displayNameToCodeNameMap[exportFaculty];
+      if (facultyCode) {
+        axios
+          .get(
+            `${
+              API_BASE_URL + APIEndpoints.pageview.departmentsByFaculty
+            }?faculty=${encodeURIComponent(facultyCode)}`
+          )
+          .then((res) => {
+            setDepartmentsList(res.data);
+          })
+          .catch((err) => console.error("Export faculty load error:", err));
+      }
+    } else {
+      setDepartmentsList([]);
+      setExportDepartment("");
+    }
+  }, [exportFaculty]);
+
+  // preload เข้า popup
+  useEffect(() => {
+    if (popUpExport) {
+      setExportFaculty(selectedFacultyDisplayName);
+      setExportDepartment(selectedDepartment);
+      setExportAgencyId(selectedAgencyId);
+      setExportStartDate(startDate);
+      setExportEndDate(endDate);
+      setExportTopDepartment(selectedView === "department");
+      setExportTopFaculty(selectedView === "faculty");
+    }
+  }, [popUpExport]);
+
   const barChartData = useMemo(() => {
     return {
       labels: topAgencies.map((item) =>
@@ -540,14 +725,14 @@ const AccessStatistics = ({ officer, agency }) => {
           padding: { top: 10, bottom: 20 },
         },
         datalabels: {
-          display: false,
+          display: exportBar,
         },
       },
       scales: {
         y: { beginAtZero: true },
       },
     };
-  }, [selectedDepartment, selectedFacultyDisplayName, topAgencies]);
+  }, [selectedDepartment, selectedFacultyDisplayName, topAgencies, exportBar]);
 
   const pieChartData = useMemo(() => {
     const fullLabels =
@@ -620,12 +805,18 @@ const AccessStatistics = ({ officer, agency }) => {
             const data = context.chart.data.datasets[0].data;
             const total = data.reduce((a, b) => a + b, 0);
             const percentage = ((value / total) * 100).toFixed(1);
-            return `${percentage}%`;
+            return exportPie ? `${value} (${percentage}%)` : `${percentage}%`;
           },
         },
       },
     };
-  }, [selectedView, selectedAgencyName, topFaculties, topDepartments]);
+  }, [
+    selectedView,
+    selectedAgencyName,
+    topFaculties,
+    topDepartments,
+    exportPie,
+  ]);
 
   const lineChartData = useMemo(() => {
     return {
@@ -711,8 +902,6 @@ const AccessStatistics = ({ officer, agency }) => {
             <button
               className={styles.resetButton}
               onClick={() => {
-                setStartDate("");
-                setEndDate("");
                 setSelectedDepartment("");
                 setSelectedView("faculty");
                 setSelectedAgencyId("");
@@ -862,9 +1051,12 @@ const AccessStatistics = ({ officer, agency }) => {
       {popUpExport && (
         <Popup
           topic="ส่งออกข้อมูล"
-          closePopup={() => setPopUpExport(false)}
+          closePopup={() => {
+            setPopUpExport(false);
+            resetExportState();
+          }}
           textButtonSuccess="ส่งออก"
-          successPopup={handleExport}
+          successPopup={prepareAndExport}
           loading={exportLoading}
         >
           <div className={styles.exportForm}>
@@ -874,7 +1066,11 @@ const AccessStatistics = ({ officer, agency }) => {
                 <input
                   type="date"
                   value={exportStartDate}
-                  onChange={(e) => setExportStartDate(e.target.value)}
+                  onChange={(e) => {
+                    const date = e.target.value;
+                    setExportStartDate(date);
+                    setStartDate(date);
+                  }}
                 />
               </label>
               <label>
@@ -882,7 +1078,11 @@ const AccessStatistics = ({ officer, agency }) => {
                 <input
                   type="date"
                   value={exportEndDate}
-                  onChange={(e) => setExportEndDate(e.target.value)}
+                  onChange={(e) => {
+                    const date = e.target.value;
+                    setExportEndDate(date);
+                    setEndDate(date);
+                  }}
                 />
               </label>
             </div>
@@ -894,7 +1094,15 @@ const AccessStatistics = ({ officer, agency }) => {
                     <p>คณะ:</p>
                     <select
                       value={exportFaculty}
-                      onChange={(e) => setExportFaculty(e.target.value)}
+                      onChange={(e) => {
+                        const selected = e.target.value;
+                        const code = displayNameToCodeNameMap[selected] || "";
+                        setExportFaculty(selected);
+                        setSelectedFacultyDisplayName(selected);
+                        setSelectedFacultyCodeName(code);
+                        setExportDepartment("");
+                        setSelectedDepartment("");
+                      }}
                     >
                       <option value="">-- เลือกคณะ --</option>
                       {Object.keys(displayNameToCodeNameMap).map((name) => (
@@ -908,10 +1116,14 @@ const AccessStatistics = ({ officer, agency }) => {
                     <p>สาขา:</p>
                     <select
                       value={exportDepartment}
-                      onChange={(e) => setExportDepartment(e.target.value)}
+                      onChange={(e) => {
+                        const dept = e.target.value;
+                        setExportDepartment(dept);
+                        setSelectedDepartment(dept);
+                      }}
                     >
                       <option value="">-- เลือกสาขา --</option>
-                      {Object.keys(departmentsList).map((name) => (
+                      {departmentsList.map((name) => (
                         <option key={name} value={name}>
                           {name}
                         </option>
@@ -928,7 +1140,11 @@ const AccessStatistics = ({ officer, agency }) => {
                     <p>หน่วยงาน:</p>
                     <select
                       value={exportAgencyId}
-                      onChange={(e) => setExportAgencyId(e.target.value)}
+                      onChange={(e) => {
+                        const agencyId = e.target.value;
+                        setExportAgencyId(agencyId);
+                        setSelectedAgencyId(agencyId);
+                      }}
                     >
                       <option value="">-- เลือกหน่วยงาน --</option>
                       {agencyDropdown.map((a) => (
@@ -944,7 +1160,14 @@ const AccessStatistics = ({ officer, agency }) => {
                     <input
                       type="checkbox"
                       checked={exportTopFaculty}
-                      onChange={(e) => setExportTopFaculty(e.target.checked)}
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        setExportTopFaculty(checked);
+                        if (checked) {
+                          setExportTopDepartment(false);
+                          setSelectedView("faculty");
+                        }
+                      }}
                     />{" "}
                     Top 5 คณะที่เข้าดูสูงสุด
                   </label>
@@ -952,7 +1175,14 @@ const AccessStatistics = ({ officer, agency }) => {
                     <input
                       type="checkbox"
                       checked={exportTopDepartment}
-                      onChange={(e) => setExportTopDepartment(e.target.checked)}
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        setExportTopDepartment(checked);
+                        if (checked) {
+                          setExportTopFaculty(false);
+                          setSelectedView("department");
+                        }
+                      }}
                     />{" "}
                     Top 5 สาขาที่เข้าดูสูงสุด
                   </label>
@@ -983,6 +1213,7 @@ const AccessStatistics = ({ officer, agency }) => {
                       type="checkbox"
                       checked={exportBar}
                       disabled={!exportPDF}
+                      title={!exportPDF ? "กรุณเลือกไฟล์ PDF ก่อน" : ""}
                       onChange={(e) => setExportBar(e.target.checked)}
                     />{" "}
                     กราฟแท่ง
@@ -992,6 +1223,7 @@ const AccessStatistics = ({ officer, agency }) => {
                       type="checkbox"
                       checked={exportPie}
                       disabled={!exportPDF}
+                      title={!exportPDF ? "กรุณเลือกไฟล์ PDF ก่อน" : ""}
                       onChange={(e) => setExportPie(e.target.checked)}
                     />{" "}
                     กราฟวงกลม

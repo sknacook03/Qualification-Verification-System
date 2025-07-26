@@ -244,6 +244,11 @@
   flex-direction: column;
   gap: 1rem;
 }
+.exportCheckBoxFile label input[type="checkbox"]:disabled{
+  background-color: #f0f0f0;
+  color: #888;
+  cursor: not-allowed;
+}
 .containerFieldset {
   display: flex;
   flex-direction: column;
