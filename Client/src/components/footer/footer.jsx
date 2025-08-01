@@ -16,7 +16,7 @@ function Footer({ color, disableMenu }) {
             <Link to="/LoginOfficer" style={{ color: color }}>
               สำหรับเจ้าหน้าที่
             </Link>
-            <Link to="/terms-of-Use" style={{ color: color }}>
+            <Link to="/Term-of-Services" style={{ color: color }}>
               ข้อตกลงการใช้ระบบ
             </Link>
             <Link to="/contact" style={{ color: color }}>
