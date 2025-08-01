@@ -104,10 +104,12 @@ function App() {
                 <Button text="เข้าชมเว็บไซต์" styleType="primary" />
               </Link>
               <div className={styles.btnSecondary}>
-                <Button
-                  text="ดาวน์โหลดฟอร์มหนังสือรับรอง"
-                  styleType="secondary"
-                />
+                <a href="/docs/consent_third_party_disclosure.pdf" download>
+                  <Button
+                    text="ดาวน์โหลดฟอร์มหนังสือยินยอมให้เปิดเผยข้อมูล"
+                    styleType="secondary"
+                  />
+                </a>
                 <Button text="คู่มือการใช้งานระบบ" styleType="secondary" />
               </div>
             </div>
