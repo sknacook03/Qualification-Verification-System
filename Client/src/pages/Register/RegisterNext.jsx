@@ -23,6 +23,7 @@ function RegisterNext() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [file, setFile] = useState(null);
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const [errors, setErrors] = useState({});
 
   const isPasswordStrong = (password) => {
@@ -40,6 +41,9 @@ function RegisterNext() {
     }
     if (!file) {
       newErrors.file = "กรุณาอัปโหลดไฟล์หนังสือรับรอง";
+    }
+    if (!acceptTerms) {
+      newErrors.acceptTerms = "กรุณายอมรับข้อตกลงในการใช้บริการ";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -172,6 +176,27 @@ function RegisterNext() {
             }}
             error={errors.file}
           />
+          <div className={styles.checkboxContainer}>
+            <label className={styles.checkboxLabel}>
+              <input
+                type="checkbox"
+                checked={acceptTerms}
+                onChange={(e) => {
+                  setAcceptTerms(e.target.checked);
+                  setErrors((prev) => ({ ...prev, acceptTerms: undefined }));
+                }}
+              />
+              <span>
+                ฉันยอมรับ{" "}
+                <Link to="/Term-of-Services" target="_blank" rel="noopener noreferrer">
+                  ข้อตกลงในการใช้บริการ
+                </Link>
+              </span>
+            </label>
+            {errors.acceptTerms && (
+              <div className={styles.errorText}>{errors.acceptTerms}</div>
+            )}
+          </div>
           <div className={styles.buttonSubmit}>
             <Button
               text={
@@ -182,9 +207,8 @@ function RegisterNext() {
                 )
               }
               styleType="third"
-              disabled={loading}
+              disabled={loading || !acceptTerms}
             />
-
             <Link to="/Register" style={{ textDecoration: "none" }}>
               <Button text="ย้อนกลับ" styleType="back" disabled={loading} />
             </Link>

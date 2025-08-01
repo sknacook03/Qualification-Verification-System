@@ -71,3 +71,11 @@
   background-color: #1fd568;
   transition: 0.3s ease-in-out;
 }
+
+.button-third:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  pointer-events: none;
+  transition: none;
+}
