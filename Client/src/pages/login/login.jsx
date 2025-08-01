@@ -88,7 +88,7 @@ function App() {
           <HeaderLogin />
           <div className={styles.form}>
             <div className={styles.btnLeft}>
-              <LoginForm onSubmit={handleSubmit} loading={loading}/>
+              <LoginForm onSubmit={handleSubmit} loading={loading} />
             </div>
             <div className={styles.btnRight}>
               <Link
@@ -96,6 +96,12 @@ function App() {
                 style={{ width: "100%", textDecoration: "none" }}
               >
                 <Button text="สมัครสมาชิก(หน่วยงานใหม่)" styleType="primary" />
+              </Link>
+              <Link
+                to="/GeneralUser"
+                style={{ width: "100%", textDecoration: "none" }}
+              >
+                <Button text="เข้าชมเว็บไซต์" styleType="primary" />
               </Link>
               <div className={styles.btnSecondary}>
                 <Button

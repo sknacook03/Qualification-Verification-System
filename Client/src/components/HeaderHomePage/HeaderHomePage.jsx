@@ -1,8 +1,10 @@
 import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/Cassia-flowers-rmuti.png";
 import logoUser from "../../assets/user.png";
 import styles from "../HeaderHomePage/HeaderHomePage.module.css";
 import { Squash as Hamburger } from "hamburger-react";
+import Button from "../button/Button";
 
 const HeaderHomePage = ({ user, toggleSidebar }) => {
   return (
@@ -27,9 +29,18 @@ const HeaderHomePage = ({ user, toggleSidebar }) => {
           <div className={styles.nameUser}>
             <p>{user}</p>
           </div>
-          <div className={styles.userImage}>
-            <img src={logoUser} alt="logo-user" width={30} />
-          </div>
+          {user ? (
+            <div className={styles.userImage}>
+              <img src={logoUser} alt="logo-user" width={30} />
+            </div>
+          ) : (
+            <Link
+              to="/"
+              style={{ width: "100%", textDecoration: "none" }}
+            >
+              <Button text="ไปยังหน้าแรก" styleType="primary" />
+            </Link>
+          )}
         </div>
       </div>
     </>

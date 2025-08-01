@@ -5,12 +5,14 @@ import AccessStatisticsPage from "../pages/Agency/AccessStatisticsPage/AccessSta
 import PrivacySettingsPage from "../pages/Agency/PrivacySettingsPage/PrivacySettingsPage.jsx";
 import Contact from "../layout/contact/contact.jsx";
 
+
 const appRoutes = [
   { path: "/Homepages", element: <Homepages /> },
   { path: "/CheckQualificationsPage", element: <CheckQualificationsPage /> },
   { path: "/AccessStatisticsPage", element: <AccessStatisticsPage /> },
   { path: "/PrivacySettingsPage", element: <PrivacySettingsPage /> },
   { path: "/contact", element: <Contact /> },
+
 ];
 
 export default appRoutes;

@@ -1,17 +1,19 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import styles from './SidebarMenu.module.css';
+import React from "react";
+import { NavLink } from "react-router-dom";
+import styles from "./SidebarMenu.module.css";
 
 const SidebarMenu = ({ topMenuItems, bottomMenuItems, isOpen, onClose }) => {
   const handleClick = (onClick) => {
     if (onClick) onClick();
     if (onClose) onClose();
   };
-  const sidebarClass = `${styles.sidebar} ${styles.open} ${isOpen ? styles.openVisible : ''}`;
+  const sidebarClass = `${styles.sidebar} ${styles.open} ${
+    isOpen ? styles.openVisible : ""
+  }`;
   return (
     <div className={sidebarClass}>
       <ul className={styles.menuList}>
-        {topMenuItems.map((item, index) => (
+        {(topMenuItems || []).map((item, index) => (
           <li key={index} className={styles.menuItem}>
             {item.onClick ? (
               <span
@@ -33,9 +35,11 @@ const SidebarMenu = ({ topMenuItems, bottomMenuItems, isOpen, onClose }) => {
           </li>
         ))}
       </ul>
+
       <div className={styles.separator}></div>
+
       <ul className={styles.menuList}>
-        {bottomMenuItems.map((item, index) => (
+        {(bottomMenuItems || []).map((item, index) => (
           <li key={index} className={styles.menuItem}>
             {item.onClick ? (
               <span

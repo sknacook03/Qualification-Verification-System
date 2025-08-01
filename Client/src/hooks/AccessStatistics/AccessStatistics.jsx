@@ -357,7 +357,6 @@ const AccessStatistics = ({ officer, agency }) => {
     else if (exportTopDepartment) setSelectedView("department");
     await new Promise((res) => setTimeout(res, 1000));
 
-    // now export
     await handleExport();
   };
   const handleExport = async () => {
@@ -455,21 +454,60 @@ const AccessStatistics = ({ officer, agency }) => {
 
       if (exportExcel) {
         const wb = XLSX.utils.book_new();
+        const sheetCount = {}; 
 
         exportTables.forEach((table) => {
+          let shortSheetName = "สถิติ"; 
+
+          if (table.title.includes("หน่วยงาน")) {
+            shortSheetName = "5 อันดับหน่วยงานที่ตรวจสอบ";
+          } else if (table.title.includes("คณะที่")) {
+            shortSheetName = "5 อันดับคณะที่มีการตรวจสอบ";
+          } else if (table.title.includes("สาขาที่")) {
+            shortSheetName = "5 อันดับสาขาที่มีการตรวจสอบ";
+          }
+
+
+          if (!sheetCount[shortSheetName]) sheetCount[shortSheetName] = 1;
+          else sheetCount[shortSheetName] += 1;
+
+          const finalSheetName =
+            sheetCount[shortSheetName] === 1
+              ? shortSheetName
+              : `${shortSheetName} (${sheetCount[shortSheetName]})`;
+
           const sheetData = [
+            [table.title],
+            [],
             ["ลำดับ", "ชื่อ", "จำนวนการเข้าดู"],
             ...table.rows.map((r) => [r[0], r[1], r[2]]),
           ];
+
           const ws = XLSX.utils.aoa_to_sheet(sheetData);
-          XLSX.utils.book_append_sheet(
-            wb,
-            ws,
-            table.title.substring(0, 31) // ชื่อ sheet ต้องไม่เกิน 31 ตัวอักษร
-          );
+
+          const range = XLSX.utils.decode_range(ws["!ref"]);
+          for (let R = range.s.r; R <= range.e.r; ++R) {
+            for (let C = range.s.c; C <= range.e.c; ++C) {
+              const cell_address = XLSX.utils.encode_cell({ r: R, c: C });
+              if (!ws[cell_address]) continue;
+              if (!ws[cell_address].s) ws[cell_address].s = {};
+              ws[cell_address].s.border = {
+                top: { style: "thin", color: { rgb: "000000" } },
+                bottom: { style: "thin", color: { rgb: "000000" } },
+                left: { style: "thin", color: { rgb: "000000" } },
+                right: { style: "thin", color: { rgb: "000000" } },
+              };
+            }
+          }
+
+          XLSX.utils.book_append_sheet(wb, ws, finalSheetName);
         });
 
-        const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+        const excelBuffer = XLSX.write(wb, {
+          bookType: "xlsx",
+          type: "array",
+          cellStyles: true,
+        });
         const blob = new Blob([excelBuffer], {
           type: "application/octet-stream",
         });

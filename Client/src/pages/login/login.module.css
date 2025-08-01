@@ -104,14 +104,14 @@ footer {
   }
   .btnRight {
     border-left: 3px solid #ff7100;
-    gap: 2rem;
+    gap: 1rem;
     padding: 0.5rem 2rem 2rem 5rem;
     align-self: center;
     width: 50%;
   }
   .btnSecondary {
-    padding-top: 2rem;
-    gap: 2rem;
+    padding-top: 1rem;
+    gap: 1rem;
   }
 }
 @media screen and (min-width: 1440px) {

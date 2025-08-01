@@ -7,6 +7,7 @@ import styles from "./LayoutAllPage.module.css";
 
 const LayoutAllPage = ({
   user,
+  generalUser,
   topMenuItems,
   bottomMenuItems,
   icon,
@@ -19,10 +20,23 @@ const LayoutAllPage = ({
       <div className={styles.appContainer}>
         <div className={styles.boxContainer}>
           <div className={styles.contentHeader}>
-            <HeaderHomePage user={user} toggleSidebar={() => setSidebarOpen(!isSidebarOpen)}/>
+            {generalUser ? (
+              <HeaderHomePage
+                toggleSidebar={() => setSidebarOpen(!isSidebarOpen)}
+              />
+            ) : (
+              <HeaderHomePage
+                user={user}
+                toggleSidebar={() => setSidebarOpen(!isSidebarOpen)}
+              />
+            )}
           </div>
           <div className={styles.dashboardLayout}>
-            <div className={`${styles.sideBar} ${isSidebarOpen ? styles.sideBarOpen : ''}`}>
+            <div
+              className={`${styles.sideBar} ${
+                isSidebarOpen ? styles.sideBarOpen : ""
+              }`}
+            >
               <SidebarMenu
                 topMenuItems={topMenuItems}
                 bottomMenuItems={bottomMenuItems}
@@ -37,7 +51,7 @@ const LayoutAllPage = ({
             </div>
           </div>
         </div>
-          <Footer color="#6D6D6D" disableMenu className={styles.footer}/>
+        <Footer color="#6D6D6D" disableMenu className={styles.footer} />
       </div>
     </>
   );
