@@ -1,9 +1,19 @@
-.termsPageBackground {
-  background-color: #ffcc80;
+.pageWrapper {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
-  padding: 40px 16px;
+  background-color: #FF8D33;
   font-family: 'Prompt', sans-serif;
 }
+
+.pageContent {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* ใช้ flex-start เพื่อให้เนื้อหาชิดบน */
+  padding: 40px 16px;
+}
+
 
 .termsBox {
   background-color: #ffffff;
