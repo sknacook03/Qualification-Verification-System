@@ -19,7 +19,7 @@ function Footer({ color, disableMenu }) {
             <Link to="/Term-of-Services" style={{ color: color }}>
               ข้อตกลงการใช้ระบบ
             </Link>
-            <Link to="/contact" style={{ color: color }}>
+            <Link to="/Contact" style={{ color: color }}>
               ติดต่อ
             </Link>
           </div>
