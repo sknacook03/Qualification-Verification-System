@@ -27,13 +27,73 @@ function Homepages() {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
   const navigate = useNavigate();
+  const sortedStudents = React.useMemo(() => {
+    if (!student) return [];
+    const sortableItems = [...student];
+
+    if (sortConfig.key && sortConfig.direction !== "none") {
+      sortableItems.sort((a, b) => {
+        let aValue, bValue;
+
+        switch (sortConfig.key) {
+          case "name":
+            aValue = a.student.name;
+            bValue = b.student.name;
+            break;
+          case "lname":
+            aValue = a.student.lname;
+            bValue = b.student.lname;
+            break;
+          case "curr_name":
+            aValue = a.student.curr_name;
+            bValue = b.student.curr_name;
+            break;
+          case "updated_at":
+            aValue = new Date(a.updated_at);
+            bValue = new Date(b.updated_at);
+            break;
+          case "student_no":
+            aValue = a.student.student_no;
+            bValue = b.student.student_no;
+            break;
+          default:
+            aValue = "";
+            bValue = "";
+        }
+
+        if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+        if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+        return 0;
+      });
+    }
+
+    return sortableItems;
+  }, [student, sortConfig]);
+
+  const requestSort = (key) => {
+    setSortConfig((prevConfig) => {
+      if (prevConfig.key === key) {
+        if (prevConfig.direction === "asc") {
+          return { key, direction: "desc" };
+        } else if (prevConfig.direction === "desc") {
+          return { key: null, direction: "none" };
+        }
+      }
+      return { key, direction: "asc" };
+    });
+  };
   const offset = currentPage * itemsPerPage;
-  const currentItems = student
-    ? student.slice(offset, offset + itemsPerPage)
+  const currentItems = sortedStudents
+    ? sortedStudents.slice(offset, offset + itemsPerPage)
     : [];
   const pageCount = student ? Math.ceil(student.length / itemsPerPage) : 0;
+
+  useEffect(() => {
+    console.log(sortConfig);
+  }, [sortConfig]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -117,12 +177,12 @@ function Homepages() {
 
   const dateTimetoExport = () => {
     const date = new Date();
-  
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
+
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
-  
-    return `${day}_${month}_${year}`; // รูปแบบ DD-MM-YYYY
+
+    return `${day}_${month}_${year}`;
   };
 
   const handleExportPDF = async () => {
@@ -165,7 +225,10 @@ function Homepages() {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", `student_report_${dateTimetoExport()}.xlsx`);
+      link.setAttribute(
+        "download",
+        `student_report_${dateTimetoExport()}.xlsx`
+      );
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -259,11 +322,156 @@ function Homepages() {
                           />
                         )}
                       </th>
-                      <th>รหัสนักศึกษา</th>
-                      <th>ชื่อ</th>
-                      <th>นามสกุล</th>
-                      <th>สาขา</th>
-                      <th>วันที่เข้าชม</th>
+                      <th>
+                        <div
+                          onClick={() => requestSort("student_no")}
+                          className={styles.thSort}
+                        >
+                          รหัสนักศึกษา{" "}
+                          <div className={styles.thArrow}>
+                            <p
+                              className={
+                                sortConfig.key === "student_no" &&
+                                sortConfig.direction === "asc"
+                                  ? styles.activeArrow
+                                  : ""
+                              }
+                            >
+                              ▲
+                            </p>
+                            <p
+                              className={
+                                sortConfig.key === "student_no" &&
+                                sortConfig.direction === "desc"
+                                  ? styles.activeArrow
+                                  : ""
+                              }
+                            >
+                              ▼
+                            </p>
+                          </div>
+                        </div>
+                      </th>
+                      <th>
+                        <div
+                          onClick={() => requestSort("name")}
+                          className={styles.thSort}
+                        >
+                          ชื่อ{" "}
+                          <div className={styles.thArrow}>
+                            <p
+                              className={
+                                sortConfig.key === "name" &&
+                                sortConfig.direction === "asc"
+                                  ? styles.activeArrow
+                                  : ""
+                              }
+                            >
+                              ▲
+                            </p>
+                            <p
+                              className={
+                                sortConfig.key === "name" &&
+                                sortConfig.direction === "desc"
+                                  ? styles.activeArrow
+                                  : ""
+                              }
+                            >
+                              ▼
+                            </p>
+                          </div>
+                        </div>
+                      </th>
+                      <th>
+                        <div
+                          onClick={() => requestSort("lname")}
+                          className={styles.thSort}
+                        >
+                          นามสกุล{" "}
+                          <div className={styles.thArrow}>
+                            <p
+                              className={
+                                sortConfig.key === "lname" &&
+                                sortConfig.direction === "asc"
+                                  ? styles.activeArrow
+                                  : ""
+                              }
+                            >
+                              ▲
+                            </p>
+                            <p
+                              className={
+                                sortConfig.key === "lname" &&
+                                sortConfig.direction === "desc"
+                                  ? styles.activeArrow
+                                  : ""
+                              }
+                            >
+                              ▼
+                            </p>
+                          </div>
+                        </div>
+                      </th>
+                      <th>
+                        <div
+                          onClick={() => requestSort("curr_name")}
+                          className={styles.thSort}
+                        >
+                          สาขา{" "}
+                          <div className={styles.thArrow}>
+                            <p
+                              className={
+                                sortConfig.key === "curr_name" &&
+                                sortConfig.direction === "asc"
+                                  ? styles.activeArrow
+                                  : ""
+                              }
+                            >
+                              ▲
+                            </p>
+                            <p
+                              className={
+                                sortConfig.key === "curr_name" &&
+                                sortConfig.direction === "desc"
+                                  ? styles.activeArrow
+                                  : ""
+                              }
+                            >
+                              ▼
+                            </p>
+                          </div>
+                        </div>
+                      </th>
+                      <th>
+                        <div
+                          onClick={() => requestSort("updated_at")}
+                          className={styles.thSort}
+                        >
+                          วันที่เข้าชม{" "}
+                          <div className={styles.thArrow}>
+                            <p
+                              className={
+                                sortConfig.key === "updated_at" &&
+                                sortConfig.direction === "asc"
+                                  ? styles.activeArrow
+                                  : ""
+                              }
+                            >
+                              ▲
+                            </p>
+                            <p
+                              className={
+                                sortConfig.key === "updated_at" &&
+                                sortConfig.direction === "desc"
+                                  ? styles.activeArrow
+                                  : ""
+                              }
+                            >
+                              ▼
+                            </p>
+                          </div>
+                        </div>
+                      </th>
                       <th>สถานะการศึกษา</th>
                       <th>ข้อมูลเพิ่มเติม</th>
                     </tr>
