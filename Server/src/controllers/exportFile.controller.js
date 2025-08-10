@@ -56,13 +56,19 @@ const dateTimetoExport = () => {
 const ExportFileController = {
   exportStudentPDF: async (req, res) => {
     try {
-      const { studentNos } = req.body;
+      const { studentNos, agency } = req.body;
       if (
         !studentNos ||
         !Array.isArray(studentNos) ||
         studentNos.length === 0
       ) {
         return res.status(400).json({ message: "No studentNos provided" });
+      }
+      if (
+        !agency ||
+        agency.length === 0
+      ) {
+        return res.status(400).json({ message: "No agency" });
       }
 
       let students;
@@ -109,24 +115,15 @@ const ExportFileController = {
       // Document content array
       const content = [];
 
-      // --- Header ---
       content.push({
-        image: "./images/logo_header.png",
-        width: 35,
-        height: 70,
-        alignment: "center",
-        margin: [0, 0, 0, 10],
-      });
-
-      content.push({
-        text: "มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน วิทยาเขตนครราชสีมา",
+        text: `รายงานสรุปผลข้อมูลนักศึกษาของ ${agency}`,
         style: "header1",
         alignment: "center",
         margin: [0, 0, 0, 0],
       });
 
       content.push({
-        text: "รายงานสรุปผลข้อมูลนักศึกษา",
+        text: "มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน วิทยาเขตนครราชสีมา",
         style: "header2",
         alignment: "center",
         margin: [0, 0, 0, 15],
@@ -141,20 +138,13 @@ const ExportFileController = {
             for (const [year, sems] of Object.entries(years)) {
               for (const [sem, std_years] of Object.entries(sems)) {
                 for (const [std_year, statuss] of Object.entries(std_years)) {
-                  for (const [status, studentsInGroup] of Object.entries(
-                    statuss
-                  )) {
+                  for (const [status, studentsInGroup] of Object.entries(statuss)) {
                     const sectionTitle1 = `คณะ: ${fac} | สาขา: ${dept}`;
                     const sectionTitle2 = `วุฒิการศึกษา: ${degree} | ปีการศึกษา: ${year} | ภาคเรียนที่: ${sem} | ชั้นปี: ${std_year} | สถานะ: ${status}`;
-
-                    // เตรียมข้อมูลตาราง
                     const rows = studentsInGroup.map((s, i) => [
                       { text: (i + 1).toString(), alignment: "center" },
                       { text: s.student_no ?? "-", alignment: "center" },
-                      {
-                        text: `${s.prefix_name ?? ""}${s.name ?? ""} ${s.lname ?? ""}`.trim(),
-                        alignment: "left",
-                      },
+                      { text: `${s.prefix_name ?? ""}${s.name ?? ""} ${s.lname ?? ""}`.trim(), alignment: "left" },
                       { text: s.gpa ?? "-", alignment: "center" },
                       { text: s.honors ?? "-", alignment: "left" },
                       { text: s.thesis_topic_th ?? "-", alignment: "left" },
@@ -163,19 +153,6 @@ const ExportFileController = {
                     // วนแบ่ง rows ทีละ maxRowsPerPage
                     for (let i = 0; i < rows.length; i += maxRowsPerPage) {
                       const rowsForPage = rows.slice(i, i + maxRowsPerPage);
-
-                      // Section titles
-                      content.push({
-                        text: sectionTitle1,
-                        style: "sectionTitle",
-                        margin: [0, 10, 0, 0],
-                      });
-
-                      content.push({
-                        text: sectionTitle2,
-                        style: "sectionTitle",
-                        margin: [0, 0, 0, 10],
-                      });
 
                       // Table headers
                       const tableHeaders = [
@@ -212,41 +189,68 @@ const ExportFileController = {
                       ];
 
                       // Create table
-                      content.push({
-                        table: {
-                          headerRows: 1,
-                          widths: [30, 85, 100, 35, 80, "*"], // '*' for remaining width
-                          body: [tableHeaders, ...rowsForPage],
-                        },
-                        layout: {
-                          hLineWidth: function (i, node) {
-                            return 1.5;
-                          },
-                          vLineWidth: function (i, node) {
-                            return 1.5;
-                          },
-                          hLineColor: function (i, node) {
-                            return "#000";
-                          },
-                          vLineColor: function (i, node) {
-                            return "#000";
-                          },
-                          paddingLeft: function (i, node) {
-                            return 2;
-                          },
-                          paddingRight: function (i, node) {
-                            return 2;
-                          },
-                          paddingTop: function (i, node) {
-                            return 2;
-                          },
-                          paddingBottom: function (i, node) {
-                            return 2;
-                          },
-                        },
-                        style: "tableContent",
-                        margin: [0, 0, 0, 10],
-                      });
+                      if (rows.length <= maxRowsPerPage) {
+                        content.push({
+                          unbreakable: true,
+                          stack: [
+                            { text: sectionTitle1, style: "sectionTitle", margin: [0, 10, 0, 0] },
+                            { text: sectionTitle2, style: "sectionTitle", margin: [0, 0, 0, 10] },
+                            {
+                              table: {
+                                headerRows: 1,
+                                widths: [30, 85, 115, 25, 80, "*"],
+                                body: [tableHeaders, ...rows],
+                              },
+                              layout: {
+                                dontBreakRows: true,
+                                hLineWidth: (i, node) => 1.5,
+                                vLineWidth: (i, node) => 1.5,
+                                hLineColor: (i, node) => "#000",
+                                vLineColor: (i, node) => "#000",
+                                paddingLeft: (i, node) => 2,
+                                paddingRight: (i, node) => 2,
+                                paddingTop: (i, node) => 2,
+                                paddingBottom: (i, node) => 2,
+                              },
+                              style: "tableContent",
+                              margin: [0, 0, 0, 10],
+                            },
+                          ],
+                        });
+                      } else {
+                        // แบ่งทีละ maxRowsPerPage
+                        for (let i = 0; i < rows.length; i += maxRowsPerPage) {
+                          const rowsForPage = rows.slice(i, i + maxRowsPerPage);
+                          content.push({
+                            unbreakable: true, // ถ้าอยากให้กลุ่มย่อยๆ ไม่โดนตัด ลองใส่ unbreakable true ด้วย
+                            stack: [
+                              { text: sectionTitle1, style: "sectionTitle", margin: [0, 10, 0, 0] },
+                              { text: sectionTitle2, style: "sectionTitle", margin: [0, 0, 0, 10] },
+                              {
+                                table: {
+                                  headerRows: 1,
+                                  widths: [30, 85, 115, 25, 80, "*"],
+                                  body: [tableHeaders, ...rowsForPage],
+                                },
+                                layout: {
+                                  dontBreakRows: true,
+                                  hLineWidth: (i, node) => 1.5,
+                                  vLineWidth: (i, node) => 1.5,
+                                  hLineColor: (i, node) => "#000",
+                                  vLineColor: (i, node) => "#000",
+                                  paddingLeft: (i, node) => 2,
+                                  paddingRight: (i, node) => 2,
+                                  paddingTop: (i, node) => 2,
+                                  paddingBottom: (i, node) => 2,
+                                },
+                                style: "tableContent",
+                                margin: [0, 0, 0, 10],
+                                },
+                              ],
+                            });
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -254,8 +258,8 @@ const ExportFileController = {
             }
           }
         }
-      }
-
+      
+    
       // Document definition
       const docDefinition = {
         content: content,
@@ -270,7 +274,7 @@ const ExportFileController = {
             font: "Sarabun",
           },
           header2: {
-            fontSize: 18,
+            fontSize: 16,
             bold: true,
             font: "Sarabun",
           },

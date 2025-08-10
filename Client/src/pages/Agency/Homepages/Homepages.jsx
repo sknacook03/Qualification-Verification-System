@@ -193,7 +193,7 @@ function Homepages() {
     try {
       const response = await axios.post(
         API_BASE_URL + APIEndpoints.exportFile.exportFilePDF,
-        { studentNos: selectedIds },
+        { studentNos: selectedIds, agency: agency.agency_name },
         { responseType: "blob", withCredentials: true }
       );
       const url = window.URL.createObjectURL(new Blob([response.data]));
