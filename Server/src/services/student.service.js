@@ -58,6 +58,14 @@ const StudentService = {
       };
     }
   },
+  getStudentCount: async () => {
+    try {
+      return await prisma.student.count();
+    } catch (error) {
+      console.error("Error counting students:", error);
+      throw { status: 500, message: "Failed to count students" };
+    }
+  },
   getStudentByFilters: async (filterParams) => {
     try {
       const whereCondition = {};

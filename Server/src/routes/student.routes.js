@@ -24,6 +24,7 @@ const upload = multer({
   }
 });
 StudentRouter.get("/:id", authMiddleware,StudentController.getStudentByIdController);
+StudentRouter.get("/count", authMiddleware,StudentController.getStudentCount);
 StudentRouter.post("/search", authMiddleware,StudentController.searchStudents);
 StudentRouter.post( "/upload-excel",authMiddleware,upload.single("file"),handleUploadError,StudentController.uploadExcel);
 export default StudentRouter;

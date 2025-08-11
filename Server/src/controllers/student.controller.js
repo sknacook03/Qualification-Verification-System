@@ -3,6 +3,22 @@ import xlsx from "xlsx";
 import fs from "fs/promises";
 
 const StudentController = {
+  getStudentCount :async (req, res) => {
+    try {
+      const total = await StudentService.getStudentCount();
+  
+      return res.status(200).json({
+        success: true,
+        total
+      });
+    } catch (error) {
+      console.error("Error counting students:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Failed to get student count"
+      });
+    }
+  },
   uploadExcel: async (req, res) => {
     let filePath;
     try {
