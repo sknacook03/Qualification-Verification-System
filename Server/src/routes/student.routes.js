@@ -23,8 +23,8 @@ const upload = multer({
     cb(null, true);
   }
 });
-StudentRouter.get("/:id", authMiddleware,StudentController.getStudentByIdController);
-StudentRouter.get("/count", authMiddleware,StudentController.getStudentCount);
+StudentRouter.get("/count", authMiddleware,StudentController.getStudentCountController);
 StudentRouter.post("/search", authMiddleware,StudentController.searchStudents);
 StudentRouter.post( "/upload-excel",authMiddleware,upload.single("file"),handleUploadError,StudentController.uploadExcel);
+StudentRouter.get("/:id", authMiddleware,StudentController.getStudentByIdController);
 export default StudentRouter;

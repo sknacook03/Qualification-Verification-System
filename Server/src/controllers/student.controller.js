@@ -3,22 +3,6 @@ import xlsx from "xlsx";
 import fs from "fs/promises";
 
 const StudentController = {
-  getStudentCount :async (req, res) => {
-    try {
-      const total = await StudentService.getStudentCount();
-  
-      return res.status(200).json({
-        success: true,
-        total
-      });
-    } catch (error) {
-      console.error("Error counting students:", error);
-      return res.status(500).json({
-        success: false,
-        message: "Failed to get student count"
-      });
-    }
-  },
   uploadExcel: async (req, res) => {
     let filePath;
     try {
@@ -128,6 +112,39 @@ const StudentController = {
       res
         .status(error.status || 500)
         .json({ error: error.message || "Failed to get student" });
+    }
+  },
+  getStudentCountController :async (req, res) => {
+    try {
+      const total = await StudentService.getStudentCount();
+    
+      return res.status(200).json({
+        success: true,
+        total: total
+      });
+    } catch (err) {
+      console.error("Error counting students:", err);
+    
+      if (err.code && err.clientVersion) {
+        return res.status(500).json({
+          success: false,
+          message: "Database error occurred while counting students",
+          errorCode: err.code
+        });
+      }
+    
+      if (err.name === "ValidationError") {
+        return res.status(400).json({
+          success: false,
+          message: err.message || "Invalid data provided"
+        });
+      }
+    
+      const code = err.status || 500;
+      return res.status(code).json({
+        success: false,
+        message: err.message || "Failed to get student count",
+      });
     }
   },
   searchStudents: async (req, res) => {
