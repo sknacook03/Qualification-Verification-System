@@ -14,6 +14,7 @@ PageViewRouter.get("/all-departments", PageviewController.getAllDepartmentsContr
 PageViewRouter.get("/all-agencies", PageviewController.getAllAgenciesController)
 PageViewRouter.get("/top-agencies-by-faculty", PageviewController.getTopAgenciesByFacultyController)
 PageViewRouter.get("/top-agencies-by-department", PageviewController.getTopAgenciesByDepartmentController)
+PageViewRouter.get("/top-agencies-by-type", PageviewController.getTopAgencyTypeViewsController)
 PageViewRouter.get("/departments-by-faculty", PageviewController.getDepartmentsByFacultyController)
 PageViewRouter.get("/student-views-by-agency/:agency_id", PageviewController.countStudentViewsByAgencyController)
 PageViewRouter.get("/trend", PageviewController.getStatisticsOverTimeController)

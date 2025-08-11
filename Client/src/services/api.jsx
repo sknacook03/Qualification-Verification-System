@@ -67,6 +67,7 @@ export const APIEndpoints = {
       allDepartments: "/pageview/all-departments",
       topAgenciesByFaculty: "/pageview/top-agencies-by-faculty",
       topAgenciesByDepartment: "/pageview/top-agencies-by-department",
+      topAgenciesByType: "/pageview/top-agencies-by-type",
       departmentsByFaculty: "/pageview/departments-by-faculty",
       countAgencyViews: (agencyId) => `/pageview/student-views-by-agency/${agencyId}`,
     },

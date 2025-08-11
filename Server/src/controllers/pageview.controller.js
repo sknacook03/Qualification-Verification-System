@@ -120,6 +120,26 @@ const PageviewController = {
       res.status(500).json({ error: "Internal Server Error" });
     }
   },
+  getTopAgencyTypeViewsController: async (req, res) => {
+    try {
+      const { startDate, endDate } = req.query;
+      const result = await PageviewService.getTopTypeAgencyViews(
+        startDate,
+        endDate
+      );
+
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        res
+          .status(500)
+          .json({ error: result.error || "Failed to fetch top agencies" });
+      }
+    } catch (error) {
+      console.error("Error in getTopAgencyViewsController:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
   getStatisticsOverTimeController: async (req, res) => {
     try {
       const { startDate, endDate } = req.query;
