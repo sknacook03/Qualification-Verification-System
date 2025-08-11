@@ -6,6 +6,7 @@ import LayoutAllPage from "../../../components/LayoutAllPage/LayoutAllPage";
 import PopupStudent from "../../../components/PopupStudent/PopupStudent";
 import Loading from "../../../components/Loading/Loading";
 import Pagination from "../../../components/Pagination/Pagination";
+import ClipLoader from "react-spinners/ClipLoader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfo } from "@fortawesome/free-solid-svg-icons";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,6 +24,7 @@ function Homepages() {
   const [student, setStudent] = useState(null);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadingButton, setLoadingButton] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [selectMode, setSelectMode] = useState(false);
@@ -186,6 +188,7 @@ function Homepages() {
   };
 
   const handleExportPDF = async () => {
+    if (!loadingButton) return;
     if (selectedIds.length === 0) {
       toast.warning("กรุณาเลือกข้อมูลอย่างน้อย 1 รายการ");
       return;
@@ -208,10 +211,13 @@ function Homepages() {
       setSelectedIds([]);
     } catch (err) {
       toast.error("Export PDF ล้มเหลว");
+    } finally {
+      setLoadingButton(true);
     }
   };
 
   const handleExportExcel = async () => {
+    if (!loadingButton) return;
     if (selectedIds.length === 0) {
       toast.warning("กรุณาเลือกข้อมูลอย่างน้อย 1 รายการ");
       return;
@@ -237,6 +243,8 @@ function Homepages() {
       setSelectedIds([]);
     } catch (err) {
       toast.error("Export Excel ล้มเหลว");
+    } finally {
+      setLoadingButton(true);
     }
   };
 
@@ -273,16 +281,28 @@ function Homepages() {
                   <button
                     className={styles.exportButton}
                     onClick={handleExportPDF}
-                    disabled={selectedIds.length === 0}
+                    disabled={!loadingButton || selectedIds.length === 0}
+                    type="button"
+                    aria-busy={!loadingButton}
                   >
-                    Export PDF
+                    {loadingButton ? (
+                       "Export PDF"
+                    ) : (
+                     <ClipLoader size={20} color="#fff" />
+                    )}
                   </button>
                   <button
                     className={styles.exportButton}
                     onClick={handleExportExcel}
-                    disabled={selectedIds.length === 0}
+                    disabled={!loadingButton || selectedIds.length === 0}
+                    type="button"
+                    aria-busy={!loadingButton}
                   >
-                    Export Excel
+                    {loadingButton ? (
+                       "Export Excel"
+                    ) : (
+                     <ClipLoader size={20} color="#fff" />
+                    )}
                   </button>
                   <button
                     className={styles.cancelButton}
