@@ -1,0 +1,185 @@
+.page {
+    padding: clamp(16px, 2vw, 24px);
+    color: #1a1a1a;                 /* ตัวหนังสือหลัก = ดำ */
+    background: #fafafa;            /* พื้นหลังเพจ = ขาวนวล */
+    min-height: 70vh;
+    border-radius: 24px;
+    
+  }
+  
+  .section {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .headRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .title {
+    font-size: clamp(20px, 2.5vw, 28px);
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    color: #111111;                 /* ดำเข้มขึ้นในหัวเรื่อง */
+  }
+  
+  .badge {
+    font-size: 14px;
+    color: #111111;                 /* ตัวอักษรดำ */
+    background: linear-gradient(180deg, rgba(255,113,0,0.12), rgba(255,113,0,0.06));
+    border: 1px solid rgba(255,113,0,0.45);
+    padding: 8px 12px;
+    border-radius: 999px;
+  }
+  
+  /* ===== Grid ===== */
+  .grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr 0.9fr;
+    gap: clamp(14px, 2vw, 18px);
+  }
+  
+  @media (max-width: 1350px) {
+    .grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  /* ===== Card (ทั่วไป) ===== */
+  .card {
+    background: #ffffff;            /* การ์ดขาว */
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  }
+  
+  .card:hover {
+    border-color: rgba(255,113,0,0.45);                 /* ขอบส้มเมื่อโฮเวอร์ */
+    box-shadow: 0 10px 26px rgba(255,113,0,0.16);
+  }
+  
+  .cardOfficer {
+    padding: 18px;
+  }
+  
+  .cardHeader {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  
+  /* วงกลมไอคอนส้ม */
+  .iconCircle {
+    display: inline-grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: radial-gradient(circle at 30% 20%, rgba(255,113,0,0.45), rgba(255,113,0,0.18));
+    border: 1px solid rgba(255,113,0,0.45);
+    font-size: 22px;
+    color: #111111;                 /* ไอคอนอีโมจิอ่านง่ายบนพื้นส้มอ่อน */
+  }
+  
+  .cardTitle {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111111;
+  }
+  
+  .cardBody {
+    display: grid;
+    gap: 10px;
+  }
+  
+  /* แถวข้อมูล officer */
+  .infoRow {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 12px;
+    background: linear-gradient(90deg, rgba(255,113,0,0.06), rgba(255,113,0,0.02));
+    border: 1px solid rgba(255,113,0,0.20);
+    border-radius: 12px;
+  }
+  
+  @media (max-width: 480px) {
+    .infoRow {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+  }
+  
+  .infoLabel {
+    color: #404040;                 /* เทาเข้ม */
+    font-size: 14px;
+    font-weight: 600;
+  }
+  
+  .infoValue {
+    color: #111111;                 /* ดำเข้ม */
+    font-weight: 600;
+    word-break: break-word;
+  }
+  
+  .statCard {
+    padding: 18px;
+    background:
+      radial-gradient(220px 140px at 85% -20%, rgba(255,113,0,0.10), transparent 60%),
+      #ffffff;
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  }
+  
+  .statCard:hover {
+    border-color: rgba(255,113,0,0.45);
+    box-shadow: 0 10px 26px rgba(255,113,0,0.16);
+  }
+  
+  .statTop {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #5a5a5a;                 /* เทากลาง */
+    font-size: 14px;
+    font-weight: 600;
+  }
+  
+  .statIcon {
+    display: inline-grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(255,113,0,0.22), rgba(255,113,0,0.08));
+    border: 1px solid rgba(255,113,0,0.45);
+    font-size: 18px;
+    color: #111111;
+  }
+  
+  .statLabel {
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+  
+  .statValue {
+    font-size: clamp(28px, 5vw, 40px);
+    font-weight: 900;
+    letter-spacing: 0.4px;
+    color: #111111;                 /* ตัวเลขดำชัด */
+    line-height: 1.1;
+  }
