@@ -138,7 +138,7 @@ function AgencyApproveTable({
                       title="ดูหนังสือรับรอง"
                       onClick={() =>
                         viewImage(
-                          `http://localhost:3000/${normalizeImagePath(
+                          `${API_BASE_URL}/${normalizeImagePath(
                             agencyItem.certificate
                           )}`
                         )
