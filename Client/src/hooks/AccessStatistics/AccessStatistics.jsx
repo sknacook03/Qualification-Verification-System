@@ -4,7 +4,10 @@ import Loading from "../../components/Loading/Loading.jsx";
 import axios from "axios";
 import { APIEndpoints, API_BASE_URL } from "../../services/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import {
+  faHandsAmericanSignLanguageInterpreting,
+  faMagnifyingGlass,
+} from "@fortawesome/free-solid-svg-icons";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -20,12 +23,10 @@ import {
   ArcElement,
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import { useRef } from "react";
 import LineChart from "./LineChart.jsx";
 import BarChart from "./BarChart.jsx";
 import PieChart from "./PieChart.jsx";
 import html2canvas from "html2canvas";
-import { use } from "react";
 import Popup from "../../components/Popup/Popup.jsx";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
@@ -78,6 +79,7 @@ const AccessStatistics = ({ officer, agency }) => {
   const [selectedFacultyCodeName, setSelectedFacultyCodeName] = useState("");
   const [selectedFacultyDisplayName, setSelectedFacultyDisplayName] =
     useState("");
+  const [selectedTopType, setSelectedTopType] = useState(false);
   const [trend, setTrend] = useState([]);
   const [loading, setLoading] = useState(true);
   const [popUpExport, setPopUpExport] = useState(false);
@@ -88,6 +90,7 @@ const AccessStatistics = ({ officer, agency }) => {
   const [exportDepartment, setExportDepartment] = useState("");
   const [exportAgencyId, setExportAgencyId] = useState("");
 
+  const [exportTopType, setExportTopType] = useState(false);
   const [exportPDF, setExportPDF] = useState(false);
   const [exportExcel, setExportExcel] = useState(false);
   const [exportBar, setExportBar] = useState(false);
@@ -244,11 +247,20 @@ const AccessStatistics = ({ officer, agency }) => {
   }, [selectedView, startDate, endDate, selectedAgencyId]);
 
   useEffect(() => {
+    if (selectedTopType) {
+      setSelectedFacultyDisplayName("");
+      setSelectedDepartment("");
+    }
+  }, [selectedTopType]);
+
+  useEffect(() => {
     const fetchTopAgencies = async () => {
       try {
         let url = "";
         const query = `startDate=${startDate}&endDate=${endDate}`;
-        if (selectedDepartment) {
+        if (selectedTopType) {
+          url = `${API_BASE_URL}${APIEndpoints.pageview.topAgenciesByType}?${query}`;
+        } else if (selectedDepartment) {
           url = `${API_BASE_URL}${
             APIEndpoints.pageview.topAgenciesByDepartment
           }?department=${encodeURIComponent(
@@ -277,33 +289,28 @@ const AccessStatistics = ({ officer, agency }) => {
     };
 
     fetchTopAgencies();
-  }, [selectedFacultyDisplayName, selectedDepartment]);
+  }, [
+    selectedFacultyDisplayName,
+    selectedDepartment,
+    selectedTopType,
+    startDate,
+    endDate,
+  ]);
 
   const handleApplyDateFilter = async () => {
     try {
       setLoading(true);
       const query = `startDate=${startDate}&endDate=${endDate}`;
 
-      const [statisticsRes, agenciesRes, facultiesRes, trendRes] =
-        await Promise.all([
-          axios.get(
-            `${API_BASE_URL}${APIEndpoints.pageview.statistics}?${query}`
-          ),
-          axios.get(
-            `${API_BASE_URL}${APIEndpoints.pageview.topAgency}?${query}`
-          ),
-          axios.get(
-            `${API_BASE_URL}${APIEndpoints.pageview.topFaculty}?${query}`
-          ),
-          axios.get(`${API_BASE_URL}${APIEndpoints.pageview.trend}?${query}`),
-        ]);
+      const [statisticsRes, trendRes] = await Promise.all([
+        axios.get(
+          `${API_BASE_URL}${APIEndpoints.pageview.statistics}?${query}`
+        ),
+        axios.get(`${API_BASE_URL}${APIEndpoints.pageview.trend}?${query}`),
+      ]);
 
       setTotalViews(statisticsRes.data.totalViews);
       setUniqueStudents(statisticsRes.data.uniqueStudents);
-      setTopAgencies(Array.isArray(agenciesRes.data) ? agenciesRes.data : []);
-      setTopFaculties(
-        Array.isArray(facultiesRes.data) ? facultiesRes.data : []
-      );
       setTrend(Array.isArray(trendRes.data) ? trendRes.data : []);
     } catch (error) {
       console.error("Error applying date filter:", error);
@@ -335,6 +342,7 @@ const AccessStatistics = ({ officer, agency }) => {
     setExportFaculty("");
     setExportDepartment("");
     setExportAgencyId("");
+    setSelectedTopType(false);
     setExportPDF(false);
     setExportExcel(false);
     setExportBar(false);
@@ -367,7 +375,7 @@ const AccessStatistics = ({ officer, agency }) => {
 
       let exportTables = [];
 
-      if (!exportFaculty && !exportDepartment) {
+      if (!exportFaculty && !exportDepartment && !exportTopType) {
         const res = await axios.get(
           `${API_BASE_URL}${APIEndpoints.pageview.topAgency}?${query}`
         );
@@ -416,6 +424,25 @@ const AccessStatistics = ({ officer, agency }) => {
         });
       }
 
+      if (exportTopType) {
+        const res = await axios.get(
+          `${API_BASE_URL}${APIEndpoints.pageview.topAgenciesByType}?${query}`
+        );
+        const list = Array.isArray(res.data)
+          ? res.data
+          : Array.isArray(res.data?.data)
+          ? res.data.data
+          : [];
+        exportTables.push({
+          title: `5 อันดับประเภทหน่วยงานที่มีการตรวจสอบคุณวุฒิมากที่สุด`,
+          rows: list.map((item, index) => [
+            index + 1,
+            item.type_name,
+            item.count,
+          ]),
+        });
+      }
+
       if (exportTopFaculty) {
         const res = await axios.get(
           `${API_BASE_URL}${APIEndpoints.pageview.topFaculty}?${query}` +
@@ -454,10 +481,10 @@ const AccessStatistics = ({ officer, agency }) => {
 
       if (exportExcel) {
         const wb = XLSX.utils.book_new();
-        const sheetCount = {}; 
+        const sheetCount = {};
 
         exportTables.forEach((table) => {
-          let shortSheetName = "สถิติ"; 
+          let shortSheetName = "สถิติ";
 
           if (table.title.includes("หน่วยงาน")) {
             shortSheetName = "5 อันดับหน่วยงานที่ตรวจสอบ";
@@ -465,9 +492,9 @@ const AccessStatistics = ({ officer, agency }) => {
             shortSheetName = "5 อันดับคณะที่มีการตรวจสอบ";
           } else if (table.title.includes("สาขาที่")) {
             shortSheetName = "5 อันดับสาขาที่มีการตรวจสอบ";
+          } else if (table.title.includes("ประเภท")) {
+            shortSheetName = "5 อันดับประเภทหน่วยงานที่มีการตรวจสอบ";
           }
-
-
           if (!sheetCount[shortSheetName]) sheetCount[shortSheetName] = 1;
           else sheetCount[shortSheetName] += 1;
 
@@ -479,7 +506,7 @@ const AccessStatistics = ({ officer, agency }) => {
           const sheetData = [
             [table.title],
             [],
-            ["ลำดับ", "ชื่อ", "จำนวนการเข้าดู"],
+            ["ลำดับ", "ชื่อ", "จำนวนการตรวจสอบคุณวุฒิ"],
             ...table.rows.map((r) => [r[0], r[1], r[2]]),
           ];
 
@@ -549,7 +576,7 @@ const AccessStatistics = ({ officer, agency }) => {
                   [
                     { text: "ลำดับ", style: "tableHeader" },
                     { text: "ชื่อ", style: "tableHeader" },
-                    { text: "จำนวนการเข้าดู", style: "tableHeader" },
+                    { text: "จำนวนการตรวจสอบคุณวุฒิ", style: "tableHeader" },
                   ],
                   ...section.rows.map((r) => [
                     {
@@ -714,16 +741,18 @@ const AccessStatistics = ({ officer, agency }) => {
   }, [popUpExport]);
 
   const barChartData = useMemo(() => {
+    const nameOf = (item) =>
+      selectedTopType ? item?.type_name ?? "" : item?.agency_name ?? "";
+
     return {
-      labels: topAgencies.map((item) =>
-        item.agency_name.length > 12
-          ? item.agency_name.substring(0, 12) + "..."
-          : item.agency_name
-      ),
+      labels: topAgencies.map((item) => {
+        const name = nameOf(item);
+        return name.length > 12 ? name.slice(0, 12) + "..." : name;
+      }),
       datasets: [
         {
-          label: "จำนวนการเข้าดู",
-          data: topAgencies.map((item) => item.count),
+          label: "จำนวนการตรวจสอบคุณวุฒิ",
+          data: topAgencies.map((item) => Number(item?.count ?? 0)),
           backgroundColor: backgroundColor,
           borderColor: borderColor,
           borderWidth: 1,
@@ -731,16 +760,22 @@ const AccessStatistics = ({ officer, agency }) => {
         },
       ],
     };
-  }, [topAgencies, backgroundColor, borderColor]);
+  }, [topAgencies, backgroundColor, borderColor, selectedTopType]);
 
   const barChartOptions = useMemo(() => {
+    const nameOf = (item) =>
+      selectedTopType ? item?.type_name ?? "" : item?.agency_name ?? "";
+
     const getBarChartTitle = () => {
+      if (selectedTopType)
+        return "Top 5 ประเภทหน่วยงานที่มีการตรวจสอบคุณวุฒิมากที่สุด";
       if (selectedDepartment)
-        return `Top 5 หน่วยงานที่มีการเข้าดูมากที่สุด (${selectedDepartment})`;
+        return `Top 5 หน่วยงานที่มีการตรวจสอบคุณวุฒิมากที่สุด (${selectedDepartment})`;
       if (selectedFacultyDisplayName)
-        return `Top 5 หน่วยงานที่มีการเข้าดูมากที่สุด (${selectedFacultyDisplayName})`;
-      return "Top 5 หน่วยงานที่มีการเข้าดูมากที่สุด (ทั้งหมด)";
+        return `Top 5 หน่วยงานที่มีการตรวจสอบคุณวุฒิมากที่สุด (${selectedFacultyDisplayName})`;
+      return "Top 5 หน่วยงานที่มีการตรวจสอบคุณวุฒิมากที่สุด (ทั้งหมด)";
     };
+
     return {
       responsive: true,
       plugins: {
@@ -750,8 +785,8 @@ const AccessStatistics = ({ officer, agency }) => {
           callbacks: {
             label: function (context) {
               const index = context.dataIndex;
+              const fullLabel = nameOf(topAgencies[index] || {});
               const value = context.dataset.data[index];
-              const fullLabel = topAgencies[index]?.agency_name;
               return `${fullLabel}: ${value}`;
             },
           },
@@ -762,15 +797,17 @@ const AccessStatistics = ({ officer, agency }) => {
           color: "#333",
           padding: { top: 10, bottom: 20 },
         },
-        datalabels: {
-          display: exportBar,
-        },
+        datalabels: { display: exportBar },
       },
-      scales: {
-        y: { beginAtZero: true },
-      },
+      scales: { y: { beginAtZero: true } },
     };
-  }, [selectedDepartment, selectedFacultyDisplayName, topAgencies, exportBar]);
+  }, [
+    selectedTopType,
+    selectedDepartment,
+    selectedFacultyDisplayName,
+    topAgencies,
+    exportBar,
+  ]);
 
   const pieChartData = useMemo(() => {
     const fullLabels =
@@ -784,7 +821,7 @@ const AccessStatistics = ({ officer, agency }) => {
       labels: shortenedLabels,
       datasets: [
         {
-          label: "จำนวนการเข้าดู",
+          label: "จำนวนการตรวจสอบคุณวุฒิ",
           data:
             selectedView === "faculty"
               ? topFaculties.map((item) => item.count)
@@ -819,7 +856,7 @@ const AccessStatistics = ({ officer, agency }) => {
             label: function (context) {
               const index = context.dataIndex;
               const value = context.dataset.data[index];
-              const fullLabel = fullLabels[index];
+              const fullLabel = fullLabels?.[index] ?? "";
               return `${fullLabel}: ${value}`;
             },
           },
@@ -828,8 +865,8 @@ const AccessStatistics = ({ officer, agency }) => {
           display: true,
           text:
             selectedView === "faculty"
-              ? `Top 5 คณะที่มีการเข้าดูมากที่สุด (${selectedAgencyName})`
-              : `Top 5 สาขาที่มีการเข้าดูมากที่สุด (${selectedAgencyName})`,
+              ? `Top 5 คณะที่มีการตรวจสอบคุณวุฒิมากที่สุด (${selectedAgencyName})`
+              : `Top 5 สาขาที่มีการตรวจสอบคุณวุฒิมากที่สุด (${selectedAgencyName})`,
           color: "#333",
           padding: { top: 10, bottom: 6 },
         },
@@ -861,7 +898,7 @@ const AccessStatistics = ({ officer, agency }) => {
       labels: trend.map((item) => item.date.slice(0, 10)),
       datasets: [
         {
-          label: "จำนวนการเข้าดูทั้งหมด",
+          label: "จำนวนการตรวจสอบคุณวุฒิทั้งหมด",
           data: trend.map((item) => item.totalViews),
           borderColor: "rgba(54, 162, 235, 1)",
           backgroundColor: "rgba(54, 162, 235, 0.2)",
@@ -869,7 +906,7 @@ const AccessStatistics = ({ officer, agency }) => {
           fill: true,
         },
         {
-          label: "นักศึกษาที่เข้าดูไม่ซ้ำ",
+          label: "นักศึกษาที่ตรวจสอบคุณวุฒิไม่ซ้ำ",
           data: trend.map((item) => item.uniqueStudents),
           borderColor: "rgba(255, 99, 132, 1)",
           backgroundColor: "rgba(255, 99, 132, 0.2)",
@@ -886,7 +923,7 @@ const AccessStatistics = ({ officer, agency }) => {
       plugins: {
         title: {
           display: true,
-          text: "แนวโน้มการเข้าดูรายวัน",
+          text: "แนวโน้มการตรวจสอบคุณวุฒิรายวัน",
           color: "#333",
           padding: { top: 10, bottom: 20 },
         },
@@ -940,6 +977,7 @@ const AccessStatistics = ({ officer, agency }) => {
             <button
               className={styles.resetButton}
               onClick={() => {
+                setSelectedTopType(false);
                 setSelectedDepartment("");
                 setSelectedView("faculty");
                 setSelectedAgencyId("");
@@ -996,6 +1034,7 @@ const AccessStatistics = ({ officer, agency }) => {
         <div className={styles.filterContainer}>
           <select
             value={selectedFacultyDisplayName}
+            disabled={selectedTopType}
             onChange={(e) => {
               const selectedDisplay = e.target.value;
               const actualCode =
@@ -1017,7 +1056,7 @@ const AccessStatistics = ({ officer, agency }) => {
             <select
               value={selectedDepartment}
               onChange={(e) => setSelectedDepartment(e.target.value)}
-              disabled={!selectedFacultyDisplayName}
+              disabled={!selectedFacultyDisplayName || selectedTopType}
             >
               <option value="">-- เลือกสาขา --</option>
               {departmentsList.map((d) => (
@@ -1027,6 +1066,22 @@ const AccessStatistics = ({ officer, agency }) => {
               ))}
             </select>
           )}
+          <div className={styles.viewSelector}>
+            <label>
+              <input
+                type="checkbox"
+                name="viewSelector"
+                value="department"
+                checked={selectedTopType}
+                onChange={(e) => {
+                  setSelectedTopType(e.target.checked);
+                  setSelectedDepartment("");
+                  setSelectedFacultyDisplayName("");
+                }}
+              />
+              <span>เลือกตามประเภทหน่วยงาน</span>
+            </label>
+          </div>
         </div>
         <div className={styles.topAgencyView} id="barChartContainer">
           {loadingTopAgencies && <div className={styles.loadingBox}></div>}
@@ -1132,6 +1187,7 @@ const AccessStatistics = ({ officer, agency }) => {
                     <p>คณะ:</p>
                     <select
                       value={exportFaculty}
+                      disabled={selectedTopType}
                       onChange={(e) => {
                         const selected = e.target.value;
                         const code = displayNameToCodeNameMap[selected] || "";
@@ -1154,6 +1210,7 @@ const AccessStatistics = ({ officer, agency }) => {
                     <p>สาขา:</p>
                     <select
                       value={exportDepartment}
+                      disabled={selectedTopType}
                       onChange={(e) => {
                         const dept = e.target.value;
                         setExportDepartment(dept);
@@ -1168,7 +1225,36 @@ const AccessStatistics = ({ officer, agency }) => {
                       ))}
                     </select>
                   </label>
+                    <label>
+                      <input
+                        type="checkbox"
+                        name="viewSelector"
+                        value="department"
+                        checked={selectedTopType}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          setSelectedTopType(checked);
+                          setExportTopType(checked);
+                          setExportDepartment("");
+                          setExportFaculty("");
+                          setSelectedDepartment("");
+                          setSelectedFacultyDisplayName("");
+                        }}
+                      />
+                      <span>เลือกตามประเภทหน่วยงาน</span>
+                    </label>
                 </div>
+                <label className={styles.bottomLegendBar}>
+                  <input
+                    type="checkbox"
+                    className={styles.checkBox}
+                    checked={exportBar}
+                    disabled={!exportPDF}
+                    title={!exportPDF ? "กรุณเลือกไฟล์ PDF ก่อน" : ""}
+                    onChange={(e) => setExportBar(e.target.checked)}
+                  />{" "}
+                  <span>กราฟแท่ง</span>
+                </label>
               </fieldset>
 
               <fieldset>
@@ -1194,37 +1280,48 @@ const AccessStatistics = ({ officer, agency }) => {
                   </label>
                 </div>
                 <div className={styles.exportCheckbox}>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={exportTopFaculty}
-                      onChange={(e) => {
-                        const checked = e.target.checked;
-                        setExportTopFaculty(checked);
-                        if (checked) {
-                          setExportTopDepartment(false);
-                          setSelectedView("faculty");
-                        }
-                      }}
-                    />{" "}
-                    Top 5 คณะที่เข้าดูสูงสุด
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={exportTopDepartment}
-                      onChange={(e) => {
-                        const checked = e.target.checked;
-                        setExportTopDepartment(checked);
-                        if (checked) {
-                          setExportTopFaculty(false);
-                          setSelectedView("department");
-                        }
-                      }}
-                    />{" "}
-                    Top 5 สาขาที่เข้าดูสูงสุด
-                  </label>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={exportTopFaculty}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          setExportTopFaculty(checked);
+                          if (checked) {
+                            setExportTopDepartment(false);
+                            setSelectedView("faculty");
+                          }
+                        }}
+                      />{" "}
+                      Top 5 คณะที่เข้าดูสูงสุด
+                    </label>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={exportTopDepartment}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          setExportTopDepartment(checked);
+                          if (checked) {
+                            setExportTopFaculty(false);
+                            setSelectedView("department");
+                          }
+                        }}
+                      />{" "}
+                      Top 5 สาขาที่เข้าดูสูงสุด
+                    </label>
                 </div>
+                  <label className={styles.bottomLegendPie}>
+                    <input
+                      type="checkbox"
+                      className={styles.checkBox}
+                      checked={exportPie}
+                      disabled={!exportPDF}
+                      title={!exportPDF ? "กรุณเลือกไฟล์ PDF ก่อน" : ""}
+                      onChange={(e) => setExportPie(e.target.checked)}
+                    />{" "}
+                    <span>กราฟวงกลม</span>
+                  </label>
               </fieldset>
 
               <fieldset>
@@ -1245,26 +1342,6 @@ const AccessStatistics = ({ officer, agency }) => {
                       onChange={(e) => setExportExcel(e.target.checked)}
                     />{" "}
                     Excel
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={exportBar}
-                      disabled={!exportPDF}
-                      title={!exportPDF ? "กรุณเลือกไฟล์ PDF ก่อน" : ""}
-                      onChange={(e) => setExportBar(e.target.checked)}
-                    />{" "}
-                    กราฟแท่ง
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={exportPie}
-                      disabled={!exportPDF}
-                      title={!exportPDF ? "กรุณเลือกไฟล์ PDF ก่อน" : ""}
-                      onChange={(e) => setExportPie(e.target.checked)}
-                    />{" "}
-                    กราฟวงกลม
                   </label>
                 </div>
               </fieldset>

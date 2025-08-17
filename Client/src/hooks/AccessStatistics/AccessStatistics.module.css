@@ -156,6 +156,9 @@
   background-color: #888;
   color: white;
 }
+.filterContainer .viewSelector span {
+  font-size: 14px;
+}
 .filter {
   display: flex;
   flex-direction: column;
@@ -201,6 +204,7 @@
 
 .filter .resetButton,
 .filter .exportButton {
+  width: 100%;
   font-family: "Prompt", sans-serif;
   border: 1px solid #f15050;
   padding: 0.7rem 0.4rem;
@@ -233,7 +237,7 @@
 
 .exportForm label {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   font-weight: 500;
   color: #333;
 }
@@ -244,7 +248,7 @@
   flex-direction: column;
   gap: 1rem;
 }
-.exportCheckBoxFile label input[type="checkbox"]:disabled{
+.exportCheckBoxFile label input[type="checkbox"]:disabled {
   background-color: #f0f0f0;
   color: #888;
   cursor: not-allowed;
@@ -290,10 +294,10 @@
   outline: none;
 }
 
-.exportForm fieldset {
+.exportForm .containerFieldset fieldset {
   border: 1px solid #ccc;
   border-radius: 8px;
-  padding: 1rem;
+  padding: 1rem 1rem 0 1rem;
   margin: 0;
 }
 
@@ -307,7 +311,6 @@
 .exportForm fieldset label {
   display: flex;
   align-items: center;
-  margin-top: 6px;
   gap: 0.5rem;
   font-size: 15px;
   cursor: pointer;
@@ -319,8 +322,8 @@
 }
 .exportCheckbox {
   display: flex;
-  margin-top: 0.5rem;
-  align-items: center;
+  margin-top: 1rem;
+  align-items: start;
   gap: 0.5rem;
 }
 .exportCheckbox label {
@@ -330,7 +333,17 @@
 .exportCheckBoxFile {
   display: flex;
   flex-direction: row;
+  justify-content: center;
+  align-self: start;
+  gap: 0.5rem;
+}
+.exportCheckBoxFile label {
+  display: flex;
+  position: relative;
+  bottom: 10px;
+  flex-direction: row;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
 }
 .exportForm {
@@ -343,7 +356,43 @@
 .exportForm fieldset {
   flex: 1 1 48%;
 }
+
+.bottomLegendBar .checkBox:disabled,
+.bottomLegendPie .checkBox:disabled {
+  cursor: not-allowed;
+}
+.bottomLegendBar .checkBox:disabled + span,
+.bottomLegendPie .checkBox:disabled + span {
+  color: #999;
+  cursor: not-allowed;
+}
+.bottomLegendBar,
+.bottomLegendPie {
+  display: flex;
+  position: relative;
+  width: fit-content;
+  top: 12px;
+  left: 85px;
+  background: white;
+  margin: 0;
+  padding: 0 0.5rem;
+  font-weight: bold;
+}
+.bottomLegendPie {
+  left: 70px;
+}
+
 @media screen and (min-width: 768px) {
+  .bottomLegendBar {
+    left: 145px;
+  }
+  .bottomLegendPie {
+    left: 130px;
+  }
+  .filter .resetButton,
+  .filter .exportButton {
+    width: 13%;
+  }
   .filter {
     flex-direction: row;
   }

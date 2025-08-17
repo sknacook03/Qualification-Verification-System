@@ -142,6 +142,64 @@ const PageviewService = {
       return { success: false, error: "Failed to fetch top agencies" };
     }
   },
+  getTopTypeAgencyViews: async (startDate, endDate) => {
+    try {
+      const dateFilter = buildDateFilter(startDate, endDate);
+
+      const perAgency = await prisma.pageView.groupBy({
+        by: ["agency_id"],
+        where: { ...dateFilter },
+        _count: { id: true },
+      });
+      if (perAgency.length === 0) return { success: true, data: [] };
+
+      const agencies = await prisma.agency.findMany({
+        where: { id: { in: perAgency.map((r) => r.agency_id) } },
+        select: {
+          id: true,
+          type_id: true,
+          typeAgency: { select: { type_name: true } },
+        },
+      });
+
+      const agencyMap = new Map(agencies.map((a) => [String(a.id), a]));
+
+      const typeAgg = new Map();
+      for (const row of perAgency) {
+        const ag = agencyMap.get(String(row.agency_id));
+        if (!ag || ag.type_id == null) continue;
+
+        const key = String(ag.type_id);
+        const add = Number(row._count.id);
+
+        if (typeAgg.has(key)) {
+          typeAgg.get(key).count += add;
+        } else {
+          typeAgg.set(key, {
+            type_id: ag.type_id,
+            type_name: (ag.typeAgency && ag.typeAgency.type_name) || "-",
+            count: add,
+          });
+        }
+      }
+
+      const data = Array.from(typeAgg.values())
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5)
+        .map((t) => ({
+          type_id:
+            typeof t.type_id === "bigint" ? Number(t.type_id) : t.type_id,
+          type_name: t.type_name,
+          count: t.count,
+        }));
+
+      return { success: true, data };
+    } catch (error) {
+      console.error("Error in getTopTypeAgencyViews:", error);
+      return { success: false, error: "Failed to fetch top agencies" };
+    }
+  },
+
   getAllFaculties: async () => {
     try {
       const students = await prisma.student.findMany({
@@ -178,10 +236,10 @@ const PageviewService = {
         return true;
       });
 
-      return result; 
+      return result;
     } catch (error) {
       console.error("Error fetching faculties:", error);
-      throw error; 
+      throw error;
     }
   },
   getAllDepartments: async (req, res) => {
