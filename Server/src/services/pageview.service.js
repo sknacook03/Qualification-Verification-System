@@ -12,6 +12,18 @@ const buildDateFilter = (startDate, endDate) => {
   }
   return {};
 };
+
+const fullName = (s) => {
+  if (!s) return null;
+  const strip = (x) => (x ?? "").toString().trim();
+
+  const prefixAndName = strip(s.prefix_name) + strip(s.name);
+  const last = strip(s.lname);
+
+  const result = [prefixAndName, last].filter(Boolean).join(" ").trim();
+  return result || null;
+};
+
 const PageviewService = {
   getTopFacultyViews: async (startDate, endDate, agencyId) => {
     try {
@@ -497,6 +509,34 @@ const PageviewService = {
       console.error("Error in PageviewService:", error);
       return { success: false, error: "Internal Server Error" };
     }
+  },
+  getAllPageviewsWithNames: async () => {
+    const rows = await prisma.pageView.findMany({
+      orderBy: { created_at: "desc" },
+      select: {
+        id: true,
+        faculty: true,
+        department: true,
+        student_certificate: true,
+        action_type: true,
+        created_at: true,
+        updated_at: true,
+        agency:  { select: { agency_name: true } },
+        student: { select: { prefix_name: true, name: true, lname: true } },
+      },
+    });
+  
+    return rows.map(r => ({
+      id: r.id.toString(),
+      faculty: r.faculty,
+      department: r.department,
+      student_certificate: r.student_certificate,
+      action_type: r.action_type,
+      created_at: r.created_at,
+      updated_at: r.updated_at,
+      agency_name: r.agency?.agency_name ?? null,
+      student_name: fullName(r.student),
+    }));
   },
 };
 

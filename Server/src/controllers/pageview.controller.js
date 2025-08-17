@@ -277,6 +277,19 @@ const PageviewController = {
       }
     });
   },
+  getPageviewWithNameController: async (req, res) => {
+    try {
+      const items = await PageviewService.getAllPageviewsWithNames();
+      res.status(200).json({ success: true, count: items.length, items });
+    } catch (err) {
+      const status = err.status || 500;
+      res.status(status).json({
+        success: false,
+        message: err.status ? err.message : "Failed to get pageviews",
+        code: err.code,
+      });
+    }
+  },
 };
 
 export default PageviewController;
