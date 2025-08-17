@@ -71,6 +71,7 @@ export const APIEndpoints = {
       topAgenciesByType: "/pageview/top-agencies-by-type",
       departmentsByFaculty: "/pageview/departments-by-faculty",
       countAgencyViews: (agencyId) => `/pageview/student-views-by-agency/${agencyId}`,
+      logs: "/pageview/",
     },
     exportFile: {
       exportFilePDF: "/exportfile/export-pdf",

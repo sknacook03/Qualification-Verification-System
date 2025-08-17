@@ -16,6 +16,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(IndexRouter);
 app.use("/uploads", express.static("uploads"));
+app.use("/uploads_certificate", express.static("uploads_certificate"));
 
 app.use(bodyParser.json());
 
