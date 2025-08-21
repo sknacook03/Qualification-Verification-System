@@ -286,9 +286,9 @@ function Homepages() {
                     aria-busy={!loadingButton}
                   >
                     {loadingButton ? (
-                       "Export PDF"
+                      "Export PDF"
                     ) : (
-                     <ClipLoader size={20} color="#fff" />
+                      <ClipLoader size={20} color="#fff" />
                     )}
                   </button>
                   <button
@@ -299,9 +299,9 @@ function Homepages() {
                     aria-busy={!loadingButton}
                   >
                     {loadingButton ? (
-                       "Export Excel"
+                      "Export Excel"
                     ) : (
-                     <ClipLoader size={20} color="#fff" />
+                      <ClipLoader size={20} color="#fff" />
                     )}
                   </button>
                   <button
@@ -316,242 +316,244 @@ function Homepages() {
             </div>
             <div className={styles.boxHistory}>
               {student && (
-                <table className={styles.studentTable}>
-                  <thead>
-                    <tr>
-                      <th>
-                        {!selectMode ? (
-                          "#"
-                        ) : (
-                          <input
-                            type="checkbox"
-                            checked={
-                              student &&
-                              selectedIds.length > 0 &&
-                              selectedIds.length === student.length
-                            }
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                setSelectedIds(
-                                  student.map((s) => s.student.student_no)
-                                );
-                              } else {
-                                setSelectedIds([]);
-                              }
-                            }}
-                          />
-                        )}
-                      </th>
-                      <th>
-                        <div
-                          onClick={() => requestSort("student_no")}
-                          className={styles.thSort}
-                        >
-                          รหัสนักศึกษา{" "}
-                          <div className={styles.thArrow}>
-                            <p
-                              className={
-                                sortConfig.key === "student_no" &&
-                                sortConfig.direction === "asc"
-                                  ? styles.activeArrow
-                                  : ""
-                              }
-                            >
-                              ▲
-                            </p>
-                            <p
-                              className={
-                                sortConfig.key === "student_no" &&
-                                sortConfig.direction === "desc"
-                                  ? styles.activeArrow
-                                  : ""
-                              }
-                            >
-                              ▼
-                            </p>
-                          </div>
-                        </div>
-                      </th>
-                      <th>
-                        <div
-                          onClick={() => requestSort("name")}
-                          className={styles.thSort}
-                        >
-                          ชื่อ{" "}
-                          <div className={styles.thArrow}>
-                            <p
-                              className={
-                                sortConfig.key === "name" &&
-                                sortConfig.direction === "asc"
-                                  ? styles.activeArrow
-                                  : ""
-                              }
-                            >
-                              ▲
-                            </p>
-                            <p
-                              className={
-                                sortConfig.key === "name" &&
-                                sortConfig.direction === "desc"
-                                  ? styles.activeArrow
-                                  : ""
-                              }
-                            >
-                              ▼
-                            </p>
-                          </div>
-                        </div>
-                      </th>
-                      <th>
-                        <div
-                          onClick={() => requestSort("lname")}
-                          className={styles.thSort}
-                        >
-                          นามสกุล{" "}
-                          <div className={styles.thArrow}>
-                            <p
-                              className={
-                                sortConfig.key === "lname" &&
-                                sortConfig.direction === "asc"
-                                  ? styles.activeArrow
-                                  : ""
-                              }
-                            >
-                              ▲
-                            </p>
-                            <p
-                              className={
-                                sortConfig.key === "lname" &&
-                                sortConfig.direction === "desc"
-                                  ? styles.activeArrow
-                                  : ""
-                              }
-                            >
-                              ▼
-                            </p>
-                          </div>
-                        </div>
-                      </th>
-                      <th>
-                        <div
-                          onClick={() => requestSort("curr_name")}
-                          className={styles.thSort}
-                        >
-                          สาขา{" "}
-                          <div className={styles.thArrow}>
-                            <p
-                              className={
-                                sortConfig.key === "curr_name" &&
-                                sortConfig.direction === "asc"
-                                  ? styles.activeArrow
-                                  : ""
-                              }
-                            >
-                              ▲
-                            </p>
-                            <p
-                              className={
-                                sortConfig.key === "curr_name" &&
-                                sortConfig.direction === "desc"
-                                  ? styles.activeArrow
-                                  : ""
-                              }
-                            >
-                              ▼
-                            </p>
-                          </div>
-                        </div>
-                      </th>
-                      <th>
-                        <div
-                          onClick={() => requestSort("updated_at")}
-                          className={styles.thSort}
-                        >
-                          วันที่เข้าชม{" "}
-                          <div className={styles.thArrow}>
-                            <p
-                              className={
-                                sortConfig.key === "updated_at" &&
-                                sortConfig.direction === "asc"
-                                  ? styles.activeArrow
-                                  : ""
-                              }
-                            >
-                              ▲
-                            </p>
-                            <p
-                              className={
-                                sortConfig.key === "updated_at" &&
-                                sortConfig.direction === "desc"
-                                  ? styles.activeArrow
-                                  : ""
-                              }
-                            >
-                              ▼
-                            </p>
-                          </div>
-                        </div>
-                      </th>
-                      <th>สถานะการศึกษา</th>
-                      <th>ข้อมูลเพิ่มเติม</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {currentItems.map((item, index) => (
-                      <tr key={item.student.student_no}>
-                        <td>
+                <div className={styles.tableWrapper}>
+                  <table className={styles.studentTable}>
+                    <thead>
+                      <tr>
+                        <th>
                           {!selectMode ? (
-                            index + 1
+                            "#"
                           ) : (
                             <input
                               type="checkbox"
-                              checked={selectedIds.includes(
-                                item.student.student_no
-                              )}
-                              onChange={() =>
-                                handleCheckboxChange(item.student.student_no)
+                              checked={
+                                student &&
+                                selectedIds.length > 0 &&
+                                selectedIds.length === student.length
                               }
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setSelectedIds(
+                                    student.map((s) => s.student.student_no)
+                                  );
+                                } else {
+                                  setSelectedIds([]);
+                                }
+                              }}
                             />
                           )}
-                        </td>
-                        <td>{item.student.student_no}</td>
-                        <td>{item.student.name}</td>
-                        <td>{item.student.lname}</td>
-                        <td>
-                          {item.student.curr_name?.match(/\((.*)\)/)?.[1] ||
-                            "Unknown"}
-                        </td>
-                        <td>
-                          {moment.utc(item.updated_at).format("DD/MM") +
-                            "/" +
-                            (moment.utc(item.updated_at).year() + 543)
-                              .toString()
-                              .slice(-2)}
-                        </td>
-                        <td
-                          style={{
-                            color:
-                              item.student.status_graduate === 1
-                                ? "green"
-                                : "red",
-                          }}
-                        >
-                          {item.student.status_graduate === 1
-                            ? "สำเร็จการศึกษาแล้ว"
-                            : "ยังไม่สำเร็จการศึกษา"}
-                        </td>
-                        <td className={styles.TdInfo}>
-                          <button
-                            onClick={() => handleShowPopup(item.student)}
-                            className={styles.btnInfo}
+                        </th>
+                        <th>
+                          <div
+                            onClick={() => requestSort("student_no")}
+                            className={styles.thSort}
                           >
-                            <FontAwesomeIcon icon={faInfo} />
-                          </button>
-                        </td>
+                            รหัสนักศึกษา{" "}
+                            <div className={styles.thArrow}>
+                              <p
+                                className={
+                                  sortConfig.key === "student_no" &&
+                                  sortConfig.direction === "asc"
+                                    ? styles.activeArrow
+                                    : ""
+                                }
+                              >
+                                ▲
+                              </p>
+                              <p
+                                className={
+                                  sortConfig.key === "student_no" &&
+                                  sortConfig.direction === "desc"
+                                    ? styles.activeArrow
+                                    : ""
+                                }
+                              >
+                                ▼
+                              </p>
+                            </div>
+                          </div>
+                        </th>
+                        <th>
+                          <div
+                            onClick={() => requestSort("name")}
+                            className={styles.thSort}
+                          >
+                            ชื่อ{" "}
+                            <div className={styles.thArrow}>
+                              <p
+                                className={
+                                  sortConfig.key === "name" &&
+                                  sortConfig.direction === "asc"
+                                    ? styles.activeArrow
+                                    : ""
+                                }
+                              >
+                                ▲
+                              </p>
+                              <p
+                                className={
+                                  sortConfig.key === "name" &&
+                                  sortConfig.direction === "desc"
+                                    ? styles.activeArrow
+                                    : ""
+                                }
+                              >
+                                ▼
+                              </p>
+                            </div>
+                          </div>
+                        </th>
+                        <th>
+                          <div
+                            onClick={() => requestSort("lname")}
+                            className={styles.thSort}
+                          >
+                            นามสกุล{" "}
+                            <div className={styles.thArrow}>
+                              <p
+                                className={
+                                  sortConfig.key === "lname" &&
+                                  sortConfig.direction === "asc"
+                                    ? styles.activeArrow
+                                    : ""
+                                }
+                              >
+                                ▲
+                              </p>
+                              <p
+                                className={
+                                  sortConfig.key === "lname" &&
+                                  sortConfig.direction === "desc"
+                                    ? styles.activeArrow
+                                    : ""
+                                }
+                              >
+                                ▼
+                              </p>
+                            </div>
+                          </div>
+                        </th>
+                        <th>
+                          <div
+                            onClick={() => requestSort("curr_name")}
+                            className={styles.thSort}
+                          >
+                            สาขา{" "}
+                            <div className={styles.thArrow}>
+                              <p
+                                className={
+                                  sortConfig.key === "curr_name" &&
+                                  sortConfig.direction === "asc"
+                                    ? styles.activeArrow
+                                    : ""
+                                }
+                              >
+                                ▲
+                              </p>
+                              <p
+                                className={
+                                  sortConfig.key === "curr_name" &&
+                                  sortConfig.direction === "desc"
+                                    ? styles.activeArrow
+                                    : ""
+                                }
+                              >
+                                ▼
+                              </p>
+                            </div>
+                          </div>
+                        </th>
+                        <th>
+                          <div
+                            onClick={() => requestSort("updated_at")}
+                            className={styles.thSort}
+                          >
+                            วันที่เข้าชม{" "}
+                            <div className={styles.thArrow}>
+                              <p
+                                className={
+                                  sortConfig.key === "updated_at" &&
+                                  sortConfig.direction === "asc"
+                                    ? styles.activeArrow
+                                    : ""
+                                }
+                              >
+                                ▲
+                              </p>
+                              <p
+                                className={
+                                  sortConfig.key === "updated_at" &&
+                                  sortConfig.direction === "desc"
+                                    ? styles.activeArrow
+                                    : ""
+                                }
+                              >
+                                ▼
+                              </p>
+                            </div>
+                          </div>
+                        </th>
+                        <th>สถานะการศึกษา</th>
+                        <th>ข้อมูลเพิ่มเติม</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {currentItems.map((item, index) => (
+                        <tr key={item.student.student_no}>
+                          <td>
+                            {!selectMode ? (
+                              index + 1
+                            ) : (
+                              <input
+                                type="checkbox"
+                                checked={selectedIds.includes(
+                                  item.student.student_no
+                                )}
+                                onChange={() =>
+                                  handleCheckboxChange(item.student.student_no)
+                                }
+                              />
+                            )}
+                          </td>
+                          <td>{item.student.student_no}</td>
+                          <td>{item.student.name}</td>
+                          <td>{item.student.lname}</td>
+                          <td>
+                            {item.student.curr_name?.match(/\((.*)\)/)?.[1] ||
+                              "Unknown"}
+                          </td>
+                          <td>
+                            {moment.utc(item.updated_at).format("DD/MM") +
+                              "/" +
+                              (moment.utc(item.updated_at).year() + 543)
+                                .toString()
+                                .slice(-2)}
+                          </td>
+                          <td
+                            style={{
+                              color:
+                                item.student.status_graduate === 1
+                                  ? "green"
+                                  : "red",
+                            }}
+                          >
+                            {item.student.status_graduate === 1
+                              ? "สำเร็จการศึกษาแล้ว"
+                              : "ยังไม่สำเร็จการศึกษา"}
+                          </td>
+                          <td className={styles.TdInfo}>
+                            <button
+                              onClick={() => handleShowPopup(item.student)}
+                              className={styles.btnInfo}
+                            >
+                              <FontAwesomeIcon icon={faInfo} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
               <Pagination
                 pageCount={pageCount}

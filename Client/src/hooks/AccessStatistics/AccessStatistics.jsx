@@ -1066,22 +1066,24 @@ const AccessStatistics = ({ officer, agency }) => {
               ))}
             </select>
           )}
-          <div className={styles.viewSelector}>
-            <label>
-              <input
-                type="checkbox"
-                name="viewSelector"
-                value="department"
-                checked={selectedTopType}
-                onChange={(e) => {
-                  setSelectedTopType(e.target.checked);
-                  setSelectedDepartment("");
-                  setSelectedFacultyDisplayName("");
-                }}
-              />
-              <span>เลือกตามประเภทหน่วยงาน</span>
-            </label>
-          </div>
+          {officer && (
+            <div className={styles.viewSelector}>
+              <label>
+                <input
+                  type="checkbox"
+                  name="viewSelector"
+                  value="department"
+                  checked={selectedTopType}
+                  onChange={(e) => {
+                    setSelectedTopType(e.target.checked);
+                    setSelectedDepartment("");
+                    setSelectedFacultyDisplayName("");
+                  }}
+                />
+                <span>เลือกตามประเภทหน่วยงาน</span>
+              </label>
+            </div>
+          )}
         </div>
         <div className={styles.topAgencyView} id="barChartContainer">
           {loadingTopAgencies && <div className={styles.loadingBox}></div>}
@@ -1225,24 +1227,24 @@ const AccessStatistics = ({ officer, agency }) => {
                       ))}
                     </select>
                   </label>
-                    <label>
-                      <input
-                        type="checkbox"
-                        name="viewSelector"
-                        value="department"
-                        checked={selectedTopType}
-                        onChange={(e) => {
-                          const checked = e.target.checked;
-                          setSelectedTopType(checked);
-                          setExportTopType(checked);
-                          setExportDepartment("");
-                          setExportFaculty("");
-                          setSelectedDepartment("");
-                          setSelectedFacultyDisplayName("");
-                        }}
-                      />
-                      <span>เลือกตามประเภทหน่วยงาน</span>
-                    </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="viewSelector"
+                      value="department"
+                      checked={selectedTopType}
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        setSelectedTopType(checked);
+                        setExportTopType(checked);
+                        setExportDepartment("");
+                        setExportFaculty("");
+                        setSelectedDepartment("");
+                        setSelectedFacultyDisplayName("");
+                      }}
+                    />
+                    <span>เลือกตามประเภทหน่วยงาน</span>
+                  </label>
                 </div>
                 <label className={styles.bottomLegendBar}>
                   <input
@@ -1280,48 +1282,48 @@ const AccessStatistics = ({ officer, agency }) => {
                   </label>
                 </div>
                 <div className={styles.exportCheckbox}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={exportTopFaculty}
-                        onChange={(e) => {
-                          const checked = e.target.checked;
-                          setExportTopFaculty(checked);
-                          if (checked) {
-                            setExportTopDepartment(false);
-                            setSelectedView("faculty");
-                          }
-                        }}
-                      />{" "}
-                      Top 5 คณะที่เข้าดูสูงสุด
-                    </label>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={exportTopDepartment}
-                        onChange={(e) => {
-                          const checked = e.target.checked;
-                          setExportTopDepartment(checked);
-                          if (checked) {
-                            setExportTopFaculty(false);
-                            setSelectedView("department");
-                          }
-                        }}
-                      />{" "}
-                      Top 5 สาขาที่เข้าดูสูงสุด
-                    </label>
-                </div>
-                  <label className={styles.bottomLegendPie}>
+                  <label>
                     <input
                       type="checkbox"
-                      className={styles.checkBox}
-                      checked={exportPie}
-                      disabled={!exportPDF}
-                      title={!exportPDF ? "กรุณเลือกไฟล์ PDF ก่อน" : ""}
-                      onChange={(e) => setExportPie(e.target.checked)}
+                      checked={exportTopFaculty}
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        setExportTopFaculty(checked);
+                        if (checked) {
+                          setExportTopDepartment(false);
+                          setSelectedView("faculty");
+                        }
+                      }}
                     />{" "}
-                    <span>กราฟวงกลม</span>
+                    Top 5 คณะที่เข้าดูสูงสุด
                   </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={exportTopDepartment}
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        setExportTopDepartment(checked);
+                        if (checked) {
+                          setExportTopFaculty(false);
+                          setSelectedView("department");
+                        }
+                      }}
+                    />{" "}
+                    Top 5 สาขาที่เข้าดูสูงสุด
+                  </label>
+                </div>
+                <label className={styles.bottomLegendPie}>
+                  <input
+                    type="checkbox"
+                    className={styles.checkBox}
+                    checked={exportPie}
+                    disabled={!exportPDF}
+                    title={!exportPDF ? "กรุณเลือกไฟล์ PDF ก่อน" : ""}
+                    onChange={(e) => setExportPie(e.target.checked)}
+                  />{" "}
+                  <span>กราฟวงกลม</span>
+                </label>
               </fieldset>
 
               <fieldset>
