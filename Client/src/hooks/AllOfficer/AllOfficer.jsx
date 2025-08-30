@@ -113,10 +113,10 @@ function AllOfficer() {
         }
       );
       setOfficers((prev) => prev.filter((officer) => officer.id !== id));
-      toast.success("Deleted successfully");
+      toast.success("ลบเจ้าหน้าที่สำเร็จ");
     } catch (error) {
       console.error("Failed to delete officer:", error);
-      toast.error("Delete failed");
+      toast.error("ลบเจ้าหน้าที่ไม่สำเร็จ");
     } finally {
       setDeletingOfficer(null);
       setShowDeletePopup(false);
@@ -229,6 +229,15 @@ function AllOfficer() {
             </div>
           </div>
         </div>
+      )}
+      {showDeletePopup && (
+        <Popup
+          topic="ยืนยันการลบ"
+          info="คุณแน่ใจหรือไม่ว่าต้องการลบเจ้าหน้าที่นี้?"
+          successPopup={() => handleDelete(deletingOfficer)}
+          textButtonSuccess="ยืนยัน"
+          closePopup={() => setShowDeletePopup(false)}
+        />
       )}
     </>
   );
