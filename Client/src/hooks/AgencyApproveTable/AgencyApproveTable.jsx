@@ -16,6 +16,7 @@ import Pagination from "../../components/Pagination/Pagination";
 import { API_BASE_URL, APIEndpoints } from "../../services/api";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Popup from "../../components/Popup/Popup";
 
 function AgencyApproveTable({
   agencies,
@@ -31,6 +32,8 @@ function AgencyApproveTable({
   disableEdit,
   disableDelete,
 }) {
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [deletingOfficer, setDeletingOfficer] = useState(null);
   const [loadingApproveId, setLoadingApproveId] = useState(null);
   const [loadingPendingId, setLoadingPendingId] = useState(null);
   const [typeAgencies, setTypeAgencies] = useState([]);
@@ -212,7 +215,10 @@ function AgencyApproveTable({
                     <button
                       className={`${styles.button} ${styles.deleteButton}`}
                       title="ลบหน่วยงาน"
-                      onClick={() => onDelete(agencyItem.id)}
+                      onClick={() => {
+                        setDeletingOfficer(agencyItem.id);
+                        setShowDeletePopup(true);
+                      }}
                     >
                       <FontAwesomeIcon icon={faTrashCan} />
                     </button>
@@ -236,8 +242,19 @@ function AgencyApproveTable({
           setItemsPerPage={setItemsPerPage}
           setCurrentPage={setCurrentPage}
         />
+        {showDeletePopup && (
+          <Popup
+            topic="ยืนยันการลบ"
+            info="คุณแน่ใจหรือไม่ว่าต้องการลบเจ้าหน้าที่นี้?"
+            successPopup={async () => {
+              await onDelete(deletingOfficer);
+              setShowDeletePopup(false);
+            }}
+            textButtonSuccess="ยืนยัน"
+            closePopup={() => setShowDeletePopup(false)}
+          />
+        )}
       </div>
-      
     </div>
   );
 }

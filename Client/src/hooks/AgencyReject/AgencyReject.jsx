@@ -13,7 +13,6 @@ const AgencyReject = ({ officer }) => {
   const [agency, setAgency] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showEditPopup, setShowEditPopup] = useState(false);
-  const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [editingAgency, setEditingAgency] = useState(null);
   const [showInfoPopup, setShowInfoPopup] = useState(false);
   const [infoAgency, setInfoAgency] = useState(null);
@@ -160,15 +159,7 @@ const AgencyReject = ({ officer }) => {
           onSave={submitEdit}
         />
       )}
-      {showDeletePopup && (
-        <Popup
-          topic="ยืนยันการลบ"
-          info="คุณแน่ใจหรือไม่ว่าต้องการลบหน่วยงานนี้?"
-          successPopup={handleDelete}
-          textButtonSuccess="ยืนยัน"
-          closePopup={() => setShowDeletePopup(false)}
-        />
-      )}
+
       {showInfoPopup && (
         <InfoAgencyPopup
           show={showInfoPopup}
