@@ -8,11 +8,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { faPenToSquare, faTrashCan } from "@fortawesome/free-regular-svg-icons";
+import Popup from "../../components/Popup/Popup.jsx";
 
 function AllOfficer() {
   const [officers, setOfficers] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [deletingOfficer, setDeletingOfficer] = useState(null);
   const [editingOfficer, setEditingOfficer] = useState(null);
   const [editForm, setEditForm] = useState({
     first_name: "",
@@ -102,7 +104,7 @@ function AllOfficer() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure to delete this officer?")) return;
+
     try {
       await axios.delete(
         API_BASE_URL + APIEndpoints.officer.deleteOfficer(id),
@@ -115,6 +117,9 @@ function AllOfficer() {
     } catch (error) {
       console.error("Failed to delete officer:", error);
       toast.error("Delete failed");
+    } finally {
+      setDeletingOfficer(null);
+      setShowDeletePopup(false);
     }
   };
   const handlePageClick = ({ selected }) => {
@@ -152,7 +157,10 @@ function AllOfficer() {
                       </button>
                       <button
                         className={styles.deleteButton}
-                        onClick={() => handleDelete(officer.id)}
+                        onClick={() => {
+                          setDeletingOfficer(officer.id);
+                          setShowDeletePopup(true);
+                        }}
                       >
                         <FontAwesomeIcon icon={faTrashCan} />
                       </button>
