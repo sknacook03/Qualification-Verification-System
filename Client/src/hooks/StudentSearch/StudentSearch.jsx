@@ -30,7 +30,7 @@ const StudentSearch = ({ agency, forOfficer }) => {
     }
     return "Unknown";
   };
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
@@ -156,12 +156,17 @@ const StudentSearch = ({ agency, forOfficer }) => {
             <tbody>
               {students.map((student) => (
                 <tr key={student.student_no}>
-                  <td>{student.student_no}</td>
-                  <td>{student.name}</td>
-                  <td>{student.lname}</td>
-                  <td>{student.curr_name.split("(")[0].trim() || "Unknown"}</td>
-                  <td>{extractDepartment(student.curr_name)}</td>
+                  <td data-label="รหัสนักศึกษา">{student.student_no}</td>
+                  <td data-label="ชื่อ">{student.name}</td>
+                  <td data-label="นามสกุล">{student.lname}</td>
+                  <td data-label="คณะ">
+                    {student.curr_name.split("(")[0].trim() || "Unknown"}
+                  </td>
+                  <td data-label="สาขา">
+                    {extractDepartment(student.curr_name)}
+                  </td>
                   <td
+                    data-label="สถานะการศึกษา"
                     style={{
                       color: student.status_graduate == 1 ? "green" : "red",
                     }}
@@ -170,7 +175,7 @@ const StudentSearch = ({ agency, forOfficer }) => {
                       ? "สำเร็จการศึกษาแล้ว"
                       : "ยังไม่สำเร็จการศึกษา"}
                   </td>
-                  <td>
+                  <td data-label="ข้อมูลเพิ่มเติม">
                     <button
                       onClick={
                         forOfficer
@@ -178,9 +183,11 @@ const StudentSearch = ({ agency, forOfficer }) => {
                           : () => setPopupStudentId(student.id)
                       }
                       className={styles.btnInfo}
+                      aria-label="ดูข้อมูลเพิ่มเติม"
                     >
                       <FontAwesomeIcon icon={faMagnifyingGlass} />
                     </button>
+
                     {!forOfficer && popupStudentId === student.id && (
                       <Popup
                         topic="อัปโหลดหนังสือยิมยอม"
@@ -197,6 +204,7 @@ const StudentSearch = ({ agency, forOfficer }) => {
                       >
                         <Input
                           type="file"
+                          accept=".pdf,.png,.jpg,.jpeg"
                           onChange={(e) =>
                             setFileMap((prev) => ({
                               ...prev,

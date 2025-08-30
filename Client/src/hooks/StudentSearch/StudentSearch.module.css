@@ -86,3 +86,97 @@
   background-color: #5a6f8f;
   color: white;
 }
+
+@media (max-width: 1140px) {
+  .studentTableContainer {
+    padding: 0;
+    overflow-x: hidden; 
+    width: 100%;
+  }
+  .studentTable,
+  .studentTable thead,
+  .studentTable tbody,
+  .studentTable th,
+  .studentTable td,
+  .studentTable tr {
+    display: block;
+    width: 100%;
+    box-sizing: border-box; 
+  }
+
+  .studentTable {
+    min-width: unset; 
+    background: none;
+    box-shadow: none;
+  }
+
+  .studentTable thead {
+    display: none;
+  }
+
+  .studentTable tr {
+    margin-bottom: 1.2rem;
+    border-radius: 1.1rem;
+    box-shadow: 0 2px 12px rgba(60, 100, 180, 0.10);
+    background: #fff;
+    border: 1px solid #eef1fa;
+    overflow: hidden;
+  }
+
+  .studentTable td {
+    position: relative;
+    padding-left: 45% !important;
+    padding-top: 18px !important;
+    padding-bottom: 18px !important;
+    min-height: 48px;
+    text-align: right;
+    border-bottom: none;
+    border-top: 1px solid #f0f2f5;
+    font-size: 15px;
+    font-weight: 400;
+    background: none;
+    box-shadow: none;
+    word-break: break-word;
+  }
+
+  .studentTable td:first-child {
+    border-top: none;
+  }
+
+  .studentTable td:before {
+    content: attr(data-label);
+    position: absolute;
+    color: #000;
+    left: 14px;
+    top: 14px;
+    width: 41%;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.01em;
+    text-align: left;
+    white-space: pre-wrap;
+  }
+
+  .studentTable td[data-label="ข้อมูลเพิ่มเติม"] {
+    text-align: right !important;
+    padding-right: 14px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .studentTable td {
+    padding-left: 50% !important;
+    font-size: 13.5px;
+  }
+  .studentTable td:before {
+    font-size: 12px;
+  }
+  .studentTable tr {
+    margin-bottom: 1.5rem;
+  }
+  .studentTable button {
+    min-width: 32px;
+    min-height: 32px;
+    padding: 7px;
+  }
+}

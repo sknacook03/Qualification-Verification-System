@@ -16,11 +16,17 @@
   border-radius: 0.5rem;
   background-color: white;
 }
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
 .studentTable {
   width: 100%;
+  overflow: hidden;
   border-collapse: collapse;
   font-size: 16px;
   background-color: transparent;
+  min-width: 800px;
 }
 .studentTable th {
   background-color: transparent;
@@ -66,6 +72,7 @@
   color: #008cba;
   background: #fff;
   padding: 0.75rem 1.8rem;
+  width: 160px;
   border-radius: 10px;
   font-weight: 600;
   font-size: 1rem;
@@ -148,4 +155,11 @@
 .thSort .thArrow .activeArrow {
   color: #ff7100;
   font-weight: bold;
+}
+.studentTable th,
+.studentTable td {
+  white-space: nowrap;
+  word-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
