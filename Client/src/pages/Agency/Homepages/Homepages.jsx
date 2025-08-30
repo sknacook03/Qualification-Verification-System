@@ -262,9 +262,15 @@ function Homepages() {
           <>
             <h4 className={styles.topic}>ข้อมูลของท่าน</h4>
             <div className={styles.boxInfoAgency}>
-              <p>Email: {agency.email}</p>
-              <p>Department: {agency.department}</p>
-              <p>Role: {agency.role}</p>
+              <p>
+                <strong>Email:</strong> {agency.email}
+              </p>
+              <p>
+                <strong>Department:</strong> {agency.department}
+              </p>
+              <p>
+                <strong>Role:</strong> {agency.role}
+              </p>
             </div>
             <h4 className={styles.topic}>ข้อมูลของนักศึกษาที่เคยตรวจสอบ</h4>
             <div className={styles.selectedBox} style={{ marginBottom: 10 }}>
@@ -286,9 +292,9 @@ function Homepages() {
                     aria-busy={!loadingButton}
                   >
                     {loadingButton ? (
-                       "Export PDF"
+                      "Export PDF"
                     ) : (
-                     <ClipLoader size={20} color="#fff" />
+                      <ClipLoader size={20} color="#fff" />
                     )}
                   </button>
                   <button
@@ -299,9 +305,9 @@ function Homepages() {
                     aria-busy={!loadingButton}
                   >
                     {loadingButton ? (
-                       "Export Excel"
+                      "Export Excel"
                     ) : (
-                     <ClipLoader size={20} color="#fff" />
+                      <ClipLoader size={20} color="#fff" />
                     )}
                   </button>
                   <button
