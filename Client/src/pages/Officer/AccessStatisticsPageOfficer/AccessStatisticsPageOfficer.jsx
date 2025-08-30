@@ -10,6 +10,8 @@ import {
   bottomMenuItems,
 } from "../../../constants/officerMenuItems.jsx";
 import AccessStatistics from "../../../hooks/AccessStatistics/AccessStatistics.jsx";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function AccessStatisticsPageOfficer() {
   const [officer, setOfficer] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,7 +30,7 @@ function AccessStatisticsPageOfficer() {
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch officer data:", error);
-        alert("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
+        toast.error("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
         navigate("/LoginOfficer");
       }
     };
@@ -49,7 +51,7 @@ function AccessStatisticsPageOfficer() {
       navigate("/");
     } catch (error) {
       console.error("Failed to logout:", error);
-      alert("เกิดข้อผิดพลาดในการออกจากระบบ");
+      toast.error("เกิดข้อผิดพลาดในการออกจากระบบ");
     }
   };
 
@@ -62,6 +64,7 @@ function AccessStatisticsPageOfficer() {
       label="สถิติการเข้าถึง"
     >
       <AccessStatistics officer/>
+      <ToastContainer position="top-center" />
     </LayoutAllpage>
   );
 }

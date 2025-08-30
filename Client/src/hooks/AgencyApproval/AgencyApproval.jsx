@@ -6,6 +6,8 @@ import InfoAgencyPopup from "../InfoAgencyPopup/InfoAgencyPopup.jsx";
 import Loading from "../../components/Loading/Loading.jsx";
 import Popup from "../../components/Popup/Popup.jsx";
 import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import styles from "./AgencyApproval.module.css";
 
 const AgencyApproval = ({ officer }) => {
@@ -40,7 +42,7 @@ const AgencyApproval = ({ officer }) => {
     try {
       const agencyToUpdate = agency.find((item) => item.id === agencyId);
       if (!agencyToUpdate) {
-        alert("Agency not found");
+        toast.error("Agency not found");
         return;
       }
 
@@ -79,10 +81,10 @@ const AgencyApproval = ({ officer }) => {
         )
       );
 
-      alert("Approval recorded and email sent.");
+      toast.success("Approval recorded and email sent.");
     } catch (error) {
       console.error("Failed to approve agency:", error);
-      alert("Error while approving agency.");
+      toast.error("Error while approving agency.");
     }
   };
 
@@ -95,7 +97,7 @@ const AgencyApproval = ({ officer }) => {
     try {
       const agencyToUpdate = agency.find((item) => item.id === rejectedAgency);
       if (!agencyToUpdate) {
-        alert("Agency not found");
+        toast.error("Agency not found");
         return;
       }
 
@@ -138,10 +140,10 @@ const AgencyApproval = ({ officer }) => {
 
       setShowPopup(false);
       setRejectionReason("");
-      alert("Rejection recorded and email sent.");
+      toast.error("Rejection recorded and email sent.");
     } catch (error) {
       console.error("Failed to reject agency:", error);
-      alert("Error while rejecting agency.");
+      toast.error("Error while rejecting agency.");
     }
   };
 
@@ -163,10 +165,10 @@ const AgencyApproval = ({ officer }) => {
         prev.map((a) => (a.id === id ? { ...a, ...updatedFields } : a))
       );
       setShowEditPopup(false);
-      alert("แก้ไขเรียบร้อย");
+      toast.success("แก้ไขเรียบร้อย");
     } catch (err) {
       console.error(err);
-      alert("เกิดข้อผิดพลาด");
+      toast.error("เกิดข้อผิดพลาด");
     }
   };
 
@@ -182,10 +184,10 @@ const AgencyApproval = ({ officer }) => {
         throw new Error("Delete failed");
       }
       setAgency((prev) => prev.filter((a) => a.id !== agencyId));
-      alert("ลบหน่วยงานเรียบร้อยแล้ว");
+      toast.success("ลบหน่วยงานเรียบร้อยแล้ว");
     } catch (error) {
       console.error("Failed to delete agency:", error);
-      alert("เกิดข้อผิดพลาดในการลบหน่วยงาน");
+      toast.error("เกิดข้อผิดพลาดในการลบหน่วยงาน");
     }
   };
 

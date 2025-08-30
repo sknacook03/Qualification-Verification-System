@@ -5,6 +5,8 @@ import EditAgencyPopup from "../../hooks/EditAgencyPopup/EditAgencyPopup.jsx";
 import InfoAgencyPopup from "../InfoAgencyPopup/InfoAgencyPopup.jsx";
 import Loading from "../../components/Loading/Loading.jsx";
 import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import styles from "./AgencyReject.module.css";
 
 const AgencyReject = ({ officer }) => {
@@ -35,7 +37,7 @@ const AgencyReject = ({ officer }) => {
     try {
       const agencyToUpdate = agency.find((item) => item.id === agencyId);
       if (!agencyToUpdate) {
-        alert("Agency not found");
+        toast.error("Agency not found");
         return;
       }
 
@@ -74,10 +76,10 @@ const AgencyReject = ({ officer }) => {
         )
       );
 
-      alert("Approval recorded and email sent.");
+      toast.success("Approval recorded and email sent.");
     } catch (error) {
       console.error("Failed to approve agency:", error);
-      alert("Error while approving agency.");
+      toast.error("Error while approving agency.");
     }
   };
 
@@ -99,10 +101,10 @@ const AgencyReject = ({ officer }) => {
         prev.map((a) => (a.id === id ? { ...a, ...updatedFields } : a))
       );
       setShowEditPopup(false);
-      alert("แก้ไขเรียบร้อย");
+      toast.success("แก้ไขเรียบร้อย");
     } catch (err) {
       console.error(err);
-      alert("เกิดข้อผิดพลาด");
+      toast.error("เกิดข้อผิดพลาด");
     }
   };
 
@@ -118,10 +120,10 @@ const AgencyReject = ({ officer }) => {
         throw new Error("Delete failed");
       }
       setAgency((prev) => prev.filter((a) => a.id !== agencyId));
-      alert("ลบหน่วยงานเรียบร้อยแล้ว");
+      toast.success("ลบหน่วยงานเรียบร้อยแล้ว");
     } catch (error) {
       console.error("Failed to delete agency:", error);
-      alert("เกิดข้อผิดพลาดในการลบหน่วยงาน");
+      toast.error("เกิดข้อผิดพลาดในการลบหน่วยงาน");
     }
   };
 
@@ -165,6 +167,7 @@ const AgencyReject = ({ officer }) => {
           onClose={() => setShowInfoPopup(false)}
         />
       )}
+      
     </div>
   );
 };

@@ -6,6 +6,8 @@ import InfoAgencyPopup from "../InfoAgencyPopup/InfoAgencyPopup.jsx";
 import Loading from "../../components/Loading/Loading.jsx";
 import Popup from "../../components/Popup/Popup.jsx";
 import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
+import { ToastContainer, toast, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import styles from "./AllAgency.module.css";
 
 const AllAgency = ({ officer }) => {
@@ -18,6 +20,14 @@ const AllAgency = ({ officer }) => {
   const [showInfoPopup, setShowInfoPopup] = useState(false);
   const [infoAgency, setInfoAgency] = useState(null);
   const [editingAgency, setEditingAgency] = useState(null);
+
+  const toastConfig = {
+    position: "top-center",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    draggable: true,
+  };
 
   useEffect(() => {
     const fetchAgencyAll = async () => {
@@ -52,10 +62,10 @@ const AllAgency = ({ officer }) => {
         )
       );
 
-      alert("Agency status updated to pending.");
+      toast.success("Agency status updated to pending.");
     } catch (error) {
       console.error("Failed to update agency status to pending:", error);
-      alert("Error while updating agency status.");
+      toast.error("Error while updating agency status.");
     }
   };
 
@@ -68,7 +78,7 @@ const AllAgency = ({ officer }) => {
     try {
       const agencyToUpdate = agency.find((item) => item.id === rejectedAgency);
       if (!agencyToUpdate) {
-        alert("Agency not found");
+        toast.error("Agency not found");
         return;
       }
 
@@ -111,10 +121,10 @@ const AllAgency = ({ officer }) => {
 
       setShowPopup(false);
       setRejectionReason("");
-      alert("Rejection recorded and email sent.");
+      toast.success("Rejection recorded and email sent.");
     } catch (error) {
       console.error("Failed to reject agency:", error);
-      alert("Error while rejecting agency.");
+      toast.error("Error while rejecting agency.");
     }
   };
 
@@ -136,10 +146,10 @@ const AllAgency = ({ officer }) => {
         prev.map((a) => (a.id === id ? { ...a, ...updatedFields } : a))
       );
       setShowEditPopup(false);
-      alert("แก้ไขเรียบร้อย");
+      toast.success("แก้ไขเรียบร้อย", toastConfig);
     } catch (err) {
       console.error(err);
-      alert("เกิดข้อผิดพลาด");
+      toast.error("เกิดข้อผิดพลาด", toastConfig);
     }
   };
 
@@ -155,10 +165,10 @@ const AllAgency = ({ officer }) => {
         throw new Error("Delete failed");
       }
       setAgency((prev) => prev.filter((a) => a.id !== agencyId));
-      alert("ลบหน่วยงานเรียบร้อยแล้ว");
+      toast.success("ลบหน่วยงานเรียบร้อยแล้ว");
     } catch (error) {
       console.error("Failed to delete agency:", error);
-      alert("เกิดข้อผิดพลาดในการลบหน่วยงาน");
+      toast.error("เกิดข้อผิดพลาดในการลบหน่วยงาน");
     }
   };
 
@@ -215,6 +225,7 @@ const AllAgency = ({ officer }) => {
           onClose={() => setShowInfoPopup(false)}
         />
       )}
+      
     </div>
   );
 };

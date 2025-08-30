@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-
 import LayoutAllPage from "../../../components/LayoutAllPage/LayoutAllPage";
 import AgencyPrivacy from "../../../hooks/AgencyPrivacy/AgencyPrivacy"; 
 import Icon from "../../../assets/setting.png";
@@ -25,14 +25,14 @@ export default function PrivacySettingsPage() {
       );
       const data = res.data.data;
       if (data.status_approve !== "approved") {
-        alert("บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ");
+        toast.warning("บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ");
         navigate("/");
         return;
       }
       setAgency(data);
     } catch (error) {
       console.error("Failed to fetch agency data:", error);
-      alert("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
+      toast.error("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
       navigate("/");
     } finally {
       setLoading(false);
@@ -53,7 +53,7 @@ export default function PrivacySettingsPage() {
       navigate("/");
     } catch (error) {
       console.error("Failed to logout:", error);
-      alert("เกิดข้อผิดพลาดในการออกจากระบบ");
+      toast.error("เกิดข้อผิดพลาดในการออกจากระบบ");
     }
   };
 

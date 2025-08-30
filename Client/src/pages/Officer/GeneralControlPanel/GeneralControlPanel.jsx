@@ -14,6 +14,8 @@ import TabNavigation from "../../../components/TabNavigation/TabNavigation.jsx";
 import TypeAgencyTable from "../../../hooks/TypeAgencyTable/TypeAgencyTable.jsx";
 import Popup from "../../../components/Popup/Popup.jsx";
 import Input from "../../../components/Input/Input.jsx";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function GeneralControlPanel() {
   const [officer, setOfficer] = useState(null);
@@ -39,7 +41,7 @@ function GeneralControlPanel() {
         setOfficer(res.data.data);
       } catch (error) {
         console.error("Failed to fetch officer data:", error);
-        alert("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
+        toast.error("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
         navigate("/LoginOfficer");
       }
     };
@@ -78,7 +80,7 @@ function GeneralControlPanel() {
           withCredentials: true,
         }
       );
-      alert("ลบเรียบร้อยแล้ว");
+      toast.success("ลบเรียบร้อยแล้ว");
       const res = await axios.get(
         API_BASE_URL + APIEndpoints.typeAgency.fetchAll,
         { withCredentials: true }
@@ -86,7 +88,7 @@ function GeneralControlPanel() {
       setTypeAgency(res.data.data);
     } catch (error) {
       console.error("ลบไม่สำเร็จ:", error);
-      alert("เกิดข้อผิดพลาดในการลบ");
+      toast.error("เกิดข้อผิดพลาดในการลบ");
     }
   };
 
@@ -110,7 +112,7 @@ function GeneralControlPanel() {
       setShowPopup(true);
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการโหลดข้อมูล:", error);
-      alert("โหลดข้อมูลไม่สำเร็จ");
+      toast.error("โหลดข้อมูลไม่สำเร็จ");
     }
   };
 
@@ -139,14 +141,14 @@ function GeneralControlPanel() {
           editData,
           { withCredentials: true }
         );
-        alert("แก้ไขข้อมูลสำเร็จ");
+        toast.success("แก้ไขข้อมูลสำเร็จ");
       } else {
         await axios.post(
           API_BASE_URL + APIEndpoints.typeAgency.createType,
           editData,
           { withCredentials: true }
         );
-        alert("เพิ่มข้อมูลสำเร็จ");
+        toast.success("เพิ่มข้อมูลสำเร็จ");
       }
       setShowPopup(false);
       setErrors({});
@@ -164,7 +166,7 @@ function GeneralControlPanel() {
           type_name: "ชื่อประเภทหน่วยงานนี้มีอยู่แล้ว",
         }));
       } else {
-        alert("เกิดข้อผิดพลาดในการบันทึก");
+        toast.error("เกิดข้อผิดพลาดในการบันทึก");
       }
     } finally {
       setBtnLoading(false);
@@ -184,7 +186,7 @@ function GeneralControlPanel() {
       navigate("/");
     } catch (error) {
       console.error("Failed to logout:", error);
-      alert("เกิดข้อผิดพลาดในการออกจากระบบ");
+      toast.error("เกิดข้อผิดพลาดในการออกจากระบบ");
     }
   };
 
@@ -244,6 +246,7 @@ function GeneralControlPanel() {
           />
         </Popup>
       )}
+      <ToastContainer position="top-center" />
     </LayoutAllpage>
   );
 }

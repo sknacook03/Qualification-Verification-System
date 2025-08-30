@@ -10,7 +10,12 @@ import Icon from "../../../assets/manage.png";
 import { API_BASE_URL, APIEndpoints } from "../../../services/api.jsx";
 import styles from "./AgencyControlPanel.module.css";
 import { useNavigate } from "react-router-dom";
-import { topMenuItems, bottomMenuItems } from "../../../constants/officerMenuItems.jsx";
+import {
+  topMenuItems,
+  bottomMenuItems,
+} from "../../../constants/officerMenuItems.jsx";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function AgencyControlPanel() {
   const [officer, setOfficer] = useState(null);
@@ -31,7 +36,7 @@ function AgencyControlPanel() {
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch officer data:", error);
-        alert("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
+        toast.error("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
         navigate("/LoginOfficer");
       }
     };
@@ -52,7 +57,7 @@ function AgencyControlPanel() {
       navigate("/");
     } catch (error) {
       console.error("Failed to logout:", error);
-      alert("เกิดข้อผิดพลาดในการออกจากระบบ");
+      toast.error("เกิดข้อผิดพลาดในการออกจากระบบ");
     }
   };
   const tabs = [
@@ -86,28 +91,31 @@ function AgencyControlPanel() {
           <div>
             <AddAgencyByOfficer officer={officer} />
           </div>
-        )
+        );
       default:
         return null;
     }
   };
   return (
-    <LayoutAllpage
-      user={officer ? officer.first_name : "Loading..."}
-      topMenuItems={topMenuItems}
-      bottomMenuItems={bottomMenuItems(logout)}
-      icon={Icon}
-      label="จัดการหน่วยงาน"
-    >
-      <div className={styles.container}>
-        <TabNavigation
-          tabs={tabs}
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-        />
-        <div>{renderContent()}</div>
-      </div>
-    </LayoutAllpage>
+    <>
+      <LayoutAllpage
+        user={officer ? officer.first_name : "Loading..."}
+        topMenuItems={topMenuItems}
+        bottomMenuItems={bottomMenuItems(logout)}
+        icon={Icon}
+        label="จัดการหน่วยงาน"
+      >
+        <div className={styles.container}>
+          <TabNavigation
+            tabs={tabs}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+          />
+          <div>{renderContent()}</div>
+        </div>
+      </LayoutAllpage>
+      <ToastContainer position="top-center" />
+    </>
   );
 }
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Icon from "../../../assets/examine.png";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
@@ -26,7 +27,7 @@ function CheckQualificationsPage() {
           }
         );
         if (res.data.data.status_approve !== "approved") {
-          alert("บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ");
+          toast.warning("บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ");
           navigate("/");
           return;
         }
@@ -34,7 +35,7 @@ function CheckQualificationsPage() {
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch agency data:", error);
-        alert("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
+        toast.error("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
         navigate("/");
         return;
       }
@@ -56,7 +57,7 @@ function CheckQualificationsPage() {
       navigate("/");
     } catch (error) {
       console.error("Failed to logout:", error);
-      alert("เกิดข้อผิดพลาดในการออกจากระบบ");
+      toast.error("เกิดข้อผิดพลาดในการออกจากระบบ");
     }
   };
 
@@ -71,6 +72,7 @@ function CheckQualificationsPage() {
       >
         <StudentSearch />
       </LayoutAllPage>
+      <ToastContainer position="top-center" />
     </>
   );
 }

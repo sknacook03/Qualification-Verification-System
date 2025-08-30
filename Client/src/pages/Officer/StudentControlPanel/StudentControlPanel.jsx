@@ -7,6 +7,8 @@ import styles from "./StudentControlPanel.module.css";
 import { useNavigate } from "react-router-dom";
 import { topMenuItems, bottomMenuItems } from "../../../constants/officerMenuItems.jsx";
 import UploadExcelStudent from "../../../hooks/UploadExcelStudent/UploadExcelStudent.jsx";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function StudentControlPanel() {
   const [officer, setOfficer] = useState(null);
@@ -26,7 +28,7 @@ function StudentControlPanel() {
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch officer data:", error);
-        alert("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
+        toast.error("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
         navigate("/LoginOfficer");
       }
     };
@@ -48,7 +50,7 @@ function StudentControlPanel() {
       navigate("/");
     } catch (error) {
       console.error("Failed to logout:", error);
-      alert("เกิดข้อผิดพลาดในการออกจากระบบ");
+      toast.error("เกิดข้อผิดพลาดในการออกจากระบบ");
     }
   };
 
@@ -61,6 +63,7 @@ function StudentControlPanel() {
       label="จัดการนักศึกษา"
     >
       <UploadExcelStudent />
+      <ToastContainer position="top-center" />
     </LayoutAllpage>
   );
 }

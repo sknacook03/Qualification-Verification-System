@@ -14,6 +14,8 @@ import { faInfo } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Pagination from "../../components/Pagination/Pagination";
 import { API_BASE_URL, APIEndpoints } from "../../services/api";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function AgencyApproveTable({
   agencies,
@@ -62,7 +64,7 @@ function AgencyApproveTable({
 
   const viewImage = (url) => {
     if (url) window.open(url, "_blank");
-    else alert("No certificate available for this agency.");
+    else toast.error("No certificate available for this agency.");
   };
 
   const getStatus = (status) => {
@@ -235,6 +237,7 @@ function AgencyApproveTable({
           setCurrentPage={setCurrentPage}
         />
       </div>
+      
     </div>
   );
 }

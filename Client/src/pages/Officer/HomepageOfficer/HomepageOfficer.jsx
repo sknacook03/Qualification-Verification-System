@@ -13,6 +13,8 @@ import {
 import Pagination from "../../../components/Pagination/Pagination.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-regular-svg-icons";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function HomepagesOfficer() {
   const [officer, setOfficer] = useState(null);
@@ -44,7 +46,7 @@ function HomepagesOfficer() {
 
   const viewImage = (url) => {
     if (url) window.open(url, "_blank");
-    else alert("No certificate available for this student.");
+    else toast.error("No certificate available for this student.");
   };
 
   useEffect(() => {
@@ -57,7 +59,7 @@ function HomepagesOfficer() {
         setOfficer(res.data?.data || null);
       } catch (error) {
         console.error("Failed to fetch officer data:", error);
-        alert("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
+        toast.error("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
         setRedirecting(true);
         navigate("/LoginOfficer");
       } finally {
@@ -137,7 +139,7 @@ function HomepagesOfficer() {
       navigate("/");
     } catch (error) {
       console.error("Failed to logout:", error);
-      alert("เกิดข้อผิดพลาดในการออกจากระบบ");
+      toast.error("เกิดข้อผิดพลาดในการออกจากระบบ");
     }
   };
 
@@ -247,7 +249,8 @@ function HomepagesOfficer() {
                           </td>
                           <td data-label="หน่วยงาน">{pv.agency_name ?? "-"}</td>
                           <td data-label="หนังสือรับรองนักศึกษา">
-                            {pv.student_certificate != "no_certificate_uploaded" ? (
+                            {pv.student_certificate !=
+                            "no_certificate_uploaded" ? (
                               <button
                                 className={`${styles.button} ${styles.viewButton}`}
                                 title="ดูหนังสือรับรอง"
@@ -291,6 +294,7 @@ function HomepagesOfficer() {
           </section>
         </div>
       )}
+      <ToastContainer position="top-center" />
     </LayoutAllpage>
   );
 }

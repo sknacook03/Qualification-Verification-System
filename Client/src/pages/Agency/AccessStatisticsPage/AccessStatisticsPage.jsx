@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Icon from "../../../assets/statistics.png";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL, APIEndpoints } from "../../../services/api";
 import LayoutAllPage from "../../../components/LayoutAllPage/LayoutAllPage";
-import { topMenuItems, bottomMenuItems } from "../../../constants/agencyMenuItems";
+import {
+  topMenuItems,
+  bottomMenuItems,
+} from "../../../constants/agencyMenuItems";
 import AccessStatistics from "../../../hooks/AccessStatistics/AccessStatistics.jsx";
 
 function AccessStatisticsPage() {
@@ -26,7 +30,9 @@ function AccessStatisticsPage() {
           }
         );
         if (res.data.data.status_approve !== "approved") {
-          alert("บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ");
+          toast.warning(
+            "บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ"
+          );
           navigate("/");
           return;
         }
@@ -34,7 +40,7 @@ function AccessStatisticsPage() {
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch agency data:", error);
-        alert("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
+        toast.error("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
         navigate("/");
         return;
       }
@@ -56,7 +62,7 @@ function AccessStatisticsPage() {
       navigate("/");
     } catch (error) {
       console.error("Failed to logout:", error);
-      alert("เกิดข้อผิดพลาดในการออกจากระบบ");
+      toast.error("เกิดข้อผิดพลาดในการออกจากระบบ");
     }
   };
   return (
@@ -68,8 +74,9 @@ function AccessStatisticsPage() {
         icon={Icon}
         label="สถิติการเข้าถึง"
       >
-        <AccessStatistics agency={agency?.id}/>
+        <AccessStatistics agency={agency?.id} />
       </LayoutAllPage>
+      <ToastContainer position="top-center" />
     </>
   );
 }

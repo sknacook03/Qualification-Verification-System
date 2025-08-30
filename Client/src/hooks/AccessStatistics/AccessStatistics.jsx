@@ -33,6 +33,8 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import pdfMake from "../../public/pdfFonts.js";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 ChartJS.register(
   CategoryScale,
@@ -696,12 +698,12 @@ const AccessStatistics = ({ officer, agency }) => {
         pdfMake.createPdf(docDefinition).download(pdfName);
       }
 
-      alert("ส่งออกข้อมูลสำเร็จ");
+      toast.success("ส่งออกข้อมูลสำเร็จ");
       setPopUpExport(false);
       resetExportState();
     } catch (error) {
       console.error("Export Error:", error);
-      alert("เกิดข้อผิดพลาดในการส่งออกข้อมูล");
+      toast.error("เกิดข้อผิดพลาดในการส่งออกข้อมูล");
     } finally {
       setExportLoading(false);
     }

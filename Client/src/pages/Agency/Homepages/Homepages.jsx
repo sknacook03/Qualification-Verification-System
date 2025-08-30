@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Icon from "../../../assets/homepage.png";
 import LayoutAllPage from "../../../components/LayoutAllPage/LayoutAllPage";
 import PopupStudent from "../../../components/PopupStudent/PopupStudent";
@@ -111,7 +112,7 @@ function Homepages() {
         );
 
         if (res.data.data.status_approve !== "approved") {
-          alert("บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ");
+          toast.warning("บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ");
           navigate("/");
           return;
         }
@@ -131,7 +132,7 @@ function Homepages() {
 
         setLoading(false);
       } catch (error) {
-        alert("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
+        toast.error("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
         navigate("/");
         return;
       }
@@ -152,7 +153,7 @@ function Homepages() {
 
       navigate("/");
     } catch (error) {
-      alert("เกิดข้อผิดพลาดในการออกจากระบบ");
+      toast.error("เกิดข้อผิดพลาดในการออกจากระบบ");
     }
   };
   const handlePageClick = ({ selected }) => {

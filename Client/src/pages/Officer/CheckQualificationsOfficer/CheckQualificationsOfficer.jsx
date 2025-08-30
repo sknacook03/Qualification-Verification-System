@@ -6,7 +6,12 @@ import Icon from "../../../assets/examine.png";
 import { API_BASE_URL, APIEndpoints } from "../../../services/api.jsx";
 import styles from "./CheckQualificationsOfficer.module.css";
 import { useNavigate } from "react-router-dom";
-import { topMenuItems, bottomMenuItems } from "../../../constants/officerMenuItems.jsx";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import {
+  topMenuItems,
+  bottomMenuItems,
+} from "../../../constants/officerMenuItems.jsx";
 
 function CheckQualificationsOfficer() {
   const [officer, setOfficer] = useState(null);
@@ -26,7 +31,7 @@ function CheckQualificationsOfficer() {
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch officer data:", error);
-        alert("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
+        toast.error("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
         navigate("/LoginOfficer");
       }
     };
@@ -34,7 +39,6 @@ function CheckQualificationsOfficer() {
     fetchOfficerData();
   }, [navigate]);
 
-  
   const logout = async () => {
     try {
       await axios.post(
@@ -48,20 +52,23 @@ function CheckQualificationsOfficer() {
       navigate("/");
     } catch (error) {
       console.error("Failed to logout:", error);
-      alert("เกิดข้อผิดพลาดในการออกจากระบบ");
+      toast.error("เกิดข้อผิดพลาดในการออกจากระบบ");
     }
   };
 
   return (
-    <LayoutAllpage
-      user={officer ? officer.first_name : "Loading..."}
-      topMenuItems={topMenuItems}
-      bottomMenuItems={bottomMenuItems(logout)}
-      icon={Icon}
-      label="ตรวจสอบคุณวุฒินักศึกษา"
-    >
-    <StudentSearch forOfficer={true}/>
-    </LayoutAllpage>
+    <>
+      <LayoutAllpage
+        user={officer ? officer.first_name : "Loading..."}
+        topMenuItems={topMenuItems}
+        bottomMenuItems={bottomMenuItems(logout)}
+        icon={Icon}
+        label="ตรวจสอบคุณวุฒินักศึกษา"
+      >
+        <StudentSearch forOfficer={true} />
+      </LayoutAllpage>
+      <ToastContainer position="top-center" />
+    </>
   );
 }
 

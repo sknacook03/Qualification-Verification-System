@@ -10,6 +10,8 @@ import {
   topMenuItems,
   bottomMenuItems,
 } from "../../../constants/officerMenuItems.jsx";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function PrivacySettingsPageOfficer() {
   const [officer, setOfficer] = useState(null);
@@ -24,7 +26,7 @@ function PrivacySettingsPageOfficer() {
       setOfficer(res.data.data);
     } catch (error) {
       console.error("Failed to fetch officer data:", error);
-      alert("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
+      toast.error("คุณยังไม่ได้ล็อกอิน! กรุณาเข้าสู่ระบบก่อน");
       navigate("/LoginOfficer");
     } finally {
       setLoading(false);
@@ -50,7 +52,7 @@ function PrivacySettingsPageOfficer() {
       navigate("/");
     } catch (error) {
       console.error("Failed to logout:", error);
-      alert("เกิดข้อผิดพลาดในการออกจากระบบ");
+      toast.error("เกิดข้อผิดพลาดในการออกจากระบบ");
     }
   };
 
@@ -70,6 +72,7 @@ function PrivacySettingsPageOfficer() {
           onOfficerUpdated={handleOfficerUpdated} 
         />
       </div>
+      <ToastContainer position="top-center" />
     </LayoutAllpage>
   );
 }

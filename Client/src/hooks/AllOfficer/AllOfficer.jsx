@@ -5,6 +5,8 @@ import Pagination from "../../components/Pagination/Pagination.jsx";
 import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
 import styles from "./AllOfficer.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { faPenToSquare, faTrashCan } from "@fortawesome/free-regular-svg-icons";
 
 function AllOfficer() {
@@ -90,7 +92,7 @@ function AllOfficer() {
         )
       );
       closeEditModal();
-      alert("แก้ไขเจ้าหน้าที่สำเร็จ");
+      toast.success("แก้ไขเจ้าหน้าที่สำเร็จ");
     } catch (error) {
       console.error("Failed to update officer:", error);
       setEditError("แก้ไขไม่สำเร็จ กรุณาลองใหม่");
@@ -109,10 +111,10 @@ function AllOfficer() {
         }
       );
       setOfficers((prev) => prev.filter((officer) => officer.id !== id));
-      alert("Deleted successfully");
+      toast.success("Deleted successfully");
     } catch (error) {
       console.error("Failed to delete officer:", error);
-      alert("Delete failed");
+      toast.error("Delete failed");
     }
   };
   const handlePageClick = ({ selected }) => {
@@ -220,6 +222,7 @@ function AllOfficer() {
           </div>
         </div>
       )}
+      <ToastContainer position="top-center" />
     </>
   );
 }
