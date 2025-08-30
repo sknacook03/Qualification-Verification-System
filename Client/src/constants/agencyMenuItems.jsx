@@ -5,6 +5,6 @@ export const topMenuItems = [
 ];
 
 export const bottomMenuItems = (logout) => [
-  { label: "ตั้งค่าความเป็นส่วนตัว", route: "/PrivacySettingsPage" },
+  { label: "แก้ไขข้อมูลส่วนตัว", route: "/PrivacySettingsPage" },
   { label: "ออกจากระบบ", onClick: logout },
 ];

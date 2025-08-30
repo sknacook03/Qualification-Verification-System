@@ -230,16 +230,6 @@ function AllOfficer() {
           </div>
         </div>
       )}
-      {showDeletePopup && (
-        <Popup
-          topic="ยืนยันการลบ"
-          info="คุณแน่ใจหรือไม่ว่าต้องการลบเจ้าหน้าที่นี้?"
-          successPopup={() => handleDelete(deletingOfficer)}
-          textButtonSuccess="ยืนยัน"
-          closePopup={() => setShowDeletePopup(false)}
-        />
-      )}
-      <ToastContainer position="top-center" />
     </>
   );
 }
