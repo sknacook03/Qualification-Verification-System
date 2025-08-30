@@ -104,7 +104,7 @@ function App() {
                 <Button text="เข้าชมเว็บไซต์" styleType="primary" />
               </Link>
               <div className={styles.btnSecondary}>
-                <a href="/docs/consent_third_party_disclosure.pdf" download>
+                <a href="https://drive.google.com/drive/folders/1lG75U75jG64fy5Rqg7oZRk3TfTzzx0z0?usp=sharing" target="_blank" rel="noreferrer" style={{ width: "100%", textDecoration: "none" }}>
                   <Button
                     text="ดาวน์โหลดฟอร์มหนังสือยินยอมให้เปิดเผยข้อมูล"
                     styleType="secondary"
