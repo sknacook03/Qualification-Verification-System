@@ -68,12 +68,14 @@ function HomepagesOfficer() {
       return { key, direction: "asc" };
     });
   };
-  
+
   const offset = currentPage * itemsPerPage;
   const currentItems = pageView
     ? sortedPageviews.slice(offset, offset + itemsPerPage)
     : [];
-  const pageCount = sortedPageviews ? Math.ceil(sortedPageviews.length / itemsPerPage) : 0;
+  const pageCount = sortedPageviews
+    ? Math.ceil(sortedPageviews.length / itemsPerPage)
+    : 0;
 
   const axiosCfg = useMemo(() => ({ withCredentials: true }), []);
 
@@ -337,7 +339,9 @@ function HomepagesOfficer() {
                                 <FontAwesomeIcon icon={faEye} />
                               </button>
                             ) : (
-                              "No Certificate"
+                              <span style={{ color: "red" }}>
+                                ไม่มีหนังสือรับรอง
+                              </span>
                             )}
                           </td>
                           <td data-label="วันที่">{dateStr}</td>
