@@ -9,6 +9,6 @@ export const topMenuItems = [
 ];
 
 export const bottomMenuItems = (logout) => [
-  { label: "ตั้งค่าความเป็นส่วนตัว", route: "/PrivacySettingsPageOfficer" },
+  { label: "แก้ไขข้อมูลส่วนตัว", route: "/PrivacySettingsPageOfficer" },
   { label: "ออกจากระบบ", onClick: logout },
 ];

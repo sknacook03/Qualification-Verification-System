@@ -61,7 +61,7 @@ function PrivacySettingsPageOfficer() {
     <LayoutAllpage
       user={officer ? officer.first_name : "Loading..."}
       icon={Icon}
-      label="ตั้งค่าความเป็นส่วนตัว"
+      label="แก้ไขข้อมูลส่วนตัว"
       topMenuItems={topMenuItems}
       bottomMenuItems={bottomMenuItems(logout)}
     >
