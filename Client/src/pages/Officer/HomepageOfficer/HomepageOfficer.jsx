@@ -73,10 +73,14 @@ function HomepagesOfficer() {
           API_BASE_URL + APIEndpoints.agency.fetchAll,
           axiosCfg
         );
-        const agencies = Array.isArray(agenciesRes.data?.data)
-          ? agenciesRes.data.data
-          : agenciesRes.data ?? [];
-        setAgencyCount(agencies.length ?? 0);
+        const raw = agenciesRes.data?.data ?? agenciesRes.data;
+        const agencies = Array.isArray(raw) ? raw : [];
+
+        const approvedCount = agencies.filter(
+          (a) => String(a.status_approve).toLowerCase() === "approved"
+        ).length;
+
+        setAgencyCount(approvedCount);
 
         let totalStudents = null;
         try {
