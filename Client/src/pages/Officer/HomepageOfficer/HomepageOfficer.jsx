@@ -21,20 +21,59 @@ function HomepagesOfficer() {
   const [studentCount, setStudentCount] = useState(null);
   const [agencyCount, setAgencyCount] = useState(null);
   const [pageView, setPageView] = useState([]);
-
   const [loadingOfficer, setLoadingOfficer] = useState(true);
   const [loadingStats, setLoadingStats] = useState(true);
   const [redirecting, setRedirecting] = useState(false);
-
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const navigate = useNavigate();
+
+  const sortedPageviews = React.useMemo(() => {
+    if (!pageView) return [];
+    const sortableItems = [...pageView];
+
+    if (sortConfig.key && sortConfig.direction !== "none") {
+      sortableItems.sort((a, b) => {
+        let aValue, bValue;
+
+        switch (sortConfig.key) {
+          case "updated_at":
+            aValue = new Date(a.updated_at);
+            bValue = new Date(b.updated_at);
+            break;
+          default:
+            aValue = "";
+            bValue = "";
+        }
+
+        if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+        if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+        return 0;
+      });
+    }
+
+    return sortableItems;
+  }, [pageView, sortConfig]);
+
+  const requestSort = (key) => {
+    setSortConfig((prevConfig) => {
+      if (prevConfig.key === key) {
+        if (prevConfig.direction === "asc") {
+          return { key, direction: "desc" };
+        } else if (prevConfig.direction === "desc") {
+          return { key: null, direction: "none" };
+        }
+      }
+      return { key, direction: "asc" };
+    });
+  };
+  
   const offset = currentPage * itemsPerPage;
   const currentItems = pageView
-    ? pageView.slice(offset, offset + itemsPerPage)
+    ? sortedPageviews.slice(offset, offset + itemsPerPage)
     : [];
-  const pageCount = pageView ? Math.ceil(pageView.length / itemsPerPage) : 0;
-
-  const navigate = useNavigate();
+  const pageCount = sortedPageviews ? Math.ceil(sortedPageviews.length / itemsPerPage) : 0;
 
   const axiosCfg = useMemo(() => ({ withCredentials: true }), []);
 
@@ -230,13 +269,42 @@ function HomepagesOfficer() {
                       <th>ชื่อนักศึกษา</th>
                       <th>หน่วยงาน</th>
                       <th>หนังสือรับรองนักศึกษา</th>
-                      <th>วันที่</th>
+                      <th>
+                        <div
+                          onClick={() => requestSort("updated_at")}
+                          className={styles.thSort}
+                        >
+                          วันที่{" "}
+                          <div className={styles.thArrow}>
+                            <p
+                              className={
+                                sortConfig.key === "updated_at" &&
+                                sortConfig.direction === "asc"
+                                  ? styles.activeArrow
+                                  : ""
+                              }
+                            >
+                              ▲
+                            </p>
+                            <p
+                              className={
+                                sortConfig.key === "updated_at" &&
+                                sortConfig.direction === "desc"
+                                  ? styles.activeArrow
+                                  : ""
+                              }
+                            >
+                              ▼
+                            </p>
+                          </div>
+                        </div>
+                      </th>
                       <th>เวลา</th>
                     </tr>
                   </thead>
                   <tbody>
                     {currentItems.map((pv, i) => {
-                      const iso = pv.created_at ?? pv.create_at ?? "";
+                      const iso = pv.updated_at ?? pv.updated_at ?? "";
                       const dateStr = iso
                         ? `${iso.slice(8, 10)}/${iso.slice(5, 7)}/${iso.slice(
                             0,
