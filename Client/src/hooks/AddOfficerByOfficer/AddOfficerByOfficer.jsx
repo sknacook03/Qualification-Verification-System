@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import PasswordInput from "../../hooks/PasswordInput/PasswordInput.jsx";
+import PasswordStrengthIndicator from "../../components/PasswordStrengthIndicator/PasswordStrengthIndicator";
 import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
 import styles from "./AddOfficerByOfficer.module.css";
 
@@ -15,6 +16,21 @@ function AddOfficerByOfficer() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+
+  const isPasswordStrong = (password) => {
+    const requirements = [
+      { test: (pwd) => pwd.length >= 8 },
+      { test: (pwd) => /[A-Z]/.test(pwd) },
+      { test: (pwd) => /[a-z]/.test(pwd) },
+      { test: (pwd) => /\d/.test(pwd) },
+      { test: (pwd) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd) },
+    ];
+
+    const satisfiedRequirements = requirements.filter((req) =>
+      req.test(password)
+    ).length;
+    return satisfiedRequirements >= 3;
+  };
 
   const handleChange = (e) => {
     setForm((prev) => ({
@@ -49,11 +65,16 @@ function AddOfficerByOfficer() {
     if (!form.last_name.trim() || form.last_name.includes(" ")) {
       newErrors.last_name = "นามสกุลห้ามเว้นวรรคหรือเว้นว่าง";
     }
-    if (form.password.length < 8 || form.confirm_password.length < 8) {
+    if (!form.password) {
+      newErrors.password = "กรุณากรอกรหัสผ่าน";
+    } else if (form.password.length < 8) {
       newErrors.password = "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร";
-      newErrors.confirm_password = "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร";
+    } else if (!isPasswordStrong(form.password)) {
+      newErrors.password = "รหัสผ่านไม่แข็งแกร่ง กรุณาตรวจสอบความต้องการด้านล่าง";
     }
-    if (form.password !== form.confirm_password) {
+    if (!form.confirm_password) {
+      newErrors.confirm_password = "กรุณากรอกยืนยันรหัสผ่าน";
+    } else if (form.password !== form.confirm_password) {
       newErrors.confirm_password = "รหัสผ่านไม่ตรงกัน กรุณาตรวจสอบ";
     }
     if (!form.email) {
@@ -173,6 +194,7 @@ function AddOfficerByOfficer() {
               onChange={handleChange}
               error={errors.password}
             />
+            {form.password && <PasswordStrengthIndicator password={form.password} />}
             <PasswordInput
               label="ยืนยันรหัสผ่าน*"
               id="confirm_password"

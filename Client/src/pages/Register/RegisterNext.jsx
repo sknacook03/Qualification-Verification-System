@@ -5,6 +5,7 @@ import Header from "../../components/header/header";
 import Input from "../../components/Input/Input";
 import Footer from "../../components/footer/footer";
 import Button from "../../components/button/Button";
+import PasswordStrengthIndicator from "../../components/PasswordStrengthIndicator/PasswordStrengthIndicator";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -27,21 +28,78 @@ function RegisterNext() {
   const [errors, setErrors] = useState({});
 
   const isPasswordStrong = (password) => {
-    const minLength = 8;
-    return password.length >= minLength;
+    const requirements = [
+      { test: (pwd) => pwd.length >= 8 },
+      { test: (pwd) => /[A-Z]/.test(pwd) },
+      { test: (pwd) => /[a-z]/.test(pwd) },
+      { test: (pwd) => /\d/.test(pwd) },
+      { test: (pwd) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd) },
+    ];
+
+    const satisfiedRequirements = requirements.filter((req) =>
+      req.test(password)
+    ).length;
+    return satisfiedRequirements >= 3;
+  };
+
+  const validateFile = (file) => {
+    if (!file)
+      return { isValid: false, error: "กรุณาอัปโหลดไฟล์หนังสือรับรอง" };
+
+    const allowedTypes = [
+      "application/pdf",
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+    ];
+    const allowedExtensions = [".pdf", ".png", ".jpg", ".jpeg"];
+
+    const fileExtension = file.name
+      .toLowerCase()
+      .substring(file.name.lastIndexOf("."));
+    const isValidType =
+      allowedTypes.includes(file.type) ||
+      allowedExtensions.includes(fileExtension);
+
+    if (!isValidType) {
+      return {
+        isValid: false,
+        error: "ไฟล์ที่อัปโหลดต้องเป็น .pdf, .png หรือ .jpg เท่านั้น",
+      };
+    }
+
+    const maxSize = 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+      return {
+        isValid: false,
+        error: "ขนาดไฟล์ต้องไม่เกิน 10 MB",
+      };
+    }
+
+    return { isValid: true, error: null };
   };
 
   const validateForm = () => {
     const newErrors = {};
     if (!password) {
       newErrors.password = "กรุณากรอกรหัสผ่าน";
+    } else if (!isPasswordStrong(password)) {
+      newErrors.password =
+        "รหัสผ่านไม่แข็งแกร่ง กรุณาตรวจสอบความต้องการด้านล่าง";
+    } else if (password.length < 8) {
+      newErrors.password = "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร";
     }
     if (!confirmPassword) {
       newErrors.confirmPassword = "กรุณากรอกยืนยันรหัสผ่าน";
+    } else if (password !== confirmPassword) {
+      newErrors.confirmPassword = "รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน";
     }
-    if (!file) {
-      newErrors.file = "กรุณาอัปโหลดไฟล์หนังสือรับรอง";
+
+    const fileValidation = validateFile(file);
+    if (!fileValidation.isValid) {
+      newErrors.file = fileValidation.error;
     }
+
     if (!acceptTerms) {
       newErrors.acceptTerms = "กรุณายอมรับข้อตกลงในการใช้บริการ";
     }
@@ -70,16 +128,6 @@ function RegisterNext() {
     });
 
     if (validateForm()) {
-      if (password !== confirmPassword) {
-        toast.error("รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน!");
-        return;
-      }
-
-      if (!isPasswordStrong(password)) {
-        toast.error("รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร");
-        return;
-      }
-
       try {
         setLoading(true);
         await toast.promise(
@@ -151,6 +199,7 @@ function RegisterNext() {
               placeholder="รหัสผ่าน"
               error={errors.password}
             />
+            <PasswordStrengthIndicator password={password} />
             <PasswordInput
               label=" "
               id="confirmPassword"
@@ -170,12 +219,40 @@ function RegisterNext() {
           </div>
           <Input
             type="file"
+            accept=".pdf,.png,.jpg,.jpeg"
             onChange={(e) => {
-              setFile(e.target.files[0]);
-              setErrors((prev) => ({ ...prev, file: undefined }));
+              const selectedFile = e.target.files[0];
+              if (selectedFile) {
+                const fileValidation = validateFile(selectedFile);
+                if (fileValidation.isValid) {
+                  setFile(selectedFile);
+                  setErrors((prev) => ({ ...prev, file: undefined }));
+                } else {
+                  setFile(null);
+                  setErrors((prev) => ({
+                    ...prev,
+                    file: fileValidation.error,
+                  }));
+                  e.target.value = "";
+                }
+              } else {
+                setFile(null);
+                setErrors((prev) => ({ ...prev, file: undefined }));
+              }
             }}
             error={errors.file}
           />
+          {file && (
+            <div className={styles.fileInfo}>
+              <p className={styles.fileSelected}>
+                <span className={styles.fileIcon}>📄</span>
+                <span className={styles.fileName}>{file.name}</span>
+                <span className={styles.fileSize}>
+                  ({(file.size / (1024 * 1024)).toFixed(2)} MB)
+                </span>
+              </p>
+            </div>
+          )}
           <div className={styles.checkboxContainer}>
             <label className={styles.checkboxLabel}>
               <input
@@ -188,7 +265,11 @@ function RegisterNext() {
               />
               <span>
                 ฉันยอมรับ{" "}
-                <Link to="/Term-of-Services" target="_blank" rel="noopener noreferrer">
+                <Link
+                  to="/Term-of-Services"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   ข้อตกลงในการใช้บริการ
                 </Link>
               </span>
@@ -207,7 +288,9 @@ function RegisterNext() {
                 )
               }
               styleType="third"
-              disabled={loading || !acceptTerms}
+              disabled={
+                loading || !acceptTerms || !file || !isPasswordStrong(password)
+              }
             />
             <Link to="/Register" style={{ textDecoration: "none" }}>
               <Button text="ย้อนกลับ" styleType="back" disabled={loading} />

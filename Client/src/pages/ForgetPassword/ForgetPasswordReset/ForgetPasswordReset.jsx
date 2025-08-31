@@ -4,6 +4,7 @@ import Header from "../../../components/header/header";
 import Footer from "../../../components/footer/footer";
 import styles from "./ForgetPasswordReset.module.css";
 import PasswordInput from "../../../hooks/PasswordInput/PasswordInput";
+import PasswordStrengthIndicator from "../../../components/PasswordStrengthIndicator/PasswordStrengthIndicator.jsx";
 import Button from "../../../components/button/Button";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -22,10 +23,29 @@ function ForgetPasswordReset() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
+
+   const isPasswordStrong = (password) => {
+    const requirements = [
+      { test: (pwd) => pwd.length >= 8 },
+      { test: (pwd) => /[A-Z]/.test(pwd) },
+      { test: (pwd) => /[a-z]/.test(pwd) },
+      { test: (pwd) => /\d/.test(pwd) },
+      { test: (pwd) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd) },
+    ];
+
+    const satisfiedRequirements = requirements.filter((req) =>
+      req.test(password)
+    ).length;
+    return satisfiedRequirements >= 3;
+  };
   const validateForm = () => {
     const newErrors = {};
     if (!password) {
       newErrors.password = "กรุณากรอกรหัสผ่าน";
+    } else if (!isPasswordStrong(password)) {
+      newErrors.password =
+        "รหัสผ่านไม่แข็งแกร่ง กรุณาตรวจสอบความต้องการด้านล่าง";
+      
     }
     if (!passwordNew) {
       newErrors.passwordNew = "กรุณากรอกยืนยันรหัสผ่าน";
@@ -45,14 +65,17 @@ function ForgetPasswordReset() {
     if (validateForm()) {
       if (!email) {
         toast.error("ไม่พบอีเมลสำหรับการรีเซ็ตรหัสผ่าน");
+        setLoading(false);
         return;
       }
       if (password !== passwordNew) {
         toast.error("รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน");
+        setLoading(false);
         return;
       }
       if (password.length < 8) {
         toast.error("รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร");
+        setLoading(false);
         return;
       }
       try {
@@ -104,6 +127,7 @@ function ForgetPasswordReset() {
                 placeholder="กรุณาใส่รหัสผ่านใหม่"
                 error={errors.password}
               />
+              <PasswordStrengthIndicator password={password} />
               <PasswordInput
                 label="ยืนยันรหัสผ่านใหม่"
                 id="passwordNew"
@@ -117,7 +141,7 @@ function ForgetPasswordReset() {
                 text="ยืนยันการรีเซ็ตรหัสผ่าน"
                 styleType="third"
                 onClick={handleResetPassword}
-                disabled={loading || !password || !passwordNew}
+                disabled={loading || !password || !passwordNew || !isPasswordStrong(passwordNew)}
               />
               {showPopup && (
                 <Popup

@@ -9,7 +9,17 @@ import Loading from "../../../components/Loading/Loading";
 import Pagination from "../../../components/Pagination/Pagination";
 import ClipLoader from "react-spinners/ClipLoader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfo } from "@fortawesome/free-solid-svg-icons";
+import { 
+  faInfo, 
+  faBuilding, 
+  faEnvelope, 
+  faPhone, 
+  faMapMarkerAlt, 
+  faUser, 
+  faUserTag,
+  faCalendarAlt,
+  faCheckCircle
+} from "@fortawesome/free-solid-svg-icons";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "./Homepages.module.css";
 import moment from "moment";
@@ -264,15 +274,73 @@ function Homepages() {
           <>
             <h4 className={styles.topic}>ข้อมูลของท่าน</h4>
             <div className={styles.boxInfoAgency}>
-              <p>
-                <strong>Email:</strong> {agency.email}
-              </p>
-              <p>
-                <strong>Department:</strong> {agency.department}
-              </p>
-              <p>
-                <strong>Role:</strong> {agency.role}
-              </p>
+              <div className={styles.agencyHeader}>
+                <div className={styles.agencyIcon}>
+                  <FontAwesomeIcon icon={faBuilding} />
+                </div>
+                <div className={styles.agencyTitle}>
+                  <h3>{agency.agency_name}</h3>
+                  <span className={`${styles.statusBadge} ${
+                    agency.status_approve === 'approved' ? styles.approved : 
+                    agency.status_approve === 'pending' ? styles.pending : styles.rejected
+                  }`}>
+                    {agency.status_approve === 'approved' ? 'อนุมัติแล้ว' : 
+                     agency.status_approve === 'pending' ? 'รอการอนุมัติ' : 'ไม่อนุมัติ'}
+                  </span>
+                </div>
+              </div>
+              
+              <div className={styles.infoGrid}>
+                <div className={styles.infoItem}>
+                  <FontAwesomeIcon icon={faEnvelope} className={styles.infoIcon} />
+                  <div className={styles.infoContent}>
+                    <strong>อีเมล</strong>
+                    <span>{agency.email}</span>
+                  </div>
+                </div>
+                
+                <div className={styles.infoItem}>
+                  <FontAwesomeIcon icon={faUser} className={styles.infoIcon} />
+                  <div className={styles.infoContent}>
+                    <strong>แผนก</strong>
+                    <span>{agency.department}</span>
+                  </div>
+                </div>
+                
+                <div className={styles.infoItem}>
+                  <FontAwesomeIcon icon={faPhone} className={styles.infoIcon} />
+                  <div className={styles.infoContent}>
+                    <strong>โทรศัพท์</strong>
+                    <span>{agency.telephone_number}</span>
+                  </div>
+                </div>
+                
+                <div className={styles.infoItem}>
+                  <FontAwesomeIcon icon={faUserTag} className={styles.infoIcon} />
+                  <div className={styles.infoContent}>
+                    <strong>บทบาท</strong>
+                    <span>{agency.role}</span>
+                  </div>
+                </div>
+                
+                <div className={styles.infoItem}>
+                  <FontAwesomeIcon icon={faMapMarkerAlt} className={styles.infoIcon} />
+                  <div className={styles.infoContent}>
+                    <strong>ที่อยู่</strong>
+                    <span>
+                      {agency.address} {agency.subdistrict} {agency.district} {agency.province} {agency.postal_code}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className={styles.infoItem}>
+                  <FontAwesomeIcon icon={faCalendarAlt} className={styles.infoIcon} />
+                  <div className={styles.infoContent}>
+                    <strong>สมัครเมื่อ</strong>
+                    <span>{moment(agency.created_at).format('DD/MM/YYYY HH:mm')}</span>
+                  </div>
+                </div>
+              </div>
             </div>
             <h4 className={styles.topic}>ข้อมูลของนักศึกษาที่เคยตรวจสอบ</h4>
             <div className={styles.selectedBox} style={{ marginBottom: 10 }}>

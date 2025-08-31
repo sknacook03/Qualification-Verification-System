@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import PasswordStrengthIndicator from "../../components/PasswordStrengthIndicator/PasswordStrengthIndicator";
 import { API_BASE_URL, APIEndpoints } from "../../services/api.jsx";
 import styles from "./AgencyPrivacy.module.css";
 
@@ -26,6 +27,21 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
   const [confirmPass, setConfirmPass] = useState("");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+
+  const isPasswordStrong = (password) => {
+    const requirements = [
+      { test: (pwd) => pwd.length >= 8 },
+      { test: (pwd) => /[A-Z]/.test(pwd) },
+      { test: (pwd) => /[a-z]/.test(pwd) },
+      { test: (pwd) => /\d/.test(pwd) },
+      { test: (pwd) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd) },
+    ];
+
+    const satisfiedRequirements = requirements.filter((req) =>
+      req.test(password)
+    ).length;
+    return satisfiedRequirements >= 3;
+  };
 
   const normalizeImagePath = (path) => {
     if (!path) return null;
@@ -107,6 +123,18 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
     e.preventDefault();
     if (!form.email.trim() || !form.agencyName.trim()) {
       setMessage("กรุณากรอกอีเมลและชื่อหน่วยงาน");
+      return;
+    }
+    if (newPass && newPass.length < 8) {
+      setMessage("รหัสผ่านใหม่ต้องอย่างน้อย 8 ตัวอักษร");
+      return;
+    }
+    if (newPass && !isPasswordStrong(newPass)) {
+      setMessage("รหัสผ่านไม่แข็งแกร่ง กรุณาตรวจสอบความต้องการด้านล่าง");
+      return;
+    }
+    if (newPass && newPass !== confirmPass) {
+      setMessage("รหัสผ่านใหม่ไม่ตรงกัน");
       return;
     }
     setBusy(true);
@@ -373,6 +401,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                     onChange={(e) => setNewPass(e.target.value)}
                     disabled={busy}
                   />
+                  {newPass && <PasswordStrengthIndicator password={newPass} />}
                 </div>
                 <div className={styles.inputGroup}>
                   <label className={styles.label}>ยืนยันรหัสผ่านใหม่</label>
