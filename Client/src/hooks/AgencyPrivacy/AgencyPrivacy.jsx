@@ -28,6 +28,11 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
 
+  // เพิ่ม state สำหรับการแสดงรหัสผ่าน
+  const [showCurrentPass, setShowCurrentPass] = useState(false);
+  const [showNewPass, setShowNewPass] = useState(false);
+  const [showConfirmPass, setShowConfirmPass] = useState(false);
+
   const isPasswordStrong = (password) => {
     const requirements = [
       { test: (pwd) => pwd.length >= 8 },
@@ -118,6 +123,29 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
       setBusy(false);
     }
   };
+
+  const handleCancel = () => {
+  setForm({
+    email: agency.email || "",
+    agencyName: agency.agency_name || "",
+    department: agency.department || "",
+    telephoneNumber: agency.telephone_number || "",
+    address: agency.address || "",
+    subdistrict: agency.subdistrict || "",
+    district: agency.district || "",
+    province: agency.province || "",
+    postalCode: agency.postal_code || "",
+    typeId: agency.type_id || "",
+    certificate: agency.certificate || "",
+    role: agency.role || "",
+    statusApprove: agency.status_approve || "",
+  });
+  setCurrentPass("");
+  setNewPass("");
+  setConfirmPass("");
+  setMessage("");
+  setPhase("view");
+};
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -256,11 +284,18 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                 <label className={styles.label}>รหัสผ่านปัจจุบัน</label>
                 <input
                   className={styles.input}
-                  type="password"
+                  type={showCurrentPass ? "text" : "password"}
                   value={currentPass}
                   onChange={(e) => setCurrentPass(e.target.value)}
                   disabled={busy}
                 />
+                <button
+                  type="button"
+                  className={styles.passwordToggle}
+                  onClick={() => setShowCurrentPass(!showCurrentPass)}
+                >
+                  {showCurrentPass ? "👁️" : "👁️‍🗨️"}
+                </button>
               </div>
             )}
 
@@ -396,22 +431,36 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                   <label className={styles.label}>รหัสผ่านใหม่ (ถ้าต้องการ)</label>
                   <input
                     className={styles.input}
-                    type="password"
+                    type={showNewPass ? "text" : "password"}
                     value={newPass}
                     onChange={(e) => setNewPass(e.target.value)}
                     disabled={busy}
                   />
                   {newPass && <PasswordStrengthIndicator password={newPass} />}
+                  <button
+                    type="button"
+                    className={styles.passwordToggle}
+                    onClick={() => setShowNewPass(!showNewPass)}
+                  >
+                    {showNewPass ? "👁️" : "👁️‍🗨️"}
+                  </button>
                 </div>
                 <div className={styles.inputGroup}>
                   <label className={styles.label}>ยืนยันรหัสผ่านใหม่</label>
                   <input
                   className={styles.input}
-                    type="password"
+                    type={showConfirmPass ? "text" : "password"}
                     value={confirmPass}
                     onChange={(e) => setConfirmPass(e.target.value)}
                     disabled={busy}
                   />
+                  <button
+                    type="button"
+                    className={styles.passwordToggle}
+                    onClick={() => setShowConfirmPass(!showConfirmPass)}
+                  >
+                    {showConfirmPass ? "👁️" : "👁️‍🗨️"}
+                  </button>
                 </div>
               </>
             )}
@@ -435,10 +484,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
               <button
                 type="button"
                 className={`${styles.button} ${styles.secondaryBtn}`}
-                onClick={() => {
-                  setPhase("view");
-                  setMessage("");
-                }}
+                onClick={handleCancel}
                 disabled={busy}
               >
                 ยกเลิก

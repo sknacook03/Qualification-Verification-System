@@ -13,6 +13,11 @@ export default function OfficerPrivacy({ officer, loading, onOfficerUpdated }) {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
 
+  // เพิ่ม state สำหรับการแสดงรหัสผ่าน
+  const [showCurrentPass, setShowCurrentPass] = useState(false);
+  const [showNewPass, setShowNewPass] = useState(false);
+  const [showConfirmPass, setShowConfirmPass] = useState(false);
+
   const isPasswordStrong = (password) => {
     const requirements = [
       { test: (pwd) => pwd.length >= 8 },
@@ -62,6 +67,21 @@ export default function OfficerPrivacy({ officer, loading, onOfficerUpdated }) {
     } finally {
       setBusy(false);
     }
+  };
+
+  // เพิ่ม handleCancel function
+  const handleCancel = () => {
+    // รีเซ็ตค่าเดิมทั้งหมด
+    setForm({
+      firstName: officer.first_name || "",
+      lastName: officer.last_name || "",
+      email: officer.email || "",
+    });
+    setCurrentPass("");
+    setNewPass("");
+    setConfirmPass("");
+    setMessage("");
+    setPhase("view");
   };
 
   const handleUpdate = async (e) => {
@@ -137,26 +157,28 @@ export default function OfficerPrivacy({ officer, loading, onOfficerUpdated }) {
           <>
             <div className={styles.summary}>
               <div className={styles.item}>
-                <span>รหัสเจ้าหน้าที่</span>
+                <span>รหัสเจ้าหน้าที่:</span>
                 <span>{officer.id}</span>
               </div>
               <div className={styles.item}>
-                <span>ชื่อ</span>
+                <span>ชื่อ:</span>
                 <span>
                   {officer.first_name} {officer.last_name}
                 </span>
               </div>
               <div className={styles.item}>
-                <span>อีเมล</span>
+                <span>อีเมล:</span>
                 <span>{officer.email}</span>
               </div>
             </div>
-            <button
-              className={styles.primaryBtn}
-              onClick={() => setPhase("verify")}
-            >
-              แก้ไขข้อมูล
-            </button>
+            <div className={styles.buttonRow}>
+              <button
+                className={`${styles.button} ${styles.primaryBtn}`}
+                onClick={() => setPhase("verify")}
+              >
+                แก้ไขข้อมูล
+              </button>
+            </div>
           </>
         )}
 
@@ -167,21 +189,28 @@ export default function OfficerPrivacy({ officer, loading, onOfficerUpdated }) {
           >
             {phase === "verify" && (
               <div className={styles.inputGroup}>
-                <label className={styles.label}>รหัสผ่านปัจจุบัน</label>
+                <label className={styles.label}>รหัสผ่านปัจจุบัน:</label>
                 <input
-                  className={styles.input}
-                  type="password"
+                  className={`${styles.input} ${styles.passwordInput}`}
+                  type={showCurrentPass ? "text" : "password"}
                   value={currentPass}
                   onChange={(e) => setCurrentPass(e.target.value)}
                   disabled={busy}
                 />
+                <button
+                  type="button"
+                  className={styles.passwordToggle}
+                  onClick={() => setShowCurrentPass(!showCurrentPass)}
+                >
+                  {showCurrentPass ? "👁️" : "👁️‍🗨️"}
+                </button>
               </div>
             )}
 
             {phase === "edit" && (
               <>
                 <div className={styles.inputGroup}>
-                  <label className={styles.label}>ชื่อ</label>
+                  <label className={styles.label}>ชื่อ:</label>
                   <input
                     className={styles.input}
                     type="text"
@@ -193,7 +222,7 @@ export default function OfficerPrivacy({ officer, loading, onOfficerUpdated }) {
                   />
                 </div>
                 <div className={styles.inputGroup}>
-                  <label className={styles.label}>นามสกุล</label>
+                  <label className={styles.label}>นามสกุล:</label>
                   <input
                     className={styles.input}
                     type="text"
@@ -205,7 +234,7 @@ export default function OfficerPrivacy({ officer, loading, onOfficerUpdated }) {
                   />
                 </div>
                 <div className={styles.inputGroup}>
-                  <label className={styles.label}>อีเมล</label>
+                  <label className={styles.label}>อีเมล:</label>
                   <input
                     className={styles.input}
                     type="email"
@@ -218,26 +247,40 @@ export default function OfficerPrivacy({ officer, loading, onOfficerUpdated }) {
                 </div>
                 <div className={styles.inputGroup}>
                   <label className={styles.label}>
-                    รหัสผ่านใหม่ (ถ้าต้องการ)
+                    รหัสผ่านใหม่ (ถ้าต้องการ):
                   </label>
                   <input
-                    className={styles.input}
-                    type="password"
+                    className={`${styles.input} ${styles.passwordInput}`}
+                    type={showNewPass ? "text" : "password"}
                     value={newPass}
                     onChange={(e) => setNewPass(e.target.value)}
                     disabled={busy}
                   />
+                  <button
+                    type="button"
+                    className={styles.passwordToggle}
+                    onClick={() => setShowNewPass(!showNewPass)}
+                  >
+                    {showNewPass ? "👁️" : "👁️‍🗨️"}
+                  </button>
                   {newPass && <PasswordStrengthIndicator password={newPass} />}
                 </div>
                 <div className={styles.inputGroup}>
-                  <label className={styles.label}>ยืนยันรหัสผ่านใหม่</label>
+                  <label className={styles.label}>ยืนยันรหัสผ่านใหม่:</label>
                   <input
-                    className={styles.input}
-                    type="password"
+                    className={`${styles.input} ${styles.passwordInput}`}
+                    type={showConfirmPass ? "text" : "password"}
                     value={confirmPass}
                     onChange={(e) => setConfirmPass(e.target.value)}
                     disabled={busy}
                   />
+                  <button
+                    type="button"
+                    className={styles.passwordToggle}
+                    onClick={() => setShowConfirmPass(!showConfirmPass)}
+                  >
+                    {showConfirmPass ? "👁️" : "👁️‍🗨️"}
+                  </button>
                 </div>
               </>
             )}
@@ -261,10 +304,7 @@ export default function OfficerPrivacy({ officer, loading, onOfficerUpdated }) {
               <button
                 type="button"
                 className={`${styles.button} ${styles.secondaryBtn}`}
-                onClick={() => {
-                  setPhase("view");
-                  setMessage("");
-                }}
+                onClick={handleCancel}
                 disabled={busy}
               >
                 ยกเลิก

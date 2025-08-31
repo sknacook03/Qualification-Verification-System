@@ -1,168 +1,269 @@
 .container {
+  min-height: 100vh;
+  padding: 20px;
   display: flex;
   justify-content: center;
-  padding: 2rem 1rem;
-  background-color: #f5f6fa;
-  min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  align-items: center;
 }
 
 .card {
-  background: #fff;
-  border-radius: 10px;
-  padding: 2rem 2.5rem;
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 400px;
-  box-sizing: border-box;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  color: #333;
+  max-width: 800px;
+  min-height: 500px;
+  transition: all 0.2s ease; 
+  border: 1px solid #e9ecef;
+}
+
+.card:hover {
+  transform: translateY(-1px); 
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 .title {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: #333;
   text-align: center;
-  margin-bottom: 2rem;
-  user-select: none;
+  color: #333;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(to right, #e29b4a, #e79c3a);
+  border-radius: 2px;
 }
 
 .summary {
-  margin-bottom: 2rem;
+  display: grid;
+  gap: 15px;
+  margin-bottom: 30px;
 }
 
 .item {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 1rem;
-  font-size: 1rem;
-  line-height: 1.4;
-  border-bottom: 1px solid #e0e0e0;
-  padding-bottom: 6px;
+  align-items: center;
+  padding: 15px 20px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  border-left: 4px solid #e29b4a; 
+  transition: all 0.2s ease; 
+}
+
+.item:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateX(2px); 
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
 }
 
 .item span:first-child {
   font-weight: 600;
   color: #555;
-  user-select: none;
+  min-width: 150px;
 }
 
 .item span:last-child {
-  max-width: 60%;
+  color: #333;
   text-align: right;
-  word-wrap: break-word;
-  color: #222;
+  flex: 1;
+}
+
+.certificateImage {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease; 
+  border: 2px solid #e0e0e0;
+}
+
+.certificateImage:hover {
+  transform: scale(1.05);
+  border-color: #e79c3a;
 }
 
 .form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+  display: grid;
+  gap: 20px;
 }
 
 .inputGroup {
   display: flex;
   flex-direction: column;
+  gap: 8px;
+  position: relative; 
 }
 
 .label {
-  font-size: 0.9rem;
-  color: #555;
-  margin-bottom: 0.4rem;
   font-weight: 600;
-  user-select: none;
+  color: #555;
+  font-size: 0.95rem;
 }
 
-.input, .inputGroup select {
-  padding: 10px 12px;
+.input {
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
   font-size: 1rem;
-  border: 1.8px solid #ccc;
-  border-radius: 8px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  background-color: #fafafa;
-  color: #333;
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.9);
 }
 
-.input:focus, .inputGroup select:focus {
+.input:focus {
   outline: none;
-  border-color: #fb8c00;
-  box-shadow: 0 0 8px rgba(251, 140, 0, 0.4);
-  background-color: #fff;
+  border-color: #e79c3a; 
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1); 
+  background: white;
+}
+
+.input:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.passwordInput {
+  padding-right: 45px;
+}
+
+.passwordToggle {
+  position: absolute;
+  right: 12px;
+  top: 38px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  font-size: 18px;
+  transition: color 0.2s ease;
+}
+
+.passwordToggle:hover {
+  color: #e79c3a;
 }
 
 .buttonRow {
   display: flex;
-  justify-content: flex-start;
-  gap: 12px;
-  margin-top: 1rem;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 30px;
 }
 
 .button {
-  flex: 1;
-  padding: 0.7rem ;
-  font-size: 1.1rem;
-  font-weight: 700;
-  border-radius: 8px;
-  cursor: pointer;
+  padding: 12px 30px;
   border: none;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  user-select: none;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 120px;
 }
 
 .primaryBtn {
-  background-color: #fb8c00;
+  background: linear-gradient(135deg, #e29b4a 0%, #ec692b 100%); 
   color: white;
-  box-shadow: 0 6px 12px rgba(251, 140, 0, 0.5);
 }
 
 .primaryBtn:hover:not(:disabled) {
-  background-color: #e27600;
-  box-shadow: 0 8px 20px rgba(226, 118, 0, 0.6);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(255, 107, 53, 0.3);
+}
+
+.primaryBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .secondaryBtn {
-  background-color: #fff;
-  color: #fb8c00;
-  border: 2px solid #fb8c00;
-  box-shadow: none;
-  font-weight: 600;
+  background: transparent;
+  color: #666;
+  border: 2px solid #ddd;
 }
 
 .secondaryBtn:hover:not(:disabled) {
-  background-color: #fb8c00;
-  color: white;
-  box-shadow: 0 6px 12px rgba(251, 140, 0, 0.5);
-  border: none;
-}
-
-.button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  box-shadow: none;
+  background: #f8f9fa;
+  border-color: #aaa;
+  transform: translateY(-1px); /* ลดการเคลื่อนไหว */
 }
 
 .message {
-  color: #fb8c00;
-  font-size: 0.9rem;
   text-align: center;
-  margin: 0;
-  font-weight: 600;
-}
-
-.certificateImage {
-  max-width: 180px;
-  max-height: 130px;
-  object-fit: contain;
+  padding: 12px 20px;
   border-radius: 10px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-  cursor: pointer;
-  transition: transform 0.25s ease;
-  user-select: none;
-  display: block;
-  margin-left: auto;
+  margin: 15px 0;
+  font-weight: 500;
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+  border: 1px solid rgba(220, 53, 69, 0.3);
 }
 
-.certificateImage:hover {
-  transform: scale(1.08);
-  box-shadow: 0 6px 16px rgba(251, 140, 0, 0.6);
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+  
+  .card {
+    padding: 20px;
+    border-radius: 15px;
+  }
+  
+  .title {
+    font-size: 1.8rem;
+  }
+  
+  .item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    text-align: left;
+  }
+  
+  .item span:last-child {
+    text-align: left;
+  }
+  
+  .buttonRow {
+    flex-direction: column;
+  }
+  
+  .button {
+    width: 100%;
+  }
+}
+
+/* Animation for form transitions - ลดลง */
+.form {
+  animation: fadeInUp 0.3s ease; /* ลดเวลาจาก 0.5s เป็น 0.3s */
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px); /* ลดจาก 20px เป็น 10px */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card:has(.message) {
+  text-align: center;
+  color: #666;
+  font-size: 1.1rem;
 }
