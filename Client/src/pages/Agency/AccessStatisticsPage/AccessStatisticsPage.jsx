@@ -21,14 +21,9 @@ function AccessStatisticsPage() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await toast.promise(
-          axios.get(API_BASE_URL + APIEndpoints.agency.logged, {
-            withCredentials: true,
-          }),
-          {
-            pending: "กำลังตรวจสอบสถานะ...",
-          }
-        );
+        const res = await axios.get(API_BASE_URL + APIEndpoints.agency.logged, {
+          withCredentials: true,
+        });
         if (res.data.data.status_approve !== "approved") {
           toast.warning(
             "บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ"

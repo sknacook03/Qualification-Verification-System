@@ -4,11 +4,14 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import LayoutAllPage from "../../../components/LayoutAllPage/LayoutAllPage";
-import AgencyPrivacy from "../../../hooks/AgencyPrivacy/AgencyPrivacy"; 
+import AgencyPrivacy from "../../../hooks/AgencyPrivacy/AgencyPrivacy";
 import Icon from "../../../assets/setting.png";
 import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL, APIEndpoints } from "../../../services/api";
-import { topMenuItems, bottomMenuItems } from "../../../constants/agencyMenuItems";
+import {
+  topMenuItems,
+  bottomMenuItems,
+} from "../../../constants/agencyMenuItems";
 
 export default function PrivacySettingsPage() {
   const [agency, setAgency] = useState(null);
@@ -17,15 +20,14 @@ export default function PrivacySettingsPage() {
 
   const fetchAgencyData = useCallback(async () => {
     try {
-      const res = await toast.promise(
-        axios.get(API_BASE_URL + APIEndpoints.agency.logged, {
-          withCredentials: true,
-        }),
-        { pending: "กำลังตรวจสอบสถานะ..." }
-      );
+      const res = await axios.get(API_BASE_URL + APIEndpoints.agency.logged, {
+        withCredentials: true,
+      });
       const data = res.data.data;
       if (data.status_approve !== "approved") {
-        toast.warning("บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ");
+        toast.warning(
+          "บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ"
+        );
         navigate("/");
         return;
       }
@@ -63,7 +65,11 @@ export default function PrivacySettingsPage() {
   };
 
   if (loading) {
-    return <div style={{ padding: "2rem", textAlign: "center" }}>กำลังโหลดข้อมูล...</div>;
+    return (
+      <div style={{ padding: "2rem", textAlign: "center" }}>
+        กำลังโหลดข้อมูล...
+      </div>
+    );
   }
 
   return (
