@@ -62,10 +62,10 @@ const AllAgency = ({ officer }) => {
         )
       );
 
-      toast.success("Agency status updated to pending.");
+      toast.success("อัปเดตสถานะหน่วยงานเป็นรอดำเนินการเรียบร้อยแล้ว");
     } catch (error) {
       console.error("Failed to update agency status to pending:", error);
-      toast.error("Error while updating agency status.");
+      toast.error("เกิดข้อผิดพลาดในการอัปเดตสถานะหน่วยงาน");
     }
   };
 
@@ -78,7 +78,7 @@ const AllAgency = ({ officer }) => {
     try {
       const agencyToUpdate = agency.find((item) => item.id === rejectedAgency);
       if (!agencyToUpdate) {
-        toast.error("Agency not found");
+        toast.error("ไม่พบหน่วยงาน");
         return;
       }
 
@@ -121,10 +121,10 @@ const AllAgency = ({ officer }) => {
 
       setShowPopup(false);
       setRejectionReason("");
-      toast.success("Rejection recorded and email sent.");
+      toast.success("บันทึกการปฏิเสธและส่งอีเมลเรียบร้อยแล้ว");
     } catch (error) {
       console.error("Failed to reject agency:", error);
-      toast.error("Error while rejecting agency.");
+      toast.error("เกิดข้อผิดพลาดในการปฏิเสธหน่วยงาน");
     }
   };
 

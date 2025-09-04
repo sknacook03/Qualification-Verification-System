@@ -87,7 +87,7 @@ function HomepagesOfficer() {
 
   const viewImage = (url) => {
     if (url) window.open(url, "_blank");
-    else toast.error("No certificate available for this student.");
+    else toast.error("ไม่มีใบประกาศนียบัตรสำหรับนักเรียนคนนี้");
   };
 
   useEffect(() => {

@@ -42,7 +42,7 @@ const AgencyApproval = ({ officer }) => {
     try {
       const agencyToUpdate = agency.find((item) => item.id === agencyId);
       if (!agencyToUpdate) {
-        toast.error("Agency not found");
+        toast.error("ไม่พบหน่วยงาน");
         return;
       }
 
@@ -81,10 +81,10 @@ const AgencyApproval = ({ officer }) => {
         )
       );
 
-      toast.success("Approval recorded and email sent.");
+      toast.success("บันทึกการอนุมัติและส่งอีเมลเรียบร้อยแล้ว");
     } catch (error) {
       console.error("Failed to approve agency:", error);
-      toast.error("Error while approving agency.");
+      toast.error("เกิดข้อผิดพลาดในการอนุมัติหน่วยงาน");
     }
   };
 
@@ -97,7 +97,7 @@ const AgencyApproval = ({ officer }) => {
     try {
       const agencyToUpdate = agency.find((item) => item.id === rejectedAgency);
       if (!agencyToUpdate) {
-        toast.error("Agency not found");
+        toast.error("ไม่พบหน่วยงาน");
         return;
       }
 
@@ -140,10 +140,10 @@ const AgencyApproval = ({ officer }) => {
 
       setShowPopup(false);
       setRejectionReason("");
-      toast.error("Rejection recorded and email sent.");
+      toast.success("บันทึกการปฏิเสธและส่งอีเมลเรียบร้อยแล้ว");
     } catch (error) {
       console.error("Failed to reject agency:", error);
-      toast.error("Error while rejecting agency.");
+      toast.error("เกิดข้อผิดพลาดในการปฏิเสธหน่วยงาน");
     }
   };
 

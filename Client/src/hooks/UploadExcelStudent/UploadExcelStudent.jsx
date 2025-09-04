@@ -111,7 +111,7 @@ const UploadExcelStudent = () => {
       }
       setUploading(false);
     } catch (err) {
-      toast.error("Upload failed");
+      toast.error("อัปโหลดล้มเหลว");
       console.error(err);
     }
   };
