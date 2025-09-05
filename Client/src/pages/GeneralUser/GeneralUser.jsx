@@ -15,6 +15,7 @@ function GeneralUser() {
       topMenuItems={topMenuItems}
       icon={Icon}
       label="สถิติการเข้าถึง"
+      guest
     >
       <AccessStatistics />
     </LayoutAllpage>

@@ -13,12 +13,13 @@ const LayoutAllPage = ({
   bottomMenuItems,
   icon,
   label,
+  guest,
   children,
 }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   return (
     <>
-      <GlobalTokenExpiryHandler />
+      {!guest && <GlobalTokenExpiryHandler />}
       <div className={styles.appContainer}>
         <div className={styles.boxContainer}>
           <div className={styles.contentHeader}>
