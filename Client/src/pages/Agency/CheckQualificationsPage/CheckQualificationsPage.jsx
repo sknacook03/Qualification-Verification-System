@@ -63,7 +63,7 @@ function CheckQualificationsPage() {
         topMenuItems={topMenuItems}
         bottomMenuItems={bottomMenuItems(logout)}
         icon={Icon}
-        label="ตรวจสอบคุณวุฒินักศึกษา"
+        label="ตรวจสอบคุณวุฒิผู้สำเร็จการศึกษา"
       >
         <StudentSearch />
       </LayoutAllPage>

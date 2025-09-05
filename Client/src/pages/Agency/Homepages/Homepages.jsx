@@ -362,7 +362,7 @@ function Homepages() {
                 </div>
               </div>
             </div>
-            <h4 className={styles.topic}>ข้อมูลของนักศึกษาที่เคยตรวจสอบ</h4>
+            <h4 className={styles.topic}>ข้อมูลของผู้สำเร็จการศึกษาที่เคยตรวจสอบ</h4>
             <div className={styles.selectedBox} style={{ marginBottom: 10 }}>
               {!selectMode ? (
                 <button

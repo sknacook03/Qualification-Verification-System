@@ -1,6 +1,6 @@
 export const topMenuItems = [
   { label: "หน้าหลัก", route: "/Homepages" },
-  { label: "ตรวจสอบคุณวุฒินักศึกษา", route: "/CheckQualificationsPage" },
+  { label: "ตรวจสอบคุณวุฒิ", route: "/CheckQualificationsPage" },
   { label: "สถิติการเข้าถึง", route: "/AccessStatisticsPage" },
 ];
 

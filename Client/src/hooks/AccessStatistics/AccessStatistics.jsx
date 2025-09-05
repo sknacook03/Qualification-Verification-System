@@ -908,7 +908,7 @@ const AccessStatistics = ({ officer, agency }) => {
           fill: true,
         },
         {
-          label: "นักศึกษาที่ตรวจสอบคุณวุฒิไม่ซ้ำ",
+          label: "ผู้สำเร็จการศึกษาที่ถูกตรวจสอบคุณวุฒิไม่ซ้ำ",
           data: trend.map((item) => item.uniqueStudents),
           borderColor: "rgba(255, 99, 132, 1)",
           backgroundColor: "rgba(255, 99, 132, 0.2)",
@@ -1016,8 +1016,8 @@ const AccessStatistics = ({ officer, agency }) => {
           <div className={styles.totalPageView}>
             <p className={styles.titleTotalPageView}>
               {agency
-                ? "จำนวนนักศึกษาที่คุณตรวจสอบทั้งหมด"
-                : "นักศึกษาที่ถูกตรวจสอบคุณวุฒิทั้งหมด"}
+                ? "จำนวนผู้สำเร็จการศึกษาที่คุณตรวจสอบทั้งหมด"
+                : "ผู้สำเร็จการศึกษาที่ถูกตรวจสอบคุณวุฒิทั้งหมด"}
             </p>
             <h2 className={styles.numberTotalPageView}>
               {agency

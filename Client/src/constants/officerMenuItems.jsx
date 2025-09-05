@@ -1,10 +1,10 @@
 export const topMenuItems = [
   { label: "หน้าหลัก", route: "/HomepagesOfficer" },
-  { label: "ตรวจสอบคุณวุฒินักศึกษา", route: "/CheckQualificationsOfficer" },
+  { label: "ตรวจสอบคุณวุฒิ", route: "/CheckQualificationsOfficer" },
   { label: "สถิติการเข้าถึง", route: "/AccessStatisticsPageOfficer" },
   { label: "จัดการหน่วยงาน", route: "/AgencyControlPanel" },
   { label: "จัดการเจ้าหน้าที่", route: "/OfficerControlPanel" },
-  { label: "จัดการนักศึกษา", route: "/StudentControlPanel" },
+  { label: "จัดการผู้สำเร็จการศึกษา", route: "/StudentControlPanel" },
   { label: "จัดการทั่วไป", route: "/GeneralControlPanel" },
 ];
 

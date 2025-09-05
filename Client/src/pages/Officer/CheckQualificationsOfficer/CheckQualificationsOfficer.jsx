@@ -63,7 +63,7 @@ function CheckQualificationsOfficer() {
         topMenuItems={topMenuItems}
         bottomMenuItems={bottomMenuItems(logout)}
         icon={Icon}
-        label="ตรวจสอบคุณวุฒินักศึกษา"
+        label="ตรวจสอบคุณวุฒิผู้สำเร็จการศึกษา"
       >
         <StudentSearch forOfficer={true} />
       </LayoutAllpage>

@@ -242,7 +242,7 @@ function HomepagesOfficer() {
                   <span className={styles.statIcon} aria-hidden>
                     🎓
                   </span>
-                  <span className={styles.statLabel}>จำนวนนักศึกษาทั้งหมด</span>
+                  <span className={styles.statLabel}>จำนวนผู้สำเร็จการศึกษาทั้งหมด</span>
                 </div>
                 <div className={styles.statValue}>{studentCount ?? "N/A"}</div>
               </div>
@@ -261,7 +261,7 @@ function HomepagesOfficer() {
             {/* PagesView Table */}
             <div className={styles.container}>
               <div className={styles.titleBar}>
-                <h2 className={styles.title}>ตารางเข้าตรวจสอบนักศึกษา</h2>
+                <h2 className={styles.title}>ตารางเข้าตรวจสอบผู้สำเร็จการศึกษา</h2>
               </div>
               <div className={styles.tableWrapper}>
                 <table className={styles.table}>

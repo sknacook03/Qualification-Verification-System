@@ -60,7 +60,7 @@ function StudentControlPanel() {
       topMenuItems={topMenuItems}
       bottomMenuItems={bottomMenuItems(logout)}
       icon={Icon}
-      label="จัดการนักศึกษา"
+      label="จัดการผู้สำเร็จการศึกษา"
     >
       <UploadExcelStudent />
       <ToastContainer position="top-center" />

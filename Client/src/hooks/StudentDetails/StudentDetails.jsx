@@ -31,7 +31,6 @@ const StudentDetails = ({ studentId }) => {
             <h1>{student.name}</h1>
             <p>Age: {student.age}</p>
             <p>Grade: {student.grade}</p>
-            {/* ข้อมูลอื่น ๆ ของนักศึกษา */}
         </div>
     );
 };

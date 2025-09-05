@@ -116,7 +116,7 @@ const ExportFileController = {
       const content = [];
 
       content.push({
-        text: `รายงานสรุปผลข้อมูลนักศึกษาของ ${agency}`,
+        text: `รายงานสรุปผลข้อมูลผู้สำเร็จการศึกษาของ ${agency}`,
         style: "header1",
         alignment: "center",
         margin: [0, 0, 0, 0],

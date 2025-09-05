@@ -108,7 +108,7 @@ const StudentSearch = ({ agency, forOfficer }) => {
   };
   return (
     <div className={styles.containerSearch}>
-      <h2>ค้นหานักศึกษา</h2>
+      <h2>ค้นหาผู้สำเร็จการศึกษา</h2>
       <div className={styles.searchForm}>
         <Input
           type="text"
@@ -193,7 +193,7 @@ const StudentSearch = ({ agency, forOfficer }) => {
                         topic="อัปโหลดหนังสือยิมยอม"
                         info={
                           <>
-                            อัพโหลดหนังสือยินยอมของนักศึกษา (ถ้ามี)
+                            อัพโหลดหนังสือยินยอมของผู้สำเร็จการศึกษา (ถ้ามี)
                             <br />
                             (รองรับไฟล์ .pdf .png .jpg ขนาดไม่เกิน 10 MB)
                           </>
