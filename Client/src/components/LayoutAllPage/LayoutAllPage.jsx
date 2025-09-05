@@ -4,6 +4,7 @@ import SidebarMenu from "../SidebarMenu/SidebarMenu";
 import IconPage from "../IconPage/IconPage";
 import Footer from "../footer/footer";
 import styles from "./LayoutAllPage.module.css";
+import GlobalTokenExpiryHandler from "../GlobalTokenExpiryHandler/GlobalTokenExpiryHandler.jsx";
 
 const LayoutAllPage = ({
   user,
@@ -17,6 +18,7 @@ const LayoutAllPage = ({
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   return (
     <>
+      <GlobalTokenExpiryHandler />
       <div className={styles.appContainer}>
         <div className={styles.boxContainer}>
           <div className={styles.contentHeader}>

@@ -2,11 +2,12 @@ import express from "express";
 import OfficerController from "../controllers/officer.controller.js";
 import authMiddleware from "../middlewares/auth.middleware.js";
 import verifyTokenMiddleware from "../middlewares/verifyToken.middleware.js";
+import checkTokenExpiry from "../middlewares/tokenExpiry.middleware.js";
 
 const OfficerRouter = express.Router();
 
 OfficerRouter.get("/officers", authMiddleware, OfficerController.getOfficerController)
-OfficerRouter.get("/logged-in", authMiddleware, OfficerController.getLoggedInController);
+OfficerRouter.get("/logged-in", checkTokenExpiry, authMiddleware, OfficerController.getLoggedInController);
 OfficerRouter.post("/", OfficerController.createOfficerController)
 OfficerRouter.post("/send-email", authMiddleware, OfficerController.sendAgency)
 OfficerRouter.post("/check-email", authMiddleware, OfficerController.checkOfficerEmail)

@@ -1,4 +1,19 @@
 import AuthService from "../services/auth.service.js";
+import jwt from "jsonwebtoken";
+
+// เพิ่มฟังก์ชันแปลงเวลา
+const parseJwtExpiry = (expiresIn) => {
+  const value = parseInt(expiresIn);
+  const unit = expiresIn.slice(-1).toLowerCase();
+  
+  switch (unit) {
+    case 'h': return value * 60 * 60 * 1000;
+    case 'm': return value * 60 * 1000;
+    case 's': return value * 1000;
+    case 'd': return value * 24 * 60 * 60 * 1000; 
+    default: return parseInt(expiresIn) * 1000; 
+  }
+};
 
 const loginHandler = async (req, res, loginFunction) => {
   try {
@@ -12,14 +27,22 @@ const loginHandler = async (req, res, loginFunction) => {
 
     const { message, token } = await loginFunction(email, password);
 
+    const decoded = jwt.decode(token);
+    const expiryDate = new Date(decoded.exp * 1000);
+
+    const jwtMaxAge = parseJwtExpiry(process.env.JWT_EXPIRES_IN || '2h');
+
     res.cookie("token", token, {
-      maxAge: 3600000, // 1 ชั่วโมง
-      secure: true,
+      maxAge: jwtMaxAge,
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
       sameSite: "strict",
     });
 
-    res.status(200).json({ message: "login success" });
+    res.status(200).json({
+      message: "login success",
+      tokenExpiry: expiryDate 
+    });
   } catch (error) {
     if (error.message === "Agency not found" || error.message === "Officer not found") {
       console.error("Login failed: Non-existing email:", req.body.email);
@@ -43,11 +66,12 @@ const AuthController = {
   loginOfficerController: (req, res) => {
     loginHandler(req, res, AuthService.loginOfficer);
   },
+  
   logoutController: (req, res) => {
     try {
       res.clearCookie("token", {
         httpOnly: true,
-        secure: process.env.JWT_SECRET === "production",
+        secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
       });
 
@@ -58,5 +82,44 @@ const AuthController = {
       res.status(500).json({ error: "Failed to logout" });
     }
   },
+
+  refreshTokenController: async (req, res) => {
+    try {
+      const token = req.cookies?.token;
+      
+      if (!token) {
+        return res.status(401).json({ error: "No token provided" });
+      }
+
+      // ตรวจสอบ token
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      
+      // สร้าง token ใหม่
+      const newToken = jwt.sign(
+        { id: decoded.id, email: decoded.email, role: decoded.role },
+        process.env.JWT_SECRET,
+        { expiresIn: process.env.JWT_EXPIRES_IN || "2h" }
+      );
+
+      const newDecoded = jwt.decode(newToken);
+      const expiryDate = new Date(newDecoded.exp * 1000);
+      const jwtMaxAge = parseJwtExpiry(process.env.JWT_EXPIRES_IN || '2h');
+
+      res.cookie("token", newToken, {
+        maxAge: jwtMaxAge,
+        secure: process.env.NODE_ENV === "production",
+        httpOnly: true,
+        sameSite: "strict",
+      });
+
+      res.status(200).json({
+        message: "Token refreshed successfully",
+        tokenExpiry: expiryDate
+      });
+    } catch (error) {
+      return res.status(401).json({ error: "Invalid token" });
+    }
+  },
 };
+
 export default AuthController;
