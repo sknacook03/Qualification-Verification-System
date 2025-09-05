@@ -169,6 +169,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-family: 'Prompt', sans-serif;
   min-width: 120px;
 }
 
@@ -197,7 +198,7 @@
 .secondaryBtn:hover:not(:disabled) {
   background: #f8f9fa;
   border-color: #aaa;
-  transform: translateY(-1px); /* ลดการเคลื่อนไหว */
+  transform: translateY(-1px); 
 }
 
 .message {
@@ -211,7 +212,6 @@
   border: 1px solid rgba(220, 53, 69, 0.3);
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .container {
     padding: 10px;
@@ -246,15 +246,14 @@
   }
 }
 
-/* Animation for form transitions - ลดลง */
 .form {
-  animation: fadeInUp 0.3s ease; /* ลดเวลาจาก 0.5s เป็น 0.3s */
+  animation: fadeInUp 0.3s ease; 
 }
 
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(10px); /* ลดจาก 20px เป็น 10px */
+    transform: translateY(10px);
   }
   to {
     opacity: 1;

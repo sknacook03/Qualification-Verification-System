@@ -69,9 +69,7 @@ export default function OfficerPrivacy({ officer, loading, onOfficerUpdated }) {
     }
   };
 
-  // เพิ่ม handleCancel function
   const handleCancel = () => {
-    // รีเซ็ตค่าเดิมทั้งหมด
     setForm({
       firstName: officer.first_name || "",
       lastName: officer.last_name || "",
