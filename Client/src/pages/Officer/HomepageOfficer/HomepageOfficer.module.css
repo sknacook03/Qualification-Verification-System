@@ -115,7 +115,7 @@
     transform: translateY(-2px) scale(1.05);
   }
   
-  .table td[data-label^="หนังสือรับรองนักศึกษา"] {
+  .table td[data-label^="หนังสือยินยอมเปิดเผยข้อมูล"] {
     text-align: center;
     vertical-align: middle;
   }

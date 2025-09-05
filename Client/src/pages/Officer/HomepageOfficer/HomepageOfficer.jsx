@@ -270,7 +270,7 @@ function HomepagesOfficer() {
                       <th>#</th>
                       <th>ชื่อนักศึกษา</th>
                       <th>หน่วยงาน</th>
-                      <th>หนังสือรับรองนักศึกษา</th>
+                      <th>หนังสือยินยอมเปิดเผยข้อมูล</th>
                       <th>
                         <div
                           onClick={() => requestSort("updated_at")}
@@ -322,12 +322,12 @@ function HomepagesOfficer() {
                             {pv.student_name ?? "-"}
                           </td>
                           <td data-label="หน่วยงาน">{pv.agency_name ?? "-"}</td>
-                          <td data-label="หนังสือรับรองนักศึกษา">
+                          <td data-label="หนังสือยินยอมเปิดเผยข้อมูล">
                             {pv.student_certificate !=
                             "no_certificate_uploaded" ? (
                               <button
                                 className={`${styles.button} ${styles.viewButton}`}
-                                title="ดูหนังสือรับรอง"
+                                title="หนังสือยินยอมเปิดเผยข้อมูล"
                                 onClick={() =>
                                   viewImage(
                                     `${API_BASE_URL}/${normalizeImagePath(
@@ -340,7 +340,7 @@ function HomepagesOfficer() {
                               </button>
                             ) : (
                               <span style={{ color: "red" }}>
-                                ไม่มีหนังสือรับรอง
+                                ไม่มีหนังสือยินยอม
                               </span>
                             )}
                           </td>
