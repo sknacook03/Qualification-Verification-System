@@ -67,7 +67,7 @@ function AgencyApproveTable({
 
   const viewImage = (url) => {
     if (url) window.open(url, "_blank");
-    else toast.error("No certificate available for this agency.");
+    else toast.error("ไม่มีใบประกาศนียบัตรสำหรับหน่วยงานนี้");
   };
 
   const getStatus = (status) => {

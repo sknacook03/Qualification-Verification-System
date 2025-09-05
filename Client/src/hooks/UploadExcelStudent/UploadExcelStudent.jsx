@@ -111,7 +111,7 @@ const UploadExcelStudent = () => {
       }
       setUploading(false);
     } catch (err) {
-      toast.error("Upload failed");
+      toast.error("อัปโหลดล้มเหลว");
       console.error(err);
     }
   };
@@ -178,7 +178,7 @@ const UploadExcelStudent = () => {
           disabled={!file}
           title={!file ? "กรุณาเลือกไฟล์ก่อนอัปโหลด" : ""}
         >
-          Upload
+          อัปโหลด
         </button>
       )}
       <ToastContainer position="top-center" />
