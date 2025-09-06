@@ -23,6 +23,8 @@ function GeneralControlPanel() {
   const [loading, setLoading] = useState(true);
   const [btnLoading, setBtnLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
   const [typeAgency, setTypeAgency] = useState([]);
   const [editData, setEditData] = useState({ type_name: "" });
   const [errors, setErrors] = useState({});
@@ -71,11 +73,15 @@ function GeneralControlPanel() {
   }, [navigate]);
 
   const deleteTypeAgency = async (id) => {
-    if (!window.confirm("คุณต้องการลบประเภทหน่วยงานนี้ใช่หรือไม่?")) return;
+    setDeleteId(id);
+    setShowDeletePopup(true);
+  };
 
+  const handleDeleteConfirm = async () => {
+    setBtnLoading(true);
     try {
       await axios.delete(
-        API_BASE_URL + APIEndpoints.typeAgency.deleteType(id),
+        API_BASE_URL + APIEndpoints.typeAgency.deleteType(deleteId),
         {
           withCredentials: true,
         }
@@ -86,10 +92,19 @@ function GeneralControlPanel() {
         { withCredentials: true }
       );
       setTypeAgency(res.data.data);
+      setShowDeletePopup(false);
+      setDeleteId(null);
     } catch (error) {
       console.error("ลบไม่สำเร็จ:", error);
       toast.error("เกิดข้อผิดพลาดในการลบ");
+    } finally {
+      setBtnLoading(false);
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeletePopup(false);
+    setDeleteId(null);
   };
 
   const handleClosePopup = () => {
@@ -244,6 +259,17 @@ function GeneralControlPanel() {
             placeholder="กรอกชื่อประเภทหน่วยงาน"
             error={errors.type_name}
           />
+        </Popup>
+      )}
+      {showDeletePopup && (
+        <Popup
+          topic="ยืนยันการลบ"
+          closePopup={handleDeleteCancel}
+          successPopup={handleDeleteConfirm}
+          loading={btnLoading}
+          textButtonSuccess="ยืนยัน"
+        >
+          <p>คุณต้องการลบประเภทหน่วยงานนี้ใช่หรือไม่?</p>
         </Popup>
       )}
       <ToastContainer position="top-center" />
