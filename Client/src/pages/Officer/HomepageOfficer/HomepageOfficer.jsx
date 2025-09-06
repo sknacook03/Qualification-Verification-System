@@ -181,6 +181,7 @@ function HomepagesOfficer() {
   const logout = async () => {
     try {
       await axios.post(API_BASE_URL + APIEndpoints.auth.logout, {}, axiosCfg);
+      localStorage.clear();
       navigate("/");
     } catch (error) {
       console.error("Failed to logout:", error);

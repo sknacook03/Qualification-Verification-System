@@ -47,7 +47,7 @@ function AccessStatisticsPageOfficer() {
           withCredentials: true,
         }
       );
-
+      localStorage.clear();
       navigate("/");
     } catch (error) {
       console.error("Failed to logout:", error);

@@ -157,7 +157,7 @@ function Homepages() {
           withCredentials: true,
         }
       );
-
+      localStorage.clear();
       navigate("/");
     } catch (error) {
       toast.error("เกิดข้อผิดพลาดในการออกจากระบบ");
