@@ -53,7 +53,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
     return path.replace(/\\/g, "/");
   };
 
-  const baseURL = "http://localhost:3000/";
+  const baseURL = API_BASE_URL + "/";
 
   const certificateURL = agency.certificate
     ? baseURL + normalizeImagePath(agency.certificate)

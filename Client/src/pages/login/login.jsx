@@ -12,69 +12,38 @@ import { API_BASE_URL, APIEndpoints } from "../../services/api";
 function App() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const ROLE = "agency";
 
   const handleSubmit = async ({ email, password }) => {
     setLoading(true);
     toast.dismiss();
     try {
-      const loginResponse = await toast.promise(
+      const response = await toast.promise(
         axios.post(
           API_BASE_URL + APIEndpoints.auth.login,
           { email, password },
           { withCredentials: true }
         ),
-        {
-          pending: "กำลังตรวจสอบข้อมูล...",
-        }
+        { pending: "ระบบกำลังตรวจสอบข้อมูล..." }
       );
 
-      if (loginResponse.status === 200) {
-        try {
-          const statusResponse = await toast.promise(
-            axios.get(API_BASE_URL + APIEndpoints.agency.logged, {
-              withCredentials: true,
-            }),
-            {
-              pending: "กำลังตรวจสอบสถานะ...",
-            }
-          );
-          const { status_approve } = statusResponse.data.data;
+      if (response.status === 200) {
+        localStorage.setItem("appRole", ROLE);
 
-          if (status_approve === "approved") {
-            toast.success("ล็อกอินสำเร็จ!");
-            navigate("/Homepages");
-          } else if (status_approve === "rejected") {
-            toast.error(
-              "บัญชีของคุณถูกปฎิเสธการเข้าใช้งาน โปรดติดต่อเจ้าหน้าที่"
-            );
-          } else {
-            toast.warning(
-              "บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อเจ้าหน้าที่"
-            );
-          }
-        } catch (statusError) {
-          console.error("Status Check Error:", statusError);
-          toast.error(
-            "เกิดข้อผิดพลาดในการตรวจสอบสถานะ: " +
-              (statusError.response?.data?.message || "ไม่สามารถตรวจสอบได้")
-          );
-        }
+        toast.success("ล็อคอินสำเร็จ!");
+        navigate("/Homepages");
       } else {
-        toast.error("เกิดข้อผิดพลาด: " + loginResponse.status);
+        toast.error("เกิดข้อผิดพลาด: " + response.status);
       }
-    } catch (loginError) {
-      console.error("Login Error:", loginError);
-      const msg = loginError.response?.status;
+    } catch (error) {
+      console.error("Login Error:", error);
+      const msg = error.response?.status;
       if (msg === 401) {
-        toast.error(
-          "อีเมลหรือรหัสผ่านไม่ถูกต้อง โปรดตรวจสอบและลองใหม่อีกครั้ง"
-        );
+        toast.error("อีเมลหรือรหัสผ่านไม่ถูกต้อง โปรดตรวจสอบและลองใหม่อีกครั้ง");
       } else if (msg === 500) {
         toast.error("เกิดข้อผิดพลาด: " + (msg || "ไม่สามารถเข้าสู่ระบบได้"));
       } else {
-        toast.error(
-          "ไม่สามารถเข้าสู่ระบบได้: " + loginError.response?.data?.message
-        );
+        toast.error("ไม่สามารถเข้าสู่ระบบได้: " + error.response?.data?.message);
       }
     } finally {
       setLoading(false);

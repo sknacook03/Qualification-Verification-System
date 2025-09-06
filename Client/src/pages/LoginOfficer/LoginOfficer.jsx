@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Header from "../../components/header/header";
 import Footer from "../../components/footer/footer";
@@ -9,9 +9,10 @@ import "react-toastify/dist/ReactToastify.css";
 import styles from "./LoginOfficer.module.css";
 import { API_BASE_URL, APIEndpoints } from "../../services/api";
 
-function LoginAdmin() {
+function LoginOfficerPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const ROLE = "officer";
 
   const handleSubmit = async ({ email, password }) => {
     setLoading(true);
@@ -23,12 +24,12 @@ function LoginAdmin() {
           { email, password },
           { withCredentials: true }
         ),
-        {
-          pending: "ระบบกำลังตรวจสอบข้อมูล...",
-        }
+        { pending: "ระบบกำลังตรวจสอบข้อมูล..." }
       );
 
       if (response.status === 200) {
+        localStorage.setItem("appRole", ROLE);
+
         toast.success("ล็อคอินสำเร็จ!");
         navigate("/HomepagesOfficer");
       } else {
@@ -38,20 +39,17 @@ function LoginAdmin() {
       console.error("Login Error:", error);
       const msg = error.response?.status;
       if (msg === 401) {
-        toast.error(
-          "อีเมลหรือรหัสผ่านไม่ถูกต้อง โปรดตรวจสอบและลองใหม่อีกครั้ง"
-        );
+        toast.error("อีเมลหรือรหัสผ่านไม่ถูกต้อง โปรดตรวจสอบและลองใหม่อีกครั้ง");
       } else if (msg === 500) {
         toast.error("เกิดข้อผิดพลาด: " + (msg || "ไม่สามารถเข้าสู่ระบบได้"));
       } else {
-        toast.error(
-          "ไม่สามารถเข้าสู่ระบบได้: " + error.response?.data?.message
-        );
+        toast.error("ไม่สามารถเข้าสู่ระบบได้: " + error.response?.data?.message);
       }
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <>
       <div className={styles.appContainer}>
@@ -69,4 +67,4 @@ function LoginAdmin() {
   );
 }
 
-export default LoginAdmin;
+export default LoginOfficerPage;
