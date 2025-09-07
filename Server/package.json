@@ -4,10 +4,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "python -m http.server --directory ../Client/dist 8888",
-    "dev": "node --max-old-space-size=4096 node_modules/vite/bin/vite.js --mode development",
-    "prod": "node --max-old-space-size=4096 node_modules/vite/bin/vite.js --mode production",
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "start": "python -m http.server 8888 --directory ../Client/dist",
+  "dev": "node --max-old-space-size=4096 node_modules/vite/bin/vite.js --mode development",
+  "prod": "node --max-old-space-size=4096 node_modules/vite/bin/vite.js --mode production",
+  "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
