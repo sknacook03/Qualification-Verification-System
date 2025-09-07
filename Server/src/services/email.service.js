@@ -62,7 +62,7 @@ export const sendResetPasswordEmail = async (email, resetCode) => {
     <body>
         <div class="email-container">
             <div class="header">
-                <img src="https://sci.rmuti.ac.th/main/wp-content/uploads/2022/02/unnamed-1-270x300.png" alt="Logo">
+                <img src="${process.env.LOGO_URL}" alt="Logo">
             </div>
             <div class="content">
                 <p>เรียนคุณผู้ใช้งาน,</p>
@@ -145,13 +145,13 @@ export const sendApprovalEmail = async (email, agencyName) => {
     <body>
         <div class="container">
             <div class="header">
-                <img src="https://sci.rmuti.ac.th/main/wp-content/uploads/2022/02/unnamed-1-270x300.png" alt="Logo">
+                <img src="${process.env.LOGO_URL}" alt="Logo">
             </div>
             <div class="content">
                 <p>เรียนคุณ ${agencyName},</p>
                 <p>เรามีความยินดีที่จะแจ้งให้คุณทราบว่า คำขอของคุณได้รับการอนุมัติเรียบร้อยแล้ว</p>
                 <p>คุณสามารถเข้าสู่ระบบได้โดยใช้ลิงก์ด้านล่าง:</p>
-                <p><a href="http://localhost:5173/">http://localhost:5173/</a></p>
+                <p><a href="${process.env.FRONTEND_URL}/">${process.env.FRONTEND_URL}/</a></p>
             </div>
             <div class="footer">
                 <p>© 2024 มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน</p>
@@ -167,8 +167,8 @@ export const sendApprovalEmail = async (email, agencyName) => {
 };
 
 export const sendRejectionEmail = async (email, agencyName, reason, agencyId) => {
-    const token = jwt.sign({ id: agencyId, email }, process.env.JWT_SECRET, { expiresIn: "1h" });
-    const editLink = `http://localhost:5173/Editregister?token=${token}`;
+    const token = jwt.sign({ id: agencyId, email }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
+    const editLink = `${process.env.FRONTEND_URL}/Editregister?token=${token}`;
     const subject = "Request Rejection Notification";
     const htmlContent = `
         <!DOCTYPE html>
@@ -234,14 +234,14 @@ export const sendRejectionEmail = async (email, agencyName, reason, agencyId) =>
         <body>
             <div class="container">
                 <div class="header">
-                    <img src="https://sci.rmuti.ac.th/main/wp-content/uploads/2022/02/unnamed-1-270x300.png" alt="Logo">
+                    <img src="${process.env.LOGO_URL}" alt="Logo">
                 </div>
                 <div class="content">
                     <p>เรียนคุณ ${agencyName},</p>
                     <p>เราขอแจ้งให้ทราบว่า คำขอของคุณไม่ได้รับการอนุมัติด้วยเหตุผลดังต่อไปนี้:</p>
                     <p class="reason">${reason}</p>
                     <p>กรุณาคลิกลิงก์ด้านล่างเพื่อเข้าสู่ระบบและแก้ไขข้อมูลที่ผิดพลาด:</p>
-                    <p><p><a href="${editLink}">http://localhost:5173/Editregister</a></p></p>
+                    <p><a href="${editLink}">${process.env.FRONTEND_URL}/Editregister</a></p>
                     <p>หากคุณมีข้อสงสัยเพิ่มเติม กรุณาติดต่อฝ่ายสนับสนุนของเรา</p>
                 </div>
                 <div class="footer">
@@ -322,14 +322,14 @@ export const sendAgencyCreate = async (email, officerName, agencyName) => {
     <body>
         <div class="container">
             <div class="header">
-                <img src="https://sci.rmuti.ac.th/main/wp-content/uploads/2022/02/unnamed-1-270x300.png" alt="Logo">
+                <img src="${process.env.LOGO_URL}" alt="Logo">
             </div>
             <div class="content">
                 <p>เรียนคุณ ${officerName},</p>
                 <p>ขณะนี้มีการสมัครสมาชิกของหน่วยงานเข้ามา</p>
                 <p>ชื่อของหน่วยงานดังกล่าวคือ: <strong>${agencyName}</strong></p>
                 <p>คุณสามารถตรวจสอบหน่วยงานได้โดยใช้ลิงก์ด้านล่าง</p>
-                <p><a href="http://localhost:5173/">http://localhost:5173/</a></p>
+                <p><a href="${process.env.FRONTEND_URL}/">${process.env.FRONTEND_URL}/</a></p>
             </div>
             <div class="footer">
                 <p>© 2024 มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน</p>
