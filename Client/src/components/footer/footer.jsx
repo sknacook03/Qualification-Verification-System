@@ -4,11 +4,13 @@ import { Link } from "react-router-dom";
 function Footer({ color, disableMenu }) {
   return (
     <>
-       <footer className={`contrainer-footer ${disableMenu ? "center-content" : ""}`}>
+      <footer
+        className={`contrainer-footer ${disableMenu ? "center-content" : ""}`}
+      >
         <div className="copy">
           <h5 style={{ color: color }}>
-            Developed by Khon Rak Khrop Khrua and Khon Chao Choo © Rajamangala
-            University of Technology Isan 2024 - ระบบตรวจสอบคุณวุฒิ
+            Developed by Pongwit and Nonraphi © 2024 Rajamangala University of
+            Technology Isan – ระบบตรวจสอบคุณวุฒิ
           </h5>
         </div>
         {!disableMenu && (
