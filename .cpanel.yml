@@ -1,0 +1,15 @@
+---
+deployment:
+  tasks:
+    # Backend
+    - export BACKEND=/home/cperkbb/repositories/Qualification-Verification-System/Server
+    - source /home/cperkbb/nodevenv/repositories/Qualification-Verification-System/Server/18/bin/activate && cd $BACKEND && npm ci --omit=dev
+    - source /home/cperkbb/nodevenv/repositories/Qualification-Verification-System/Server/18/bin/activate && cd $BACKEND && npx prisma generate
+    - source /home/cperkbb/nodevenv/repositories/Qualification-Verification-System/Server/18/bin/activate && cd $BACKEND && npx prisma migrate deploy
+    - mkdir -p $BACKEND/tmp && touch $BACKEND/tmp/restart.txt
+
+    # Frontend
+    - export FRONTEND=/home/cperkbb/repositories/Qualification-Verification-System/Client
+    - cd $FRONTEND && npm ci
+    - cd $FRONTEND && npm run build
+    - rsync -a --delete $FRONTEND/build/ /home/cperkbb/public_html/eduverify/
