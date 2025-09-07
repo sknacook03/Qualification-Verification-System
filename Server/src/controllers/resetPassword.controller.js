@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import ResetServices from "../services/resetPassword.service.js";
 import { sendResetPasswordEmail } from "../services/email.service.js"
 
