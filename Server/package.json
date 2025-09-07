@@ -7,7 +7,7 @@
   "start": "node server.js",
   "dev": "bun nodemon server.js",
   "test": "echo \"Error: no test specified\" && exit 1",
-  "postinstall": "node -e \"process.env.SKIP_PRISMA_GENERATE && process.exit(0)\"; prisma generate",
+  "postinstall": "sh -c 'if [ -z \"$SKIP_PRISMA_GENERATE\" ]; then prisma generate; else echo \"Skip prisma generate\"; fi'",
   "migrate": "prisma migrate deploy"
   },
   "engines": { "node": ">=18.x" },
