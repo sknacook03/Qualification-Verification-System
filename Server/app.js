@@ -8,7 +8,7 @@ const app = express();
 app.use(
   cors({
     credentials: true,
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
     exposedHeaders: ['x-token-expiry', 'x-token-ttl', 'x-token-expired'],
   })
 );
