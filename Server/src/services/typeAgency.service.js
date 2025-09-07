@@ -92,7 +92,10 @@ const TypeAgencyService = {
       });
 
       if (!existingTypeAgency) {
-        throw new Error(`Type Agency with ID ${id} does not exist.`);
+        const error = new Error(`Type Agency with ID ${id} does not exist.`);
+        error.code = 'NOT_FOUND';
+        error.statusCode = 404;
+        throw error;
       }
 
       await prisma.typeAgency.delete({
@@ -102,6 +105,21 @@ const TypeAgencyService = {
       return true;
     } catch (error) {
       console.error("Failed to delete type agency:", error);
+      
+      if (error.code === 'P2003') {
+        const constraintError = new Error('Cannot delete type agency because it is used by existing agencies');
+        constraintError.code = 'FOREIGN_KEY_CONSTRAINT';
+        constraintError.statusCode = 409;
+        throw constraintError;
+      }
+      
+      if (error.code === 'P2025') {
+        const notFoundError = new Error('Type agency not found');
+        notFoundError.code = 'NOT_FOUND';
+        notFoundError.statusCode = 404;
+        throw notFoundError;
+      }
+      
       throw error;
     }
   },

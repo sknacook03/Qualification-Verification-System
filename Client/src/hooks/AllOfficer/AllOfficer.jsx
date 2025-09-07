@@ -116,7 +116,22 @@ function AllOfficer() {
       toast.success("ลบเจ้าหน้าที่สำเร็จ");
     } catch (error) {
       console.error("Failed to delete officer:", error);
-      toast.error("ลบเจ้าหน้าที่ไม่สำเร็จ");
+      
+    
+      if (error.response) {
+        const status = error.response.status;
+        const errorMessage = error.response.data?.message || "";
+        
+        if (status === 400 || status === 409 || errorMessage.includes("foreign key") || errorMessage.includes("constraint")) {
+          toast.error("ไม่สามารถลบเจ้าหน้าที่นี้ได้ เนื่องจากมีข้อมูลที่เกี่ยวข้องอยู่");
+        } else if (status === 404) {
+          toast.error("ไม่พบข้อมูลเจ้าหน้าที่ที่ต้องการลบ");
+        } else {
+          toast.error("ลบเจ้าหน้าที่ไม่สำเร็จ");
+        }
+      } else {
+        toast.error("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
+      }
     } finally {
       setDeletingOfficer(null);
       setShowDeletePopup(false);

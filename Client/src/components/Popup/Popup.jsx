@@ -15,6 +15,7 @@ const Popup = ({
   placeholderTextarea,
   valueTextarea,
   loading,
+  disabledSuccess,
   children,
 }) => {
   const handleSubmit = (e) => {
@@ -54,7 +55,7 @@ const Popup = ({
           <button
             type="submit"
             className={styles.buttonPopup}
-            disabled={textarea && !valueTextarea.trim()}
+            disabled={textarea && !valueTextarea.trim() || disabledSuccess}
           >
             {textButtonSuccess}
           </button>

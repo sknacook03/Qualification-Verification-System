@@ -181,7 +181,27 @@ const AgencyController = {
       });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Failed to delete agency" });
+      
+      if (error.code === 'FOREIGN_KEY_CONSTRAINT') {
+        return res.status(409).json({ 
+          success: false,
+          error: "Cannot delete agency",
+          message: "foreign key constraint"
+        });
+      }
+      
+      if (error.code === 'NOT_FOUND') {
+        return res.status(404).json({ 
+          success: false,
+          error: "Agency not found",
+          message: "The agency you're trying to delete does not exist"
+        });
+      }
+      
+      res.status(500).json({ 
+        success: false,
+        error: "Failed to delete agency" 
+      });
     }
   },
   updateRejectionAgencyController: async (req, res) => {

@@ -74,10 +74,32 @@ const TypeAgencyController = {
         await TypeAgencyService.deleteTypeAgency(id);
     
         res.status(200).json({
+          success: true,
           message: "ลบประเภทหน่วยงานสำเร็จ",
         });
       } catch (error) {
         console.error("Error in deleteTypeAgencyController:", error);
+        
+        if (error.code === 'FOREIGN_KEY_CONSTRAINT') {
+          return res.status(409).json({ 
+            success: false,
+            error: "Cannot delete type agency",
+            message: "foreign key constraint"
+          });
+        }
+        
+        if (error.code === 'NOT_FOUND') {
+          return res.status(404).json({ 
+            success: false,
+            error: "Type agency not found",
+            message: "The type agency you're trying to delete does not exist"
+          });
+        }
+        
+        res.status(500).json({ 
+          success: false,
+          error: "Failed to delete type agency" 
+        });
       }
     },
     updateTypeAgencyController: async (req, res) => {

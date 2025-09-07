@@ -127,7 +127,10 @@ const AgencyService = {
         where: { id: agencyId },
       });
       if (!existingAgency) {
-        throw new Error(`Agency with ID ${id} does not exist.`);
+        const error = new Error(`Agency with ID ${id} does not exist.`);
+        error.code = 'NOT_FOUND';
+        error.statusCode = 404;
+        throw error;
       }
 
       await prisma.$transaction([
@@ -143,6 +146,21 @@ const AgencyService = {
       return true;
     } catch (error) {
       console.error("Failed to delete agency:", error);
+      
+      if (error.code === 'P2003') {
+        const constraintError = new Error('Cannot delete agency because it has related data');
+        constraintError.code = 'FOREIGN_KEY_CONSTRAINT';
+        constraintError.statusCode = 409;
+        throw constraintError;
+      }
+      
+      if (error.code === 'P2025') {
+        const notFoundError = new Error('Agency not found');
+        notFoundError.code = 'NOT_FOUND';
+        notFoundError.statusCode = 404;
+        throw notFoundError;
+      }
+      
       throw error;
     }
   },

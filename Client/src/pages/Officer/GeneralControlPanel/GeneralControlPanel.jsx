@@ -96,7 +96,22 @@ function GeneralControlPanel() {
       setDeleteId(null);
     } catch (error) {
       console.error("ลบไม่สำเร็จ:", error);
-      toast.error("เกิดข้อผิดพลาดในการลบ");
+      
+    
+      if (error.response) {
+        const status = error.response.status;
+        const errorMessage = error.response.data?.message || "";
+        
+        if (status === 400 || status === 409 || errorMessage.includes("foreign key") || errorMessage.includes("constraint")) {
+          toast.error("ไม่สามารถลบประเภทหน่วยงานนี้ได้ เนื่องจากมีหน่วยงานที่ใช้ประเภทนี้อยู่");
+        } else if (status === 404) {
+          toast.error("ไม่พบข้อมูลประเภทหน่วยงานที่ต้องการลบ");
+        } else {
+          toast.error("เกิดข้อผิดพลาดในการลบ");
+        }
+      } else {
+        toast.error("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
+      }
     } finally {
       setBtnLoading(false);
     }

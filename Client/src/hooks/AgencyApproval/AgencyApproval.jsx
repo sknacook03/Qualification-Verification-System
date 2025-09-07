@@ -185,7 +185,21 @@ const AgencyApproval = ({ officer }) => {
       toast.success("ลบหน่วยงานเรียบร้อยแล้ว");
     } catch (error) {
       console.error("Failed to delete agency:", error);
-      toast.error("เกิดข้อผิดพลาดในการลบหน่วยงาน");
+      
+      if (error.response) {
+        const status = error.response.status;
+        const errorMessage = error.response.data?.message || "";
+        
+        if (status === 400 || status === 409 || errorMessage.includes("foreign key") || errorMessage.includes("constraint")) {
+          toast.error("ไม่สามารถลบหน่วยงานนี้ได้ เนื่องจากมีข้อมูลที่เกี่ยวข้องอยู่");
+        } else if (status === 404) {
+          toast.error("ไม่พบข้อมูลหน่วยงานที่ต้องการลบ");
+        } else {
+          toast.error("เกิดข้อผิดพลาดในการลบหน่วยงาน");
+        }
+      } else {
+        toast.error("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
+      }
     }
   };
 

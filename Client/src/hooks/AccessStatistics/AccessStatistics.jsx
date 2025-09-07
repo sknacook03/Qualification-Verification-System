@@ -1154,6 +1154,7 @@ const AccessStatistics = ({ officer, agency }) => {
           }}
           textButtonSuccess="ส่งออก"
           successPopup={prepareAndExport}
+          disabledSuccess={!exportPDF && !exportExcel}
           loading={exportLoading}
         >
           <div className={styles.exportForm}>

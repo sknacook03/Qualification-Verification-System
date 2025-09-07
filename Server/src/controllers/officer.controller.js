@@ -101,7 +101,27 @@ const OfficerController = {
       });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Failed to delete officer" });
+      
+      if (error.code === 'FOREIGN_KEY_CONSTRAINT') {
+        return res.status(409).json({ 
+          success: false,
+          error: "Cannot delete officer",
+          message: "foreign key constraint"
+        });
+      }
+      
+      if (error.code === 'NOT_FOUND') {
+        return res.status(404).json({ 
+          success: false,
+          error: "Officer not found",
+          message: "The officer you're trying to delete does not exist"
+        });
+      }
+      
+      res.status(500).json({ 
+        success: false,
+        error: "Failed to delete officer" 
+      });
     }
   },
   updateOfficerController: async (req, res) => {
