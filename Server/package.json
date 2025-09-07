@@ -4,13 +4,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-  "start": "node server.js",
-  "dev": "bun nodemon server.js",
-  "test": "echo \"Error: no test specified\" && exit 1",
-  "postinstall": "sh -c 'if [ -z \"$SKIP_PRISMA_GENERATE\" ]; then prisma generate; else echo \"Skip prisma generate\"; fi'",
-  "migrate": "prisma migrate deploy"
+    "start": "python -m http.server --directory ../Client/dist 8888",
+    "dev": "node --max-old-space-size=4096 node_modules/vite/bin/vite.js --mode development",
+    "prod": "node --max-old-space-size=4096 node_modules/vite/bin/vite.js --mode production",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "engines": { "node": ">=18.x" },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -23,10 +21,12 @@
   },
   "dependencies": {
     "@prisma/client": "5.22.0",
+    "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
     "exceljs": "^4.4.0",
     "express": "^4.21.1",
