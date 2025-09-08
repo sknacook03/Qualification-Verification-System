@@ -4,12 +4,13 @@ import authRoutes from "./auth.routes.jsx";
 import officerRoutes from "./officer.routes.jsx";
 import userRoutes from "./user.routes.jsx";
 
-
 const routes = createBrowserRouter([
   ...appRoutes,
   ...authRoutes,
   ...officerRoutes,
   ...userRoutes,
-]);
+], {
+  basename: "/eduverify"
+});
 
 export default routes;

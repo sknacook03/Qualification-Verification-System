@@ -12,4 +12,4 @@ deployment:
     - export FRONTEND=/home/cperkbb/repositories/Qualification-Verification-System/Client
     - cd $FRONTEND && npm ci
     - cd $FRONTEND && npm run build
-    - rsync -a --delete $FRONTEND/build/ /home/cperkbb/public_html/eduverify/
+    - rsync -a --delete $FRONTEND/dist/ /home/cperkbb/public_html/eduverify/
