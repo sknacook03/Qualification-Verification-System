@@ -33,6 +33,8 @@ model Agency {
   officer      Officer?      @relation("OfficerToAgency", fields: [approve_by], references: [id])
   pageViews    PageView[]
   approvalLogs ApprovalLog[]
+
+  @@map("agency")
 }
 
 model TypeAgency {
@@ -43,6 +45,8 @@ model TypeAgency {
 
   // Relation to Agency
   agencies Agency[]
+
+  @@map("typeagency")
 }
 
 model ApprovalLog {
@@ -57,6 +61,8 @@ model ApprovalLog {
   // Relations
   agency  Agency   @relation(fields: [agency_id], references: [id])
   officer Officer? @relation(fields: [officer_id], references: [id])
+
+  @@map("approvallog")
 }
 
 model PasswordReset {
@@ -65,6 +71,8 @@ model PasswordReset {
   code      String
   expiresAt DateTime
   createdAt DateTime @default(now())
+
+  @@map("passwordreset")
 }
 
 model Officer {
@@ -79,6 +87,8 @@ model Officer {
 
   approvedAgencies Agency[]      @relation("OfficerToAgency")
   approvalLogs     ApprovalLog[]
+
+  @@map("officer")
 }
 
 model PageView {
@@ -97,6 +107,8 @@ model PageView {
   student Student @relation(fields: [student_id], references: [id])
 
   @@unique([agency_id, student_id])
+
+  @@map("pageview")
 }
 
 model Student {
