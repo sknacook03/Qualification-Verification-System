@@ -106,10 +106,6 @@ function Homepages() {
   const pageCount = student ? Math.ceil(student.length / itemsPerPage) : 0;
 
   useEffect(() => {
-    console.log(sortConfig);
-  }, [sortConfig]);
-
-  useEffect(() => {
     const fetchUserData = async () => {
       try {
         const res = await axios.get(API_BASE_URL + APIEndpoints.agency.logged, {
@@ -132,7 +128,6 @@ function Homepages() {
             { withCredentials: true }
           );
           setStudent(response.data.data);
-          console.log(response.data.data);
         } catch (err) {
           setStudent(null);
         }

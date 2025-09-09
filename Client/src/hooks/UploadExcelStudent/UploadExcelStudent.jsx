@@ -103,7 +103,6 @@ const UploadExcelStudent = () => {
           )}
         </div>
       );
-      console.log("Failed rows:", failedData);
       setFile(null);
       setErrorMsg("");
       if (fileInputRef.current) {

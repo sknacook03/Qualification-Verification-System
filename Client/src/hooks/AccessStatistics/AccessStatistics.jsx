@@ -180,7 +180,6 @@ const AccessStatistics = ({ officer, agency }) => {
 
   useEffect(() => {
     if (!agency) return;
-    console.log("agency id in AccessStatistics:", agency);
     const fetchData = async () => {
       try {
         const query = `startDate=${startDate}&endDate=${endDate}`;
@@ -231,8 +230,6 @@ const AccessStatistics = ({ officer, agency }) => {
 
         setLoadingTopDepartments(true);
         const res = await axios.get(url);
-        console.log("res.data:", res.data);
-        console.log("selectedView:", selectedView);
         if (selectedView === "faculty") {
           setTopFaculties(Array.isArray(res.data) ? res.data : []);
         } else if (selectedView === "department") {

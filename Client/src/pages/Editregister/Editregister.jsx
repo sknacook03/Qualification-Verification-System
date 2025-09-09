@@ -64,7 +64,6 @@ function Editregister() {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
 
-    console.log("Token:", token);
     if (!token) {
       toast.error("Session หมดอายุ กรุณาเข้าสู่ระบบใหม่");
       navigate("/");
@@ -97,7 +96,6 @@ function Editregister() {
         })
         .catch((error) => {
           console.error("Error fetching rejected data:", error);
-          console.log(error.response);
           toast.error("เกิดข้อผิดพลาด");
           navigate("/");
         });
@@ -171,7 +169,6 @@ function Editregister() {
       formData.append("status_approve", "pending")
       Object.keys(address).forEach((key) => formData.append(key, address[key]));
   
-      console.log("FormData Entries:", Object.fromEntries(formData.entries()));
       await toast.promise(
         axios.put( API_BASE_URL + APIEndpoints.agency.updateRejectAgency(agencyId), formData, {
           headers: {
