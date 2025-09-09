@@ -6,7 +6,7 @@ dotenv.config();
 const SECRET_KEY = process.env.JWT_SECRET;
 const URL_FRONTEND= `${URL_FRONTEND}/eduverify`;
 export const sendResetPasswordEmail = async (email, resetCode) => {
-  const subject = "Password Reset Code";
+  const subject = "รหัสรีเซ็ตรหัสผ่านของคุณ";
   const htmlContent = `
     <!DOCTYPE html>
     <html lang="th">
@@ -85,7 +85,7 @@ export const sendResetPasswordEmail = async (email, resetCode) => {
 };
 
 export const sendApprovalEmail = async (email, agencyName) => {
-  const subject = "Approval Confirmation";
+  const subject = "คำขอของคุณได้รับการอนุมัติ";
   const htmlContent = `
     <!DOCTYPE html>
     <html lang="th">
@@ -169,7 +169,7 @@ export const sendApprovalEmail = async (email, agencyName) => {
 export const sendRejectionEmail = async (email, agencyName, reason, agencyId) => {
     const token = jwt.sign({ id: agencyId, email }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
     const editLink = `${URL_FRONTEND}/Editregister?token=${token}`;
-    const subject = "Request Rejection Notification";
+    const subject = "คำขอของคุณไม่ได้รับการอนุมัติ";
     const htmlContent = `
         <!DOCTYPE html>
         <html lang="th">
@@ -258,7 +258,7 @@ export const sendRejectionEmail = async (email, agencyName, reason, agencyId) =>
   };
 
 export const sendAgencyCreate = async (email, officerName, agencyName) => {
-  const subject = "Create Agency";
+  const subject = "หน่วยงานใหม่รอการตรวจสอบ";
   const htmlContent = `
         <!DOCTYPE html>
     <html lang="th">
