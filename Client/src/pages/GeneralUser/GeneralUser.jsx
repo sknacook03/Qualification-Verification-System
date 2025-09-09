@@ -1,6 +1,5 @@
 import React from "react";
 import LayoutAllpage from "../../components/LayoutAllPage/LayoutAllPage.jsx";
-import Loading from "../../components/Loading/Loading.jsx";
 import AccessStatistics from "../../hooks/AccessStatistics/AccessStatistics.jsx";
 import Icon from "../../assets/statistics.png";
 import styles from "./GeneralUser.module.css";

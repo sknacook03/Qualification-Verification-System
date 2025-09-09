@@ -50,6 +50,7 @@ const AgencyService = {
     try {
       const now = new Date();
       const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+      
       const existingAgency = await prisma.agency.findUnique({
         where: {
           email: agency.email,
@@ -57,8 +58,19 @@ const AgencyService = {
       });
 
       if (existingAgency) {
-        throw new Error("Email already in use");
+        throw new Error("Email already in use by another agency");
       }
+
+      const existingOfficer = await prisma.officer.findUnique({
+        where: {
+          email: agency.email,
+        },
+      });
+
+      if (existingOfficer) {
+        throw new Error("Email already in use by an officer");
+      }
+
       const {
         email,
         agency_name,
@@ -288,10 +300,16 @@ const AgencyService = {
     }
   },
   checkEmailExists: async (email) => {
+    
     const existingAgency = await prisma.agency.findUnique({
       where: { email },
     });
-    return !!existingAgency;
+    
+    const existingOfficer = await prisma.officer.findUnique({
+      where: { email },
+    });
+    
+    return !!(existingAgency || existingOfficer);
   },
   checkTelephoneExists: async (telephone_number) => {
     const existingTelAgency = await prisma.agency.findUnique({
