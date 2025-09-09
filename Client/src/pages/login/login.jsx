@@ -79,7 +79,12 @@ function App() {
                     styleType="secondary"
                   />
                 </a>
-                <Button text="คู่มือการใช้งานระบบ" styleType="secondary" />
+                <a href="https://drive.google.com/drive/folders/1MXFcGKGdTpjhk0UtWXDS6ngVOL7bmmN5?usp=sharing" target="_blank" rel="noreferrer" style={{ width: "100%", textDecoration: "none" }}>
+                  <Button
+                    text="คู่มือการใช้งานสำหรับหน่วยงาน"
+                    styleType="secondary"
+                  />
+                </a>
               </div>
             </div>
           </div>
