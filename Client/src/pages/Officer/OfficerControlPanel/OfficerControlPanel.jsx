@@ -85,6 +85,7 @@ function OfficerControlPanel() {
       bottomMenuItems={bottomMenuItems(logout)}
       icon={Icon}
       label="จัดการเจ้าหน้าที่"
+      userRole="officer"
     >
       <TabNavigation
         tabs={tabs}

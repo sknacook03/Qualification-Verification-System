@@ -198,6 +198,7 @@ function HomepagesOfficer() {
       bottomMenuItems={bottomMenuItems(logout)}
       icon={Icon}
       label="หน้าหลัก"
+      userRole="officer"
     >
       {isLoading ? (
         <Loading />

@@ -65,6 +65,7 @@ function PrivacySettingsPageOfficer() {
       label="แก้ไขข้อมูลส่วนตัว"
       topMenuItems={topMenuItems}
       bottomMenuItems={bottomMenuItems(logout)}
+      userRole="officer"
     >
       <div className={styles.contentWrapper}>
         <OfficerPrivacy

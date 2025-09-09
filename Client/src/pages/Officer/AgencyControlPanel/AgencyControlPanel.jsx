@@ -104,6 +104,7 @@ function AgencyControlPanel() {
         bottomMenuItems={bottomMenuItems(logout)}
         icon={Icon}
         label="จัดการหน่วยงาน"
+        userRole="officer"
       >
         <div className={styles.container}>
           <TabNavigation

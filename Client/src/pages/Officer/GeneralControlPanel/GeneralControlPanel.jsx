@@ -246,6 +246,7 @@ function GeneralControlPanel() {
       bottomMenuItems={bottomMenuItems(logout)}
       icon={Icon}
       label="จัดการทั่วไป"
+      userRole="officer"
     >
       <div className={styles.container}>
         <TabNavigation

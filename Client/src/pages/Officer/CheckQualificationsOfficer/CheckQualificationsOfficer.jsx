@@ -64,6 +64,7 @@ function CheckQualificationsOfficer() {
         bottomMenuItems={bottomMenuItems(logout)}
         icon={Icon}
         label="ตรวจสอบคุณวุฒิผู้สำเร็จการศึกษา"
+        userRole="officer"
       >
         <StudentSearch forOfficer={true} />
       </LayoutAllpage>

@@ -62,6 +62,7 @@ function AccessStatisticsPageOfficer() {
       bottomMenuItems={bottomMenuItems(logout)}
       icon={Icon}
       label="สถิติการเข้าถึง"
+      userRole="officer"
     >
       <AccessStatistics officer/>
       <ToastContainer position="top-center" />

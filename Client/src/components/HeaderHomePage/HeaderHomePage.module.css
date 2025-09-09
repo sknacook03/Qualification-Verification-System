@@ -15,13 +15,51 @@
   gap: 0.3rem;
   align-items: center;
   padding-left: 2rem;
-  border-left: 2px solid white;
 }
 .userImage {
   display: flex;
 }
 .nameUser {
   color: white;
+  padding-left: 1rem;
+}
+
+.testLabel {
+  color: white;
+  font-size: 14px;
+  padding-right: 1rem;
+  border-right: 1px solid white;
+}
+
+.driveLink {
+  display: flex;
+  align-items: center;
+  color: white;
+  text-decoration: none;
+  padding: 6px 12px;
+  border: 1.5px solid white;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+}
+
+.driveLink:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.testLabel a {
+  color: white;
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+}
+
+.testLabel a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
 }
 @media screen and (min-width: 1024px) {
   .container {

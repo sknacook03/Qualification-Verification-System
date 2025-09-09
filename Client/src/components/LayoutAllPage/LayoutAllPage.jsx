@@ -15,6 +15,7 @@ const LayoutAllPage = ({
   label,
   guest,
   children,
+  userRole
 }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   return (
@@ -26,11 +27,13 @@ const LayoutAllPage = ({
             {generalUser ? (
               <HeaderHomePage
                 toggleSidebar={() => setSidebarOpen(!isSidebarOpen)}
+                userRole={userRole}
               />
             ) : (
               <HeaderHomePage
                 user={user}
                 toggleSidebar={() => setSidebarOpen(!isSidebarOpen)}
+                userRole={userRole}
               />
             )}
           </div>
