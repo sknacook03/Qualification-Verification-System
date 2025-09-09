@@ -8,7 +8,7 @@ const OfficerRouter = express.Router();
 
 OfficerRouter.get("/officers", authMiddleware, OfficerController.getOfficerController)
 OfficerRouter.get("/logged-in", checkTokenExpiry, authMiddleware, OfficerController.getLoggedInController);
-OfficerRouter.post("/", OfficerController.createOfficerController)
+OfficerRouter.post("/", authMiddleware, OfficerController.createOfficerController)
 OfficerRouter.post("/send-email", authMiddleware, OfficerController.sendAgency)
 OfficerRouter.post("/check-email", authMiddleware, OfficerController.checkOfficerEmail)
 OfficerRouter.post("/verify-password/:id", authMiddleware, OfficerController.verifyPasswordOfficerController)
