@@ -6,7 +6,18 @@ const prisma = new PrismaClient();
 const ResetServices = {
     findUserByEmail: async (email) => {
         try {
-            return await prisma.agency.findUnique({ where: { email } });
+
+            const agency = await prisma.agency.findUnique({ where: { email } });
+            if (agency) {
+                return { user: agency, userType: 'agency' };
+            }
+
+            const officer = await prisma.officer.findUnique({ where: { email } });
+            if (officer) {
+                return { user: officer, userType: 'officer' };
+            }
+
+            return null;
         } catch (error) {
             console.error("Error finding user by email:", error);
             throw new Error("Database error");
@@ -42,17 +53,30 @@ const ResetServices = {
         }
     },
 
-    updatePassword: async (email, hashedPassword) => {
+    updatePassword: async (email, hashedPassword, userType) => {
         try {
             const now = new Date();
             const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
-            return await prisma.agency.update({
-                where: { email },
-                data: { 
-                password: hashedPassword,
-                updated_at: bangkokTime,
-            },
-            });
+            
+            if (userType === 'agency') {
+                return await prisma.agency.update({
+                    where: { email },
+                    data: { 
+                        password: hashedPassword,
+                        updated_at: bangkokTime,
+                    },
+                });
+            } else if (userType === 'officer') {
+                return await prisma.officer.update({
+                    where: { email },
+                    data: { 
+                        password: hashedPassword,
+                        updated_at: bangkokTime,
+                    },
+                });
+            } else {
+                throw new Error("Invalid user type");
+            }
         } catch (error) {
             console.error("Error updating password:", error);
             throw new Error("Database error");

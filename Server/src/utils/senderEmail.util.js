@@ -2,17 +2,17 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
 
-const transporter = nodemailer.createTransporter({
+const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: parseInt(process.env.SMTP_PORT),
-  secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
+  secure: process.env.SMTP_SECURE === 'true', 
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASSWORD,
   },
-  // สำหรับ SSL/TLS options เพิ่มเติม
+
   tls: {
-    // ไม่ reject unauthorized certificates (สำหรับ self-signed certificates)
+
     rejectUnauthorized: false
   }
 });
@@ -39,7 +39,7 @@ export const sendEmail = async (to, subject, text, html = null) => {
   }
 };
 
-// Function สำหรับทดสอบการเชื่อมต่อ SMTP
+
 export const testConnection = async () => {
   try {
     await transporter.verify();

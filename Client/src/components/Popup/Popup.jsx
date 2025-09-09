@@ -55,7 +55,7 @@ const Popup = ({
           <button
             type="submit"
             className={styles.buttonPopup}
-            disabled={textarea && !valueTextarea.trim() || disabledSuccess}
+            disabled={(textarea && !valueTextarea.trim()) || disabledSuccess}
           >
             {textButtonSuccess}
           </button>

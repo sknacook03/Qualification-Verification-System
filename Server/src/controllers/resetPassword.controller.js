@@ -7,8 +7,8 @@ const ResetController = {
         try {
           const { email } = req.body;
     
-          const user = await ResetServices.findUserByEmail(email);
-          if (!user) {
+          const result = await ResetServices.findUserByEmail(email);
+          if (!result || !result.user) {
             return res.status(404).json({ message: "Email not found" });
           }
     
@@ -16,7 +16,10 @@ const ResetController = {
     
           await sendResetPasswordEmail(email, resetCode);
     
-          return res.status(200).json({ message: "Code sent to email!" });
+          return res.status(200).json({ 
+            message: "Code sent to email!",
+            userType: result.userType 
+          });
         } catch (error) {
           console.error('Error in requestResetPassword:', error);
           return res.status(500).json({ message: "Internal Server Error" });
@@ -41,13 +44,21 @@ const ResetController = {
         try {
             const { email, newPassword } = req.body;
 
+            const result = await ResetServices.findUserByEmail(email);
+            if (!result || !result.user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+
             const saltRounds = 10; 
             const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
 
-            await ResetServices.updatePassword(email, hashedPassword);
+            await ResetServices.updatePassword(email, hashedPassword, result.userType);
             await ResetServices.deleteResetRecord(email);
 
-            res.status(200).json({ message: "Password reset successfully" });
+            res.status(200).json({ 
+                message: "Password reset successfully",
+                userType: result.userType 
+            });
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Internal Server Error" });
