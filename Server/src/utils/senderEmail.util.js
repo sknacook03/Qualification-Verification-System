@@ -10,9 +10,7 @@ const transporter = nodemailer.createTransport({
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASSWORD,
   },
-  // สำหรับ SSL/TLS options เพิ่มเติม
   tls: {
-    // ไม่ reject unauthorized certificates (สำหรับ self-signed certificates)
     rejectUnauthorized: false
   }
 });
