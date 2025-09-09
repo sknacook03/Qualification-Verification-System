@@ -166,7 +166,6 @@ const OfficerService = {
   },
   getOfficerById: async (id) => {
     try {
-      console.log("Fetching officer by ID:", id);
       const officer = await prisma.officer.findUnique({
         where: { id: BigInt(id) },
       });

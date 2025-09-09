@@ -33,7 +33,6 @@ const StudentService = {
   },
   getStudentById: async (id) => {
     try {
-      console.log("Fetching student by ID:", id);
       const student = await prisma.student.findUnique({
         where: { id: BigInt(id) },
       });
@@ -70,8 +69,6 @@ const StudentService = {
     try {
       const whereCondition = {};
 
-      console.log("Corrected Search Parameters:", filterParams);
-
       let name =
         typeof filterParams.name === "string" ? filterParams.name.trim() : "";
       let lname =
@@ -83,7 +80,6 @@ const StudentService = {
 
       // ตรวจสอบว่าครบทั้ง 3 ช่อง
       if (name === "" || lname === "" || student_no === "") {
-        console.log("ต้องกรอก name, lname และ student_no ให้ครบ");
         return [];
       }
 
@@ -103,11 +99,6 @@ const StudentService = {
           ],
         },
       ];
-
-      console.log(
-        "Prisma Query Conditions:",
-        JSON.stringify(whereCondition, null, 2)
-      );
 
       const students = await prisma.student.findMany({ where: whereCondition });
 

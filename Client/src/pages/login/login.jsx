@@ -36,7 +36,6 @@ function App() {
         toast.error("เกิดข้อผิดพลาด: " + response.status);
       }
     } catch (error) {
-      console.error("Login Error:", error);
       const msg = error.response?.status;
       if (msg === 401) {
         toast.error("อีเมลหรือรหัสผ่านไม่ถูกต้อง โปรดตรวจสอบและลองใหม่อีกครั้ง");

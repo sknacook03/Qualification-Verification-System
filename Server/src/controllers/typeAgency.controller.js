@@ -39,7 +39,6 @@ const TypeAgencyController = {
     createAgencyController: async (req, res) => {
       try {
         let { type_name } = req.body;
-        console.log("รับค่าจาก client:", req.body);
     
         if (!type_name || type_name.trim() === "") {
           return res.status(400).json({

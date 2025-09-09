@@ -116,7 +116,6 @@ const AgencyController = {
           type_id,
           password,
         } = req.body;
-        console.log(req.body);
         const certificate = req.file
           ? req.file.path
           : "no_certificate_uploaded";
@@ -213,9 +212,6 @@ const AgencyController = {
       try {
         const { id } = req.params;
         let updateData = req.body;
-
-        console.log("Received Body Data:", updateData);
-        console.log("Received File Data:", req.file);
 
         if (!req.file) {
           return res

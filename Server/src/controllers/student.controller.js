@@ -151,8 +151,6 @@ const StudentController = {
     try {
       const filterParams = req.body;
 
-      console.log("Received Search Parameters:", filterParams);
-
       if (!filterParams || Object.keys(filterParams).length === 0) {
         return res
           .status(400)

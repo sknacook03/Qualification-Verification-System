@@ -10,7 +10,6 @@ const authMiddleware = (req, res, next) => {
     // ลองใช้ jwt.verify ก่อน
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      console.log("Decoded token:", decoded);
       
       const currentTime = Math.floor(Date.now() / 1000);
       const timeUntilExpiry = decoded.exp - currentTime;
@@ -37,7 +36,6 @@ const authMiddleware = (req, res, next) => {
       
     } catch (jwtError) {
       if (jwtError.name === 'TokenExpiredError') {
-        console.log("Token expired - sending 401");
         return res.status(401).json({ 
           error: "Token expired", 
           expired: true,
