@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const SECRET_KEY = process.env.JWT_SECRET;
-const URL_FRONTEND= `${URL_FRONTEND}/eduverify`;
+const URL_FRONTEND = process.env.URL_FRONTEND;
 export const sendResetPasswordEmail = async (email, resetCode) => {
   const subject = "รหัสรีเซ็ตรหัสผ่านของคุณ";
   const htmlContent = `
@@ -151,7 +151,7 @@ export const sendApprovalEmail = async (email, agencyName) => {
                 <p>เรียนคุณ ${agencyName},</p>
                 <p>เรามีความยินดีที่จะแจ้งให้คุณทราบว่า คำขอของคุณได้รับการอนุมัติเรียบร้อยแล้ว</p>
                 <p>คุณสามารถเข้าสู่ระบบได้โดยใช้ลิงก์ด้านล่าง:</p>
-                <p><a href="${URL_FRONTEND}/">${URL_FRONTEND}/</a></p>
+                <p><a href="${URL_FRONTEND}/eduverify/">${URL_FRONTEND}/eduverify/</a></p>
             </div>
             <div class="footer">
                 <p>© 2024 มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน</p>
@@ -168,7 +168,7 @@ export const sendApprovalEmail = async (email, agencyName) => {
 
 export const sendRejectionEmail = async (email, agencyName, reason, agencyId) => {
     const token = jwt.sign({ id: agencyId, email }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
-    const editLink = `${URL_FRONTEND}/Editregister?token=${token}`;
+    const editLink = `${URL_FRONTEND}/eduverify/Editregister?token=${token}`;
     const subject = "คำขอของคุณไม่ได้รับการอนุมัติ";
     const htmlContent = `
         <!DOCTYPE html>
@@ -241,7 +241,7 @@ export const sendRejectionEmail = async (email, agencyName, reason, agencyId) =>
                     <p>เราขอแจ้งให้ทราบว่า คำขอของคุณไม่ได้รับการอนุมัติด้วยเหตุผลดังต่อไปนี้:</p>
                     <p class="reason">${reason}</p>
                     <p>กรุณาคลิกลิงก์ด้านล่างเพื่อเข้าสู่ระบบและแก้ไขข้อมูลที่ผิดพลาด:</p>
-                    <p><a href="${editLink}">${URL_FRONTEND}/Editregister</a></p>
+                    <p><a href="${editLink}">${URL_FRONTEND}/eduverify/Editregister</a></p>
                     <p>หากคุณมีข้อสงสัยเพิ่มเติม กรุณาติดต่อฝ่ายสนับสนุนของเรา</p>
                 </div>
                 <div class="footer">
@@ -329,7 +329,7 @@ export const sendAgencyCreate = async (email, officerName, agencyName) => {
                 <p>ขณะนี้มีการสมัครสมาชิกของหน่วยงานเข้ามา</p>
                 <p>ชื่อของหน่วยงานดังกล่าวคือ: <strong>${agencyName}</strong></p>
                 <p>คุณสามารถตรวจสอบหน่วยงานได้โดยใช้ลิงก์ด้านล่าง</p>
-                <p><a href="${URL_FRONTEND}/">${URL_FRONTEND}/</a></p>
+                <p><a href="${URL_FRONTEND}/eduverify/">${URL_FRONTEND}/eduverify/</a></p>
             </div>
             <div class="footer">
                 <p>© 2024 มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน</p>
