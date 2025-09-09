@@ -7,6 +7,7 @@ import Button from "../../components/button/Button";
 import Footer from "../../components/footer/footer";
 import HeaderLogin from "../../components/headerLogin/headerLogin";
 import LoginForm from "../../hooks/LoginForm/LoginForm";
+import SEO from "../../components/SEO/SEO.jsx";
 import styles from "./login.module.css";
 import { API_BASE_URL, APIEndpoints } from "../../services/api";
 function App() {
@@ -38,11 +39,15 @@ function App() {
     } catch (error) {
       const msg = error.response?.status;
       if (msg === 401) {
-        toast.error("อีเมลหรือรหัสผ่านไม่ถูกต้อง โปรดตรวจสอบและลองใหม่อีกครั้ง");
+        toast.error(
+          "อีเมลหรือรหัสผ่านไม่ถูกต้อง โปรดตรวจสอบและลองใหม่อีกครั้ง"
+        );
       } else if (msg === 500) {
         toast.error("เกิดข้อผิดพลาด: " + (msg || "ไม่สามารถเข้าสู่ระบบได้"));
       } else {
-        toast.error("ไม่สามารถเข้าสู่ระบบได้: " + error.response?.data?.message);
+        toast.error(
+          "ไม่สามารถเข้าสู่ระบบได้: " + error.response?.data?.message
+        );
       }
     } finally {
       setLoading(false);
@@ -50,48 +55,69 @@ function App() {
   };
 
   return (
-    <div className={styles.appContainer}>
-      <div className={styles.boxLogin}>
-        <div className={styles.login}>
-          <HeaderLogin />
-          <div className={styles.form}>
-            <div className={styles.btnLeft}>
-              <LoginForm onSubmit={handleSubmit} loading={loading} />
-            </div>
-            <div className={styles.btnRight}>
-              <Link
-                to="/Register"
-                style={{ width: "100%", textDecoration: "none" }}
-              >
-                <Button text="สมัครสมาชิก(หน่วยงานใหม่)" styleType="primary" />
-              </Link>
-              <Link
-                to="/GeneralUser"
-                style={{ width: "100%", textDecoration: "none" }}
-              >
-                <Button text="เข้าชมเว็บไซต์" styleType="primary" />
-              </Link>
-              <div className={styles.btnSecondary}>
-                <a href="https://drive.google.com/drive/folders/1lG75U75jG64fy5Rqg7oZRk3TfTzzx0z0?usp=sharing" target="_blank" rel="noreferrer" style={{ width: "100%", textDecoration: "none" }}>
+    <>
+      <SEO
+        title="เข้าสู่ระบบ - ระบบตรวจคุณวุฒิมหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน | มทร.อีสาน"
+        description="เข้าสู่ระบบตรวจสอบคุณวุฒิการศึกษา สำหรับหน่วยงานราชการและเอกชน ตรวจสอบใบประกาศนียบัตร ใบปริญญา อย่างรวดเร็วและปลอดภัย"
+        keywords="ตรวจสอบคุณวุฒิ, ตรวจคุณวุฒิ, ยืนยันคุณวุฒิ, ตรวจสอบใบปริญญา, ราชมงคลโคราช, ราชมงคลนครราชสีมา, มทร.อีสาน, มทรอีสาน, โคราช, นครราชสีมา, ราชมงคลอีสาน, RMUTI, ข้อมูลบัณฑิต, ตรวจสอบบัณฑิต, สถานะการศึกษา, ตรวจคุณวุฒิราชมงคลโคราช, ตรวจสอบคุณวุฒิโคราช, ยืนยันใบปริญญาราชมงคล, ระบบตรวจสอบคุณวุฒิมทร, ตรวจสอบคุณวุฒิออนไลน์"
+        url="https://cpermuti.com/eduverify/"
+      />
+      <div className={styles.appContainer}>
+        <div className={styles.boxLogin}>
+          <div className={styles.login}>
+            <HeaderLogin />
+            <div className={styles.form}>
+              <div className={styles.btnLeft}>
+                <LoginForm onSubmit={handleSubmit} loading={loading} />
+              </div>
+              <div className={styles.btnRight}>
+                <Link
+                  to="/Register"
+                  style={{ width: "100%", textDecoration: "none" }}
+                >
                   <Button
-                    text="ดาวน์โหลดฟอร์มหนังสือยินยอมให้เปิดเผยข้อมูล"
-                    styleType="secondary"
+                    text="สมัครสมาชิก(หน่วยงานใหม่)"
+                    styleType="primary"
                   />
-                </a>
-                <a href="https://drive.google.com/drive/folders/1MXFcGKGdTpjhk0UtWXDS6ngVOL7bmmN5?usp=sharing" target="_blank" rel="noreferrer" style={{ width: "100%", textDecoration: "none" }}>
-                  <Button
-                    text="คู่มือการใช้งานสำหรับหน่วยงาน"
-                    styleType="secondary"
-                  />
-                </a>
+                </Link>
+                <Link
+                  to="/GeneralUser"
+                  style={{ width: "100%", textDecoration: "none" }}
+                >
+                  <Button text="เข้าชมเว็บไซต์" styleType="primary" />
+                </Link>
+                <div className={styles.btnSecondary}>
+                  <a
+                    href="https://drive.google.com/drive/folders/1lG75U75jG64fy5Rqg7oZRk3TfTzzx0z0?usp=sharing"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ width: "100%", textDecoration: "none" }}
+                  >
+                    <Button
+                      text="ดาวน์โหลดฟอร์มหนังสือยินยอมให้เปิดเผยข้อมูล"
+                      styleType="secondary"
+                    />
+                  </a>
+                  <a
+                    href="https://drive.google.com/drive/folders/1MXFcGKGdTpjhk0UtWXDS6ngVOL7bmmN5?usp=sharing"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ width: "100%", textDecoration: "none" }}
+                  >
+                    <Button
+                      text="คู่มือการใช้งานสำหรับหน่วยงาน"
+                      styleType="secondary"
+                    />
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         </div>
+        <ToastContainer position="top-center" />
+        <Footer />
       </div>
-      <ToastContainer position="top-center" />
-      <Footer />
-    </div>
+    </>
   );
 }
 

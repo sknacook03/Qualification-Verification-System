@@ -10,11 +10,16 @@
   padding: 0 0.5rem;
   border-radius: 0.5rem;
 }
+
+.dropdownContainer label{
+  font-size: 8px;
+}
+
 .dropdownContainer .select{
   border: none;
-  padding: 0.5rem;
+  padding: 0.1rem;
   font-family: "Prompt", sans-serif;
-  font-size: 15px;
+  font-size: 12px;
 }
 .dropdownContainer .select:focus{
   border: none;
@@ -36,6 +41,7 @@
 
 .pagination li a {
   display: block;
+  font-size: 12px;
   padding: 0.5rem 0.75rem;
   cursor: pointer;
   text-decoration: none;
@@ -50,4 +56,18 @@
   background-color: #ff7100 !important;
   color: white;
   font-weight: bold;
+}
+
+@media screen and (min-width: 600px) {
+  .pagination li a {
+    font-size: 14px;
+  }
+  .dropdownContainer label{
+  font-size: 14px;
+}
+
+.dropdownContainer .select{
+  padding: 0.5rem;
+  font-size: 14px;
+}
 }

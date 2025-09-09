@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+
+# Allow crawling of main pages
+Allow: /
+Allow: /Register
+Allow: /LoginOfficer
+Allow: /GeneralUser
+
+# Disallow private/admin areas
+Disallow: /officer/
+Disallow: /agency/
+Disallow: /api/
+Disallow: /private/
+
+# Sitemap
+Sitemap: https://cpermuti.com/eduverify/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1

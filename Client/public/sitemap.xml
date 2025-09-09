@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <!-- หน้าหลัก -->
+  <url>
+    <loc>https://cpermuti.com/eduverify/</loc>
+    <lastmod>2025-01-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- หน้าสมัครสมาชิก -->
+  <url>
+    <loc>https://cpermuti.com/eduverify/Register</loc>
+    <lastmod>2025-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- หน้าเข้าสู่ระบบหน่วยงาน -->
+  <url>
+    <loc>https://cpermuti.com/eduverify/</loc>
+    <lastmod>2025-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- หน้าเข้าสู่ระบบเจ้าหน้าที่ -->
+  <url>
+    <loc>https://cpermuti.com/eduverify/LoginOfficer</loc>
+    <lastmod>2025-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- หน้าสถิติการเข้าถึง -->
+  <url>
+    <loc>https://cpermuti.com/eduverify/GeneralUser</loc>
+    <lastmod>2025-01-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+</urlset>

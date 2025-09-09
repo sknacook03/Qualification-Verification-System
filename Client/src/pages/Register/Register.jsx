@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ArrowButton from "../../components/ArrowButton/ArrowButton";
 import Header from "../../components/header/header";
 import Footer from "../../components/footer/footer";
+import SEO from "../../components/SEO/SEO.jsx";
 import ThailandAddress from "../../libs/ThailandAddress";
 import Input from "../../components/Input/Input";
 import Textfield from "../../components/Textfield/Textfield";
@@ -151,9 +152,16 @@ function Register() {
   };
 
   return (
-    <div className={styles.appContainer}>
-      <Header />
-      <div className={styles.appContent}>
+    <>
+      <SEO 
+        title="สมัครสมาชิก - ระบบตรวจคุณวุฒิมหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน | มทร.อีสาน"
+        description="สมัครสมาชิกเพื่อใช้งานระบบตรวจสอบคุณวุฒิมหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน นครราชสีมา สำหรับหน่วยงานราชการและเอกชน ลงทะเบียนง่าย รวดเร็ว ปลอดภัย"
+        keywords="สมัครสมาชิก, ลงทะเบียนหน่วยงาน, ระบบตรวจสอบคุณวุฒิ, หน่วยงานราชการ, สมัครใช้งาน"
+        url="https://cpermuti.com/eduverify/register"
+      />
+      <div className={styles.appContainer}>
+        <Header />
+        <div className={styles.appContent}>
         <div className={styles.topBar}>
           {["#09FF3E", "#a2fbb5"].map((color, index) => (
             <div
@@ -278,6 +286,7 @@ function Register() {
       <Footer />
       <ToastContainer position="top-center" />
     </div>
+    </>
   );
 }
 
