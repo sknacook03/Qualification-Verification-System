@@ -209,6 +209,16 @@ const AgencyService = {
       const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
       let updatePayload = { ...updateData, updated_at: bangkokTime };
 
+      if (Array.isArray(updateData.subdistrict)) {
+        updatePayload.subdistrict = updateData.subdistrict[0] || '';
+      }
+      if (Array.isArray(updateData.district)) {
+        updatePayload.district = updateData.district[0] || '';
+      }
+      if (Array.isArray(updateData.province)) {
+        updatePayload.province = updateData.province[0] || '';
+      }
+
       if (updateData.password) {
         updatePayload.password = await bcrypt.hash(updateData.password, 10);
       } else {
