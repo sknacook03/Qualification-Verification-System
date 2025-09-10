@@ -141,25 +141,21 @@ const AgencyController = {
 
         const agency = await AgencyService.createAgency(agencyData);
         const responseData = JSON.parse(JSON.stringify(agency, replacer));
-        const emailOfficer = await AgencyService.findAllOfficerEmailsAndNames();
-
-        await Promise.all(
-          emailOfficer.map(async (officer) => {
-            try {
-              await sendAgencyCreate(
-                officer.email,
-                officer.first_name,
-                agency_name
-              );
-            } catch (error) {
-              console.error(`Failed to send email to ${officer.email}:`, error);
-            }
-          })
-        );
+        
         res.status(201).json({
           success: true,
           data: responseData,
         });
+        
+        AgencyService.findAllOfficerEmailsAndNames()
+          .then(emailOfficer => {
+            emailOfficer.forEach((officer, index) => {
+              setTimeout(() => {
+                sendAgencyCreate(officer.email, officer.first_name, agency_name);
+              }, index * 300);
+            });
+          })
+          .catch(error => console.error('Error queuing emails:', error));
       } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Failed to create agency" });
