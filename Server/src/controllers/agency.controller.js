@@ -1,8 +1,7 @@
 import multer from "multer";
 import path from "path";
 import AgencyService from "../services/agency.service.js";
-import { sendAgencyCreate } from "../services/email.service.js";
-
+import { sendAgencyCreate, sendAgencyUpdateNotification } from "../services/email.service.js";
 const replacer = (key, value) => {
   if (typeof value === "bigint") {
     return value.toString();
@@ -228,11 +227,27 @@ const AgencyController = {
           )
         );
 
+        // ส่งการตอบกลับก่อน จากนั้นส่งอีเมลแจ้งเตือนเจ้าหน้าที่
         res.status(200).json({
           success: true,
           message: "Successfully updated agency.",
           data: responseData,
         });
+
+        // ส่งอีเมลแจ้งเตือนเจ้าหน้าที่ในพื้นหลัง
+        setTimeout(() => {
+          AgencyService.findAllOfficerEmailsAndNames()
+            .then(emailOfficer => {
+              emailOfficer.forEach((officer, index) => {
+                setTimeout(() => {
+                  sendAgencyUpdateNotification(officer.email, officer.first_name, updatedAgency.agency_name);
+                }, index * 1000); // ส่งทีละรอบห้าง 1 วินาที
+              });
+            })
+            .catch(error => {
+              console.error("Error fetching officer emails for update notification:", error);
+            });
+        }, 100);
       } catch (error) {
         console.error(
           "An error occurred while updating the unit:",
