@@ -21,6 +21,10 @@ const AuthService = {
         throw new Error("Password is incorrect");
       }
 
+      if (agency.status_approve === "pending") {
+        throw new Error("Agency is not approve")
+      }
+
       const token = jwt.sign(
         { id: agency.id.toString(), email: agency.email, role: agency.role },
         process.env.JWT_SECRET,
@@ -34,6 +38,9 @@ const AuthService = {
       }
       if (error.message === "Password is incorrect") {
         throw new Error("Password is incorrect");
+      }
+      if (error.message === "Agency is not approve") {
+        throw new Error("Agency is not approve");
       }
       console.error("Failed to login:", error);
       throw error;
