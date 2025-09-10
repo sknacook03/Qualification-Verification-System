@@ -6,6 +6,7 @@ import Input from "../../components/Input/Input";
 import Textfield from "../../components/Textfield/Textfield";
 import OptionTypeAgency from "../../components/OptionTypeAgency/OptionTypeAgency";
 import PasswordInput from "../../hooks/PasswordInput/PasswordInput";
+import PasswordStrengthIndicator from "../../components/PasswordStrengthIndicator/PasswordStrengthIndicator";
 import styles from "./Editregister.module.css";
 import Button from "../../components/button/Button";
 import Popup from "../../components/Popup/Popup";
@@ -39,7 +40,57 @@ function Editregister() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [file, setFile] = useState(null);
 
-  const isPasswordStrong = (password) => password.length >= 8;
+  const isPasswordStrong = (password) => {
+    const requirements = [
+      { test: (pwd) => pwd.length >= 8 },
+      { test: (pwd) => /[A-Z]/.test(pwd) },
+      { test: (pwd) => /[a-z]/.test(pwd) },
+      { test: (pwd) => /\d/.test(pwd) },
+      { test: (pwd) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd) },
+    ];
+
+    const satisfiedRequirements = requirements.filter((req) =>
+      req.test(password)
+    ).length;
+    return satisfiedRequirements >= 3;
+  };
+
+  const validateFile = (file) => {
+    if (!file)
+      return { isValid: false, error: "กรุณาอัปโหลดไฟล์หนังสือรับรอง" };
+
+    const allowedTypes = [
+      "application/pdf",
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+    ];
+    const allowedExtensions = [".pdf", ".png", ".jpg", ".jpeg"];
+
+    const fileExtension = file.name
+      .toLowerCase()
+      .substring(file.name.lastIndexOf("."));
+    const isValidType =
+      allowedTypes.includes(file.type) ||
+      allowedExtensions.includes(fileExtension);
+
+    if (!isValidType) {
+      return {
+        isValid: false,
+        error: "ไฟล์ที่อัปโหลดต้องเป็น .pdf, .png หรือ .jpg เท่านั้น",
+      };
+    }
+
+    const maxSize = 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+      return {
+        isValid: false,
+        error: "ขนาดไฟล์ต้องไม่เกิน 10 MB",
+      };
+    }
+
+    return { isValid: true, error: null };
+  };
 
   useEffect(() => {
     axios.get(API_BASE_URL + APIEndpoints.typeAgency.fetchAll)
@@ -114,19 +165,53 @@ function Editregister() {
     if (!address.district) newErrors.district = "กรุณากรอกอำเภอ*";
     if (!address.province) newErrors.province = "กรุณากรอกจังหวัด*";
     if (!address.postalCode) newErrors.postalCode = "กรุณากรอกรหัสไปรษณีย์*";
-    if (!password) newErrors.password = "กรุณากรอกรหัสผ่าน";
-    if (!confirmPassword) newErrors.confirmPassword = "กรุณากรอกยืนยันรหัสผ่าน";
-    if (!file) newErrors.file = "กรุณาอัปโหลดไฟล์หนังสือรับรอง";
+    
+    if (!password) {
+      newErrors.password = "กรุณากรอกรหัสผ่าน";
+    } else if (!isPasswordStrong(password)) {
+      newErrors.password =
+        "รหัสผ่านไม่แข็งแกร่ง กรุณาตรวจสอบความต้องการด้านล่าง";
+    } else if (password.length < 8) {
+      newErrors.password = "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร";
+    }
+    if (!confirmPassword) {
+      newErrors.confirmPassword = "กรุณากรอกยืนยันรหัสผ่าน";
+    } else if (password !== confirmPassword) {
+      newErrors.confirmPassword = "รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน";
+    }
+
+  
+    const fileValidation = validateFile(file);
+    if (!fileValidation.isValid) {
+      newErrors.file = fileValidation.error;
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  const isFormReady = () => {
+    return (
+      email && 
+      orgname && 
+      department && 
+      telphone && 
+      orgType && 
+      orgaddress && 
+      address.subdistrict && 
+      address.district && 
+      address.province && 
+      address.postalCode && 
+      password && 
+      confirmPassword && 
+      isPasswordStrong(password) && 
+      file && 
+      validateFile(file).isValid
+    );
+  };
+
   const handleAddressChange = (newAddress) => {
     setAddress(newAddress);
-    if (validateForm()) {
-      setErrors({});
-    }
   };
 
   const closePopup = () => {
@@ -140,16 +225,6 @@ function Editregister() {
     if (!validateForm()) { 
       toast.error("กรุณากรอกข้อมูลให้ครบถ้วน!");
       return; 
-    }
-  
-    if (password !== confirmPassword) {
-      toast.error("รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน!");
-      return;
-    }
-  
-    if (!isPasswordStrong(password)) {
-      toast.error("รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร");
-      return;
     }
   
     try {
@@ -205,30 +280,156 @@ function Editregister() {
             ></div>
           ))}
         </div>
-        <h3>แก้ไขข้อมูลการสมัครสมาชิค</h3>
+        <h3>แก้ไขข้อมูลการสมัครสมาชิก</h3>
         <form action="">
           <div className={styles.inputForm}>
             <div className={styles.inputRegister}>
-              <Input label="อีเมล*" type="email" value={email} onChange={(e) => setEmail(e.target.value)} error={errors.email} />
-              <Input label="ชื่อหน่วยงาน*" type="text" value={orgname} onChange={(e) => setOrgname(e.target.value)} error={errors.orgname} />
-              <Input label="แผนกงานที่รับผิดชอบ*" type="text" value={department} onChange={(e) => setDepartment(e.target.value)} error={errors.department} />
-              <Input label="เบอร์โทรศัพท์*" type="text" value={telphone} onChange={(e) => setTelphone(e.target.value)} error={errors.telphone} />
-              <Textfield label="ที่อยู่ของหน่วยงาน*" type="text" value={orgaddress} onChange={(e) => setOrgaddress(e.target.value)} error={errors.orgaddress} />
+              <Input 
+                label="อีเมล*" 
+                type="email" 
+                value={email} 
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setErrors((prev) => ({ ...prev, email: undefined }));
+                }} 
+                error={errors.email} 
+              />
+              <Input 
+                label="ชื่อหน่วยงาน*" 
+                type="text" 
+                value={orgname} 
+                onChange={(e) => {
+                  setOrgname(e.target.value);
+                  setErrors((prev) => ({ ...prev, orgname: undefined }));
+                }} 
+                error={errors.orgname} 
+              />
+              <Input 
+                label="แผนกงานที่รับผิดชอบ*" 
+                type="text" 
+                value={department} 
+                onChange={(e) => {
+                  setDepartment(e.target.value);
+                  setErrors((prev) => ({ ...prev, department: undefined }));
+                }} 
+                error={errors.department} 
+              />
+              <Input 
+                label="เบอร์โทรศัพท์*" 
+                type="text" 
+                value={telphone} 
+                onChange={(e) => {
+                  setTelphone(e.target.value);
+                  setErrors((prev) => ({ ...prev, telphone: undefined }));
+                }} 
+                error={errors.telphone} 
+              />
+              <Textfield 
+                label="ที่อยู่ของหน่วยงาน*" 
+                type="text" 
+                value={orgaddress} 
+                onChange={(e) => {
+                  setOrgaddress(e.target.value);
+                  setErrors((prev) => ({ ...prev, orgaddress: undefined }));
+                }} 
+                error={errors.orgaddress} 
+              />
             </div>
             <div className={styles.inputRegister}>
-              <ThailandAddress value={address} onAddressChange={handleAddressChange} error={errors} />
-              <OptionTypeAgency label="ประเภทหน่วยงาน*" value={orgType} onChange={(e) => setOrgType(e.target.value)} error={errors.orgType} />
+              <ThailandAddress 
+                value={address} 
+                onAddressChange={(newAddress) => {
+                  handleAddressChange(newAddress);
+                  // ล้าง error ของ address fields
+                  setErrors((prev) => ({ 
+                    ...prev, 
+                    subdistrict: undefined,
+                    district: undefined,
+                    province: undefined,
+                    postalCode: undefined
+                  }));
+                }} 
+                error={errors} 
+              />
+              <OptionTypeAgency 
+                label="ประเภทหน่วยงาน*" 
+                value={orgType} 
+                onChange={(e) => {
+                  setOrgType(e.target.value);
+                  setErrors((prev) => ({ ...prev, orgType: undefined }));
+                }} 
+                error={errors.orgType} 
+              />
             </div>
-              <PasswordInput label="รหัสผ่านใหม่" id="password" value={password} onChange={(e) => setPassword(e.target.value)} error={errors.password} />
-              <PasswordInput label="ยืนยันรหัสผ่าน" id="confirmPassword" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} error={errors.confirmPassword} />
+              <PasswordInput 
+                label="รหัสผ่านใหม่" 
+                id="password" 
+                value={password} 
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setErrors((prev) => ({ ...prev, password: undefined }));
+                }} 
+                error={errors.password} 
+              />
+              <PasswordStrengthIndicator password={password} />
+              <PasswordInput 
+                label="ยืนยันรหัสผ่าน" 
+                id="confirmPassword" 
+                value={confirmPassword} 
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  setErrors((prev) => ({ ...prev, confirmPassword: undefined }));
+                }} 
+                error={errors.confirmPassword} 
+              />
             <div className={styles.infoInput}>
               <p>อัปโหลดหนังสือรับรองเพื่อเข้าใช้งานระบบ</p>
               <p>(รองรับไฟล์ .pdf .png .jpg ขนาดไม่เกิน 10 MB)</p>
             </div>
-              <Input type="file" onChange={(e) => setFile(e.target.files[0])} error={errors.file} />  
+              <Input 
+                type="file" 
+                accept=".pdf,.png,.jpg,.jpeg"
+                onChange={(e) => {
+                  const selectedFile = e.target.files[0];
+                  if (selectedFile) {
+                    const fileValidation = validateFile(selectedFile);
+                    if (fileValidation.isValid) {
+                      setFile(selectedFile);
+                      setErrors((prev) => ({ ...prev, file: undefined }));
+                    } else {
+                      setFile(null);
+                      setErrors((prev) => ({
+                        ...prev,
+                        file: fileValidation.error,
+                      }));
+                      e.target.value = "";
+                    }
+                  } else {
+                    setFile(null);
+                    setErrors((prev) => ({ ...prev, file: undefined }));
+                  }
+                }} 
+                error={errors.file} 
+              />
+              {file && (
+                <div className={styles.fileInfo}>
+                  <p className={styles.fileSelected}>
+                    <span className={styles.fileIcon}>📄</span>
+                    <span className={styles.fileName}>{file.name}</span>
+                    <span className={styles.fileSize}>
+                      ({(file.size / (1024 * 1024)).toFixed(2)} MB)
+                    </span>
+                  </p>
+                </div>
+              )}  
           </div>
           <div className={styles.buttonSubmit}>
-            <Button text="ยืนยันการแก้ไขข้อมูล" styleType="third" onClick={handleSubmit} disabled={Object.keys(errors).length > 0}/>
+            <Button 
+              text="ยืนยันการแก้ไขข้อมูล" 
+              styleType="third" 
+              onClick={handleSubmit} 
+              disabled={!isFormReady()}
+            />
             <Link to="/" style={{ textDecoration: "none" }}>
               <Button text="ย้อนกลับ" styleType="back" />
             </Link>

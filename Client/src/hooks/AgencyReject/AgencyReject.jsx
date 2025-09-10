@@ -76,10 +76,10 @@ const AgencyReject = ({ officer }) => {
         )
       );
 
-      toast.success("Approval recorded and email sent.");
+      toast.success("บันทึกการอนุมัติและส่งอีเมลเรียบร้อยแล้ว");
     } catch (error) {
       console.error("Failed to approve agency:", error);
-      toast.error("Error while approving agency.");
+      toast.error("เกิดข้อผิดพลาดในการอนุมัติหน่วยงาน");
     }
   };
 
