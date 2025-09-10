@@ -16,6 +16,7 @@ const AgencyApproval = ({ officer }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [rejectedAgency, setRejectedAgency] = useState(null);
   const [rejectionReason, setRejectionReason] = useState("");
+  const [rejectLoading, setRejectLoading] = useState(false);
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [editingAgency, setEditingAgency] = useState(null);
   const [showInfoPopup, setShowInfoPopup] = useState(false);
@@ -94,7 +95,14 @@ const AgencyApproval = ({ officer }) => {
   };
 
   const submitRejection = async () => {
+    if (!rejectionReason.trim()) {
+      toast.error("กรุณากรอกเหตุผลในการปฏิเสธ");
+      return;
+    }
+
     try {
+      setRejectLoading(true);
+      
       const agencyToUpdate = agency.find((item) => item.id === rejectedAgency);
       if (!agencyToUpdate) {
         toast.error("ไม่พบหน่วยงาน");
@@ -140,10 +148,12 @@ const AgencyApproval = ({ officer }) => {
 
       setShowPopup(false);
       setRejectionReason("");
+      setRejectLoading(false);
       toast.success("บันทึกการปฏิเสธและส่งอีเมลเรียบร้อยแล้ว");
     } catch (error) {
       console.error("Failed to reject agency:", error);
       toast.error("เกิดข้อผิดพลาดในการปฏิเสธหน่วยงาน");
+      setRejectLoading(false);
     }
   };
 
@@ -238,7 +248,14 @@ const AgencyApproval = ({ officer }) => {
           placeholderTextarea="กรุณากรอกหมายเหตุ"
           successPopup={submitRejection}
           textButtonSuccess="ยืนยัน"
-          closePopup={() => setShowPopup(false)}
+          loading={rejectLoading}
+          disabledSuccess={rejectLoading}
+          closePopup={() => {
+            if (!rejectLoading) {
+              setShowPopup(false);
+              setRejectionReason("");
+            }
+          }}
         />
       )}
       {showEditPopup && (
