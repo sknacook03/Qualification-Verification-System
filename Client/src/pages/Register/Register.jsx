@@ -74,9 +74,13 @@ function Register() {
 
   const handleAddressChange = (newAddress) => {
     setAddress(newAddress);
-    if (validateForm()) {
-      setErrors({});
-    }
+    setErrors((prev) => ({
+      ...prev,
+      subdistrict: undefined,
+      district: undefined,
+      province: undefined,
+      postalCode: undefined,
+    }));
   };
 
   const handleNext = async () => {
