@@ -2,6 +2,15 @@ import React from "react";
 import Header from "../../components/header/header";
 import Footer from "../../components/footer/footer";
 import styles from "./Contact.module.css";
+import { 
+  FaMapMarkerAlt, 
+  FaPhone, 
+  FaMobileAlt, 
+  FaEnvelope, 
+  FaGlobe, 
+  FaFacebook,
+  FaUserTie 
+} from "react-icons/fa";
 
 function Contact() {
   
@@ -23,47 +32,50 @@ function Contact() {
 
             <ul className={styles.infoList} aria-label="ข้อมูลติดต่อหลัก">
               <li>
-                <span className={styles.icon}>📍</span>
+                <span className={styles.icon}><FaMapMarkerAlt /></span>
                 744 ถนนสุรนารายณ์ ต.ในเมือง อ.เมือง จ.นครราชสีมา 30000
               </li>
               <li>
-                <span className={styles.icon}>📞</span>
-                044-233-000
-                <span className={styles.label}> (ประชาสัมพันธ์: ต่อ 2290–2294)</span>
+                <span className={styles.icon}><FaPhone /></span>
+                <span className={styles.phoneTel}>044-233-000</span>
+                <span className={styles.label}> ( ประชาสัมพันธ์: ต่อ 2751–2758 )</span>
               </li>
               <li>
-                <span className={styles.icon}>📠</span>
-                044-233-052
+                <span className={styles.icon}><FaMobileAlt /></span>
+                085-537-6717
               </li>
               <li>
-                <span className={styles.icon}>✉️</span>
-                <a href="mailto:info@rmuti.ac.th" className={styles.link}>info@rmuti.ac.th</a>
-                <span className={styles.separator}>/</span>
-                <a href="mailto:saraban@rmuti.ac.th" className={styles.link}>saraban@rmuti.ac.th</a>
+                <span className={styles.icon}><FaEnvelope /></span>
+                <a href="mailto:adminregis@rmuti.ac.th" className={styles.link}>adminregis@rmuti.ac.th</a>
               </li>
               <li>
-                <span className={styles.icon}>🌐</span>
+                <span className={styles.icon}><FaGlobe /></span>
                 <a
-                  href="https://rmuti.ac.th"
+                  href="https://regis.rmuti.ac.th/"
                   className={styles.link}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  www.rmuti.ac.th
+                  www.regis.rmuti.ac.th
+                </a>
+              </li>
+              <li>
+                <span className={styles.icon}><FaFacebook /></span>
+                <a
+                  href="https://www.facebook.com/register112011"
+                  className={styles.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  งานทะเบียนและประมวลผล มทร.อีสาน นครราชสีมา
                 </a>
               </li>
             </ul>
 
-            <div className={styles.moreInfo}>
-              <span className={styles.label}>ข้อมูลการเข้าศึกษาต่อ:</span> 2734
-              <br />
-              <span className={styles.label}>งานทะเบียน:</span> 2751
-            </div>
-
             {/* CONTACT PERSON CARD */}
             <div className={styles.personCard} role="group" aria-label="ข้อมูลเจ้าหน้าที่ติดต่อ">
               <div className={styles.personHeader}>
-                <div className={styles.avatar} aria-hidden>วม</div>
+                <div className={styles.avatar} aria-hidden><FaUserTie /></div>
                 <div className={styles.personMeta}>
                   <div className={styles.personName}>คุณวรรณ์มณี บุญฟู</div>
                   <a
