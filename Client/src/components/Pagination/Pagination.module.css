@@ -16,6 +16,7 @@
 }
 
 .dropdownContainer .select{
+  background: #FAFAFA;
   border: none;
   padding: 0.1rem;
   font-family: "Prompt", sans-serif;

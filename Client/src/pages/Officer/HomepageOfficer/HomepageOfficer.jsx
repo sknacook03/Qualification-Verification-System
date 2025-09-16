@@ -269,7 +269,7 @@ function HomepagesOfficer() {
                 <table className={styles.table}>
                   <thead>
                     <tr>
-                      <th>#</th>
+                      <th>ลำดับ</th>
                       <th>ชื่อนักศึกษา</th>
                       <th>หน่วยงาน</th>
                       <th>หนังสือยินยอมเปิดเผยข้อมูล</th>
@@ -310,10 +310,7 @@ function HomepagesOfficer() {
                     {currentItems.map((pv, i) => {
                       const iso = pv.updated_at ?? pv.updated_at ?? "";
                       const dateStr = iso
-                        ? `${iso.slice(8, 10)}/${iso.slice(5, 7)}/${iso.slice(
-                            0,
-                            4
-                          )}`
+                        ? `${iso.slice(8, 10)}/${iso.slice(5, 7)}/${parseInt(iso.slice(0, 4)) + 543}`
                         : "-";
                       const timeStr = iso ? iso.slice(11, 16) : "-";
 
