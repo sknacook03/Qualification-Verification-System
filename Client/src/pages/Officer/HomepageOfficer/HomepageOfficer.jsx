@@ -267,7 +267,7 @@ function HomepagesOfficer() {
             {/* PagesView Table */}
             <div className={styles.container}>
               <div className={styles.titleBar}>
-                <h2 className={styles.title}>ตารางเข้าตรวจสอบผู้สำเร็จการศึกษา</h2>
+                <h2 className={styles.title}>ตารางการตรวจสอบผู้สำเร็จการศึกษา</h2>
               </div>
               <div className={styles.tableWrapper}>
                 <table className={styles.table}>
