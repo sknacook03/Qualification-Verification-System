@@ -76,6 +76,54 @@ body {
   padding-top: 1rem;
   border-top: solid #d9d9d9;
 }
+
+.noteContainer {
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+.noteBox {
+  width: 400px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  margin: 0 1rem;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.noteTitle {
+  color: #ff7100;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  margin-top: 0;
+}
+
+.noteItem {
+  display: flex;
+  margin-bottom: 0.8rem;
+  align-items: flex-start;
+}
+
+.noteItem:last-child {
+  margin-bottom: 0;
+}
+
+.noteNumber {
+  color: #ff7100;
+  font-weight: 600;
+  margin-right: 0.5rem;
+  min-width: 20px;
+}
+
+.noteText {
+  color: #495057;
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+
 footer {
   align-items: center;
   text-align: center;
@@ -86,6 +134,11 @@ footer {
     width: 700px;
     height: fit-content;
   }
+  .noteBox {
+    width: 700px;
+    margin: 0 0 2rem 0;
+  }
+  
 }
 @media screen and (min-width: 1024px) {
   .boxLogin .login {
@@ -114,15 +167,33 @@ footer {
     padding-top: 1rem;
     gap: 1rem;
   }
+
+  .noteBox {
+    width: 1000px;
+    margin: -5rem 0 2rem 0;
+  }
+
 }
+
 @media screen and (min-width: 1440px) {
   .boxLogin {
     margin-left: 5rem;
     justify-content: start;
   }
+  .noteContainer {
+    margin: -5rem 0 2rem 6rem;
+    display: block;
+  }
+  .noteBox {
+    width: 1000px;
+    margin: 0;
+  }
 }
 @media screen and (min-width: 1920px) {
   .boxLogin {
     margin: 5rem 0 0 10rem;
+  }
+  .noteContainer {
+    margin: -2rem 0 2rem 11rem;
   }
 }

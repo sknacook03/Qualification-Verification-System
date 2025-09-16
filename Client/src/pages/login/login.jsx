@@ -81,7 +81,7 @@ function App() {
                   style={{ width: "100%", textDecoration: "none" }}
                 >
                   <Button
-                    text="สมัครสมาชิก(หน่วยงานใหม่)"
+                    text="สมัครสมาชิก ( หน่วยงานใหม่ )"
                     styleType="primary"
                   />
                 </Link>
@@ -93,7 +93,7 @@ function App() {
                 </Link>
                 <div className={styles.btnSecondary}>
                   <a
-                    href="https://drive.google.com/drive/folders/1lG75U75jG64fy5Rqg7oZRk3TfTzzx0z0?usp=sharing"
+                    href="https://drive.google.com/drive/folders/13E1bwHoJzosSn-cef6YFPI5ZzPgrHNxk?usp=sharing"
                     target="_blank"
                     rel="noreferrer"
                     style={{ width: "100%", textDecoration: "none" }}
@@ -119,6 +119,21 @@ function App() {
             </div>
           </div>
         </div>
+
+        <div className={styles.noteContainer}>
+          <div className={styles.noteBox}>
+            <h3 className={styles.noteTitle}>หมายเหตุ:</h3>
+            <div className={styles.noteItem}>
+              <span className={styles.noteNumber}>1.</span>
+              <span className={styles.noteText}>สามารถตรวจสอบคุณวุฒิการศึกษาที่สำเร็จการศึกษาตั้งแต่ปีการศึกษา 2552 เป็นต้นไป</span>
+            </div>
+            <div className={styles.noteItem}>
+              <span className={styles.noteNumber}>2.</span>
+              <span className={styles.noteText}>หากท่านต้องการตรวจสอบผลการศึกษาหรือข้อมูลอื่นๆ นอกเหนือจากที่ปรากฏ ท่านจะต้องส่งหนังสือตรวจสอบคุณวุฒิอย่างเป็นทางการมายังมหาวิทยาลัย</span>
+            </div>
+          </div>
+        </div>
+
         <ToastContainer position="top-center" />
         <Footer />
       </div>
