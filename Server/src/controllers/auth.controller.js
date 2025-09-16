@@ -60,6 +60,13 @@ const loginHandler = async (req, res, loginFunction) => {
         error: "Your account is not approved yet. Please contact the administrator." 
       });
     }
+
+    if (error.message === "Agency is rejected") {
+      console.error("Login failed: Agency rejected for email:", req.body.email);
+      return res.status(403).json({ 
+        error: "Your account has been rejected. Please contact the administrator." 
+      });
+    }
     console.error("Unexpected error in loginHandler:", error);
     return res.status(500).json({ error: "Failed to login" });
   }

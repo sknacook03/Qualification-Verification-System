@@ -37,14 +37,23 @@ function App() {
       }
     } catch (error) {
       const msg = error.response?.status;
+      const errorMessage = error.response?.data?.error;
+      
       if (msg === 401) {
         toast.error(
           "อีเมลหรือรหัสผ่านไม่ถูกต้อง โปรดตรวจสอบและลองใหม่อีกครั้ง"
         );
       } else if (msg === 403) {
-        toast.warning(
-          "บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ"
-        );
+        // แยกข้อความระหว่าง pending และ rejected
+        if (errorMessage && errorMessage.includes("rejected")) {
+          toast.error(
+            "บัญชีของคุณถูกปฏิเสธ กรุณาตรวจสอบอีเมลของท่านสำหรับรายละเอียดเพิ่มเติม หรือติดต่อผู้ดูแลระบบ"
+          );
+        } else {
+          toast.warning(
+            "บัญชีของคุณยังไม่ได้รับการอนุมัติ โปรดติดต่อผู้ดูแลระบบ"
+          );
+        }
         navigate("/");
         return;
       } else if (msg === 500) {
