@@ -39,11 +39,32 @@ function AgencyApproveTable({
   const [typeAgencies, setTypeAgencies] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredAgencies = React.useMemo(() => {
+    if (!agencies) return [];
+    if (!searchTerm.trim()) return agencies;
+
+    return agencies.filter((agency) => {
+      const searchLower = searchTerm.toLowerCase();
+      const typeName = typeAgencies.find((t) => t.id === agency.type_id)?.type_name || "";
+      
+      return (
+        agency.agency_name?.toLowerCase().includes(searchLower) ||
+        agency.email?.toLowerCase().includes(searchLower) ||
+        agency.telephone_number?.includes(searchTerm) ||
+        typeName.toLowerCase().includes(searchLower)
+      );
+    });
+  }, [agencies, searchTerm, typeAgencies]);
+
   const offset = currentPage * itemsPerPage;
-  const currentItems = agencies
-    ? agencies.slice(offset, offset + itemsPerPage)
-    : [];
-  const pageCount = agencies ? Math.ceil(agencies.length / itemsPerPage) : 0;
+  const currentItems = filteredAgencies.slice(offset, offset + itemsPerPage);
+  const pageCount = Math.ceil(filteredAgencies.length / itemsPerPage);
+
+  React.useEffect(() => {
+    setCurrentPage(0);
+  }, [searchTerm]);
   const handleApprove = async (id) => {
     setLoadingApproveId(id);
     try {
@@ -104,6 +125,28 @@ function AgencyApproveTable({
 
   return (
     <div className={styles.container}>
+      {/* Search Container */}
+      <div className={styles.searchContainer}>
+        <input
+          type="text"
+          className={styles.searchInput}
+          placeholder="ค้นหาหน่วยงาน, อีเมล, เบอร์โทร หรือประเภทหน่วยงาน..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+      <div className={styles.agencyCountSummary}>
+        <div className={styles.totalCount}>
+          จำนวนหน่วยงานทั้งหมด: <span className={styles.countNumber}>{agencies?.length || 0}</span> รายการ
+        </div>
+        {searchTerm && (
+          <div className={styles.filteredCount}>
+            แสดงผลลัพธ์การค้นหา: <span className={styles.countNumber}>{filteredAgencies.length}</span> รายการ
+          </div>
+        )}
+      </div>
+
       <div className={styles.responsiveTableWrapper}>
         <table className={styles.table}>
           <thead>
@@ -233,6 +276,16 @@ function AgencyApproveTable({
                 </td>
               </tr>
             ))}
+            {currentItems.length === 0 && (
+              <tr>
+                <td colSpan="8" className={styles.noData}>
+                  {searchTerm 
+                    ? `ไม่พบข้อมูลที่ตรงกับ "${searchTerm}"` 
+                    : "ไม่มีข้อมูลหน่วยงาน"
+                  }
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
         <Pagination

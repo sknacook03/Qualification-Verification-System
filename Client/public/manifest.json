@@ -1,0 +1,23 @@
+{
+  "name": "ระบบตรวจคุณวุฒินักศึกษา มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน นครราชสีมา - RMUTI",
+  "short_name": "ระบบตรวจสอบคุณวุฒิ RMUTI", 
+  "description": "ระบบตรวจสอบคุณวุฒิผู้สำเร็จการศึกษา มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน นครราชสีมา",
+  "start_url": "/eduverify/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#FF7100",
+  "icons": [
+    {
+      "src": "/eduverify/favicon.png",
+      "sizes": "192x192", 
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/eduverify/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png", 
+      "purpose": "maskable"
+    }
+  ]
+}

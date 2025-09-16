@@ -369,7 +369,6 @@ const AccessStatistics = ({ officer, agency }) => {
   const handleExport = async () => {
     try {
       setExportLoading(true);
-
       const query = `startDate=${exportStartDate}&endDate=${exportEndDate}`;
 
       let exportTables = [];
@@ -541,16 +540,29 @@ const AccessStatistics = ({ officer, agency }) => {
       }
 
       if (exportPDF) {
+        const formatDateToThaiFilename = (dateString) => {
+          if (!dateString) return "";
+          const date = new Date(dateString);
+          const day = date.getDate().toString().padStart(2, "0");
+          const month = (date.getMonth() + 1).toString().padStart(2, "0");
+          const year = date.getFullYear() + 543;
+          return `${day}-${month}-${year}`;
+        };
         let content = [
           {
             text:
               exportStartDate && exportEndDate
-                ? `ช่วงวันที่: ${exportStartDate} ถึง ${exportEndDate}`
+                ? `ช่วงวันที่: ${formatDateToThaiFilename(
+                    exportStartDate
+                  )} ถึง ${formatDateToThaiFilename(exportEndDate)}`
                 : "ช่วงวันที่: ทุกช่วงเวลา",
             alignment: "right",
             margin: [0, 0, 0, 10],
           },
-          { text: "รายงานสถิติการตรวจสอบคุณวุฒิ", style: "header" },
+          {
+            text: "รายงานสถิติการตรวจสอบคุณวุฒิผู้สำเร็จการศึกษา",
+            style: "header",
+          },
           {
             canvas: [
               { type: "line", x1: 0, y1: 0, x2: 520, y2: 0, lineWidth: 1 },
@@ -570,7 +582,7 @@ const AccessStatistics = ({ officer, agency }) => {
               layout: "customLayout",
               table: {
                 headerRows: 1,
-                widths: [50, 344, 100],
+                widths: [50, 300, 144],
                 body: [
                   [
                     { text: "ลำดับ", style: "tableHeader" },
@@ -688,10 +700,15 @@ const AccessStatistics = ({ officer, agency }) => {
           },
         };
 
+        const currentDate = formatDateToThaiFilename(
+          new Date().toISOString().split("T")[0]
+        );
         const pdfName =
           exportStartDate && exportEndDate
-            ? `access_statistics_${exportStartDate}_to_${exportEndDate}.pdf`
-            : `access_statistics_all.pdf`;
+            ? `สถิติการเข้าถึง_${formatDateToThaiFilename(
+                exportStartDate
+              )}_ถึง_${formatDateToThaiFilename(exportEndDate)}.pdf`
+            : `สถิติการเข้าถึง_ทั้งหมด_${currentDate}.pdf`;
         pdfMake.createPdf(docDefinition).download(pdfName);
       }
 
