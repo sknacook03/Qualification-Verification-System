@@ -85,7 +85,6 @@ const ExportFileController = {
         const { degree, dept } = splitDegreeAndDepartment(s.curr_name);
         const year = s.year_no || "-";
         const sem = s.semester_no || "-";
-        const std_year = s.std_year_no || "-";
         const status = getGradStatus(s.status_graduate);
         if (!grouped[fac]) grouped[fac] = {};
         if (!grouped[fac][dept]) grouped[fac][dept] = {};
@@ -94,11 +93,9 @@ const ExportFileController = {
           grouped[fac][dept][degree][year] = {};
         if (!grouped[fac][dept][degree][year][sem])
           grouped[fac][dept][degree][year][sem] = {};
-        if (!grouped[fac][dept][degree][year][sem][std_year])
-          grouped[fac][dept][degree][year][sem][std_year] = {};
-        if (!grouped[fac][dept][degree][year][sem][std_year][status])
-          grouped[fac][dept][degree][year][sem][std_year][status] = [];
-        grouped[fac][dept][degree][year][sem][std_year][status].push(s);
+        if (!grouped[fac][dept][degree][year][sem][status])
+          grouped[fac][dept][degree][year][sem][status] = [];
+        grouped[fac][dept][degree][year][sem][status].push(s);
       });
 
       // Define fonts for pdfmake
@@ -123,7 +120,7 @@ const ExportFileController = {
       });
 
       content.push({
-        text: "มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน วิทยาเขตนครราชสีมา",
+        text: "มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน นครราชสีมา",
         style: "header2",
         alignment: "center",
         margin: [0, 0, 0, 15],
@@ -136,130 +133,108 @@ const ExportFileController = {
         for (const [dept, degrees] of Object.entries(depts)) {
           for (const [degree, years] of Object.entries(degrees)) {
             for (const [year, sems] of Object.entries(years)) {
-              for (const [sem, std_years] of Object.entries(sems)) {
-                for (const [std_year, statuss] of Object.entries(std_years)) {
-                  for (const [status, studentsInGroup] of Object.entries(statuss)) {
-                    const sectionTitle1 = `คณะ: ${fac} | สาขา: ${dept}`;
-                    const sectionTitle2 = `วุฒิการศึกษา: ${degree} | ปีการศึกษา: ${year} | ภาคเรียนที่: ${sem} | ชั้นปี: ${std_year} | สถานะ: ${status}`;
-                    const rows = studentsInGroup.map((s, i) => [
+              for (const [sem, statuss] of Object.entries(sems)) {
+                for (const [status, studentsInGroup] of Object.entries(statuss)) {
+                  const sectionTitle1 = `คณะ: ${fac} | สาขา: ${dept}`;
+                  const buddhistYear = !isNaN(Number(year)) ? Number(year) + 543 : year;
+                  const sectionTitle2 = `วุฒิการศึกษา: ${degree} | ปีการศึกษา: ${buddhistYear} | ภาคเรียนที่: ${sem} | สถานะ: ${status}`;
+                  const rows = studentsInGroup.map((s, i) => {
+                    const gradRaw = s.graduate_date;
+                    let gradDate = "-";
+                    if (gradRaw) {
+                      try {
+                        const d = new Date(gradRaw);
+                        const dd = String(d.getDate()).padStart(2, "0");
+                        const mm = String(d.getMonth() + 1).padStart(2, "0");
+                        const yyyy = d.getFullYear() + 543; // แปลงเป็น พ.ศ.
+                        gradDate = `${dd}/${mm}/${yyyy}`;
+                      } catch (_) {
+                        gradDate = "-";
+                      }
+                    }
+                    return [
                       { text: (i + 1).toString(), alignment: "center" },
                       { text: s.student_no ?? "-", alignment: "center" },
                       { text: `${s.prefix_name ?? ""}${s.name ?? ""} ${s.lname ?? ""}`.trim(), alignment: "left" },
                       { text: s.gpa ?? "-", alignment: "center" },
-                      { text: s.honors ?? "-", alignment: "left" },
-                      { text: s.thesis_topic_th ?? "-", alignment: "left" },
-                    ]);
+                      { text: gradDate, alignment: "center" },
+                      { text: s.honors ?? "-", alignment: "center" },
+                    ];
+                  });
 
-                    // วนแบ่ง rows ทีละ maxRowsPerPage
-                    for (let i = 0; i < rows.length; i += maxRowsPerPage) {
-                      const rowsForPage = rows.slice(i, i + maxRowsPerPage);
+                  // Table headers
+                  const tableHeaders = [
+                    {
+                      text: "ลำดับ",
+                      style: "tableHeader",
+                      alignment: "center",
+                    },
+                    {
+                      text: "รหัสนักศึกษา",
+                      style: "tableHeader",
+                      alignment: "center",
+                    },
+                    {
+                      text: "ชื่อ - นามสกุล",
+                      style: "tableHeader",
+                      alignment: "center",
+                    },
+                    {
+                      text: "GPA",
+                      style: "tableHeader",
+                      alignment: "center",
+                    },
+                    {
+                      text: "วันที่สำเร็จการศึกษา",
+                      style: "tableHeader",
+                      alignment: "center",
+                    },
+                    {
+                      text: "เกียรตินิยม",
+                      style: "tableHeader",
+                      alignment: "center",
+                    },
+                  ];
 
-                      // Table headers
-                      const tableHeaders = [
-                        {
-                          text: "ลำดับ",
-                          style: "tableHeader",
-                          alignment: "center",
-                        },
-                        {
-                          text: "รหัสนักศึกษา",
-                          style: "tableHeader",
-                          alignment: "center",
-                        },
-                        {
-                          text: "ชื่อ - นามสกุล",
-                          style: "tableHeader",
-                          alignment: "center",
-                        },
-                        {
-                          text: "GPA",
-                          style: "tableHeader",
-                          alignment: "center",
-                        },
-                        {
-                          text: "เกียรตินิยม",
-                          style: "tableHeader",
-                          alignment: "center",
-                        },
-                        {
-                          text: "หัวข้อวิทยานิพนธ์",
-                          style: "tableHeader",
-                          alignment: "center",
-                        },
-                      ];
+                  // วนแบ่ง rows ทีละ maxRowsPerPage
+                  for (let i = 0; i < rows.length; i += maxRowsPerPage) {
+                    const rowsForPage = rows.slice(i, i + maxRowsPerPage);
 
-                      // Create table
-                      if (rows.length <= maxRowsPerPage) {
-                        content.push({
-                          unbreakable: true,
-                          stack: [
-                            { text: sectionTitle1, style: "sectionTitle", margin: [0, 10, 0, 0] },
-                            { text: sectionTitle2, style: "sectionTitle", margin: [0, 0, 0, 10] },
-                            {
-                              table: {
-                                headerRows: 1,
-                                widths: [30, 85, 115, 25, 80, "*"],
-                                body: [tableHeaders, ...rows],
-                              },
-                              layout: {
-                                dontBreakRows: true,
-                                hLineWidth: (i, node) => 1.5,
-                                vLineWidth: (i, node) => 1.5,
-                                hLineColor: (i, node) => "#000",
-                                vLineColor: (i, node) => "#000",
-                                paddingLeft: (i, node) => 2,
-                                paddingRight: (i, node) => 2,
-                                paddingTop: (i, node) => 2,
-                                paddingBottom: (i, node) => 2,
-                              },
-                              style: "tableContent",
-                              margin: [0, 0, 0, 10],
-                            },
-                          ],
-                        });
-                      } else {
-                        // แบ่งทีละ maxRowsPerPage
-                        for (let i = 0; i < rows.length; i += maxRowsPerPage) {
-                          const rowsForPage = rows.slice(i, i + maxRowsPerPage);
-                          content.push({
-                            unbreakable: true, // ถ้าอยากให้กลุ่มย่อยๆ ไม่โดนตัด ลองใส่ unbreakable true ด้วย
-                            stack: [
-                              { text: sectionTitle1, style: "sectionTitle", margin: [0, 10, 0, 0] },
-                              { text: sectionTitle2, style: "sectionTitle", margin: [0, 0, 0, 10] },
-                              {
-                                table: {
-                                  headerRows: 1,
-                                  widths: [30, 85, 115, 25, 80, "*"],
-                                  body: [tableHeaders, ...rowsForPage],
-                                },
-                                layout: {
-                                  dontBreakRows: true,
-                                  hLineWidth: (i, node) => 1.5,
-                                  vLineWidth: (i, node) => 1.5,
-                                  hLineColor: (i, node) => "#000",
-                                  vLineColor: (i, node) => "#000",
-                                  paddingLeft: (i, node) => 2,
-                                  paddingRight: (i, node) => 2,
-                                  paddingTop: (i, node) => 2,
-                                  paddingBottom: (i, node) => 2,
-                                },
-                                style: "tableContent",
-                                margin: [0, 0, 0, 10],
-                                },
-                              ],
-                            });
-                          }
-                        }
-                      }
-                    }
+                    content.push({
+                      unbreakable: true,
+                      stack: [
+                        { text: sectionTitle1, style: "sectionTitle", margin: [0, 10, 0, 0] },
+                        { text: sectionTitle2, style: "sectionTitle", margin: [0, 0, 0, 10] },
+                        {
+                          table: {
+                            headerRows: 1,
+                            widths: [30, 85, 115, 25, 80, "*"],
+                            body: [tableHeaders, ...rowsForPage],
+                          },
+                          layout: {
+                            dontBreakRows: true,
+                            hLineWidth: (i, node) => 1.5,
+                            vLineWidth: (i, node) => 1.5,
+                            hLineColor: (i, node) => "#000",
+                            vLineColor: (i, node) => "#000",
+                            paddingLeft: (i, node) => 2,
+                            paddingRight: (i, node) => 2,
+                            paddingTop: (i, node) => 2,
+                            paddingBottom: (i, node) => 2,
+                          },
+                          style: "tableContent",
+                          margin: [0, 0, 0, 10],
+                        },
+                      ],
+                    });
                   }
                 }
               }
             }
           }
         }
-      
-    
+      }
+
       // Document definition
       const docDefinition = {
         content: content,
@@ -349,40 +324,54 @@ const ExportFileController = {
       // Header (รองรับภาษาไทย)
       worksheet.addRow([
         "ลำดับ",
-        "ปีการศึกษา",
-        "เทอม",
-        "รหัส",
-        "ชั้นปี",
+        "รหัสนักศึกษา",
         "คำนำหน้า",
         "ชื่อ",
         "นามสกุล",
         "GPA",
-        "CCA",
+        "วันที่สำเร็จการศึกษา",
+        "ปีการศึกษา",
+        "เทอม",
+        "ชั้นปี",
         "สถานะ",
         "สาขา",
         "เกียรตินิยม",
-        "หัวข้อวิจัย (TH)",
-        "หัวข้อวิจัย (EN)",
       ]);
 
       // Rows
       students.forEach((s, i) => {
+        // แปลง graduate_date เป็น พ.ศ.
+        let graduateDate = "-";
+        if (s.graduate_date) {
+          try {
+            const d = new Date(s.graduate_date);
+            const dd = String(d.getDate()).padStart(2, "0");
+            const mm = String(d.getMonth() + 1).padStart(2, "0");
+            const yyyy = d.getFullYear() + 543; // แปลงเป็น พ.ศ.
+            graduateDate = `${dd}/${mm}/${yyyy}`;
+          } catch (_) {
+            graduateDate = "-";
+          }
+        }
+
+        // แปลง year_no เป็น พ.ศ.
+        const yearBuddhist = !isNaN(Number(s.year_no)) ? Number(s.year_no) + 543 : s.year_no ?? "-";
+        const yearNo = !isNaN(Number(s.std_year_no)) ? Number(s.std_year_no) + 543 : s.std_year_no ?? "-";
+
         worksheet.addRow([
           i + 1,
-          s.year_no ?? "-",
-          s.semester_no ?? "-",
           s.student_no,
-          s.std_year_no ?? "-",
           s.prefix_name ?? "-",
           s.name ?? "-",
           s.lname ?? "-",
           s.gpa ?? "-",
-          s.cca ?? "-",
+          graduateDate,
+          yearBuddhist,
+          s.semester_no ?? "-",
+          yearNo ?? "-",
           getGradStatus(s.status_graduate),
           s.curr_name ?? "-",
           s.honors ?? "-",
-          s.thesis_topic_th ?? "-",
-          s.thesis_topic_en ?? "-",
         ]);
       });
 
@@ -411,8 +400,9 @@ const ExportFileController = {
       // Style header
       worksheet.getRow(1).font = { bold: true, size: 12 };
       worksheet.getColumn("L").width = 60;
-      worksheet.getColumn("N").width = 60;
-      worksheet.getColumn("O").width = 60;
+      worksheet.getColumn("G").width = 20;
+      worksheet.getColumn("M").width = 35;
+
 
       // Export file buffer แล้วส่งให้ React
       res.setHeader(

@@ -4,6 +4,27 @@ import styles from "./PopupStudent.module.css";
 
 const PopupStudent = ({ student, onClose }) => {
   if (!student) return null;
+  
+  // ฟังก์ชันแปลงวันที่จาก ค.ศ. เป็น พ.ศ. และจัดฟอร์แมตแบบไทย
+  const formatDateToBuddhist = (dateString) => {
+    if (!dateString) return "-";
+    try {
+      const date = new Date(dateString);
+      const day = String(date.getDate()).padStart(2, "0");
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const year = date.getFullYear() + 543; // แปลงเป็น พ.ศ.
+      return `${day}/${month}/${year}`;
+    } catch (error) {
+      return "-";
+    }
+  };
+
+  // ฟังก์ชันแปลงปีจาก ค.ศ. เป็น พ.ศ.
+  const formatYearToBuddhist = (year) => {
+    if (!year || isNaN(Number(year))) return year || "-";
+    return Number(year) + 543;
+  };
+  
 
   return (
     <div className={styles.popupOverlay}>
@@ -16,13 +37,13 @@ const PopupStudent = ({ student, onClose }) => {
             <tbody>
                 <tr>
                     <th>ปีที่เข้าเรียน : </th>
-                    <td>{student.std_year_no}</td>
+                    <td>{formatYearToBuddhist(student.std_year_no)}</td>
                     <th>วันที่สำเร็จการศึกษา : </th>
-                    <td>{new Date(student.graduate_date).toISOString().split("T")[0]}</td>
+                    <td>{formatDateToBuddhist(student.graduate_date)}</td>
                 </tr>
                 <tr>
                     <th>ปีสำเร็จการศึกษา : </th>
-                    <td>{student.year_no}</td>
+                    <td>{formatYearToBuddhist(student.year_no)}</td>
                     <th>ชื่อปริญญา : </th>
                     <td>{student.deg_name}</td>
                 </tr>

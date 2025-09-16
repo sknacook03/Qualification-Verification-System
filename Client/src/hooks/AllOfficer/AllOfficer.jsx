@@ -148,7 +148,7 @@ function AllOfficer() {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>#</th>
+                <th>ลำดับ</th>
                 <th>ชื่อ</th>
                 <th>นามสกุล</th>
                 <th>อีเมล</th>
@@ -158,7 +158,7 @@ function AllOfficer() {
             <tbody>
               {currentItems.map((officer, index) => (
                 <tr key={officer.id}>
-                  <td data-label="#"> {index + 1} </td>
+                  <td data-label="ลำดับ"> {index + 1} </td>
                   <td data-label="ชื่อ"> {officer.first_name} </td>
                   <td data-label="นามสกุล"> {officer.last_name} </td>
                   <td data-label="อีเมล"> {officer.email} </td>

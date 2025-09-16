@@ -351,7 +351,7 @@ function Homepages() {
                   <div className={styles.infoContent}>
                     <strong>สมัครเมื่อ</strong>
                     <span>
-                      {moment(agency.created_at).format("DD/MM/YYYY HH:mm")}
+                      {moment(agency.created_at).add(543, 'years').format("DD/MM/YYYY HH:mm")}
                     </span>
                   </div>
                 </div>
@@ -614,11 +614,7 @@ function Homepages() {
                               "Unknown"}
                           </td>
                           <td>
-                            {moment.utc(item.updated_at).format("DD/MM") +
-                              "/" +
-                              (moment.utc(item.updated_at).year() + 543)
-                                .toString()
-                                .slice(-2)}
+                            {moment.utc(item.updated_at).add(543, 'years').format("DD/MM/YYYY")}
                           </td>
                           <td
                             style={{

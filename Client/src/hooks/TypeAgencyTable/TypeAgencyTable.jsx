@@ -28,7 +28,7 @@ const TypeAgencyTable = ({ typeAgency, editType, deleteType, addType }) => {
           <table className={styles.tableTypeAgency}>
             <thead>
               <tr>
-                <th>#</th>
+                <th>ลำดับ</th>
                 <th>ประเภทหน่วยงาน</th>
                 <th>ตัวเลือก</th>
               </tr>
@@ -36,7 +36,7 @@ const TypeAgencyTable = ({ typeAgency, editType, deleteType, addType }) => {
             <tbody>
               {currentItems.map((typeItem, index) => (
                 <tr key={index}>
-                  <td data-label="#"> {index + 1} </td>
+                  <td data-label="ลำดับ"> {index + 1} </td>
                   <td data-label="ประเภทหน่วยงาน"> {typeItem.type_name} </td>
                   <td data-label="ตัวเลือก" className={styles.btnTypeAgency}>
                     <div className={styles.btnContainer}>
