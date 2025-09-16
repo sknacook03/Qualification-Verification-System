@@ -108,7 +108,7 @@ function AgencyApproveTable({
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>#</th>
+              <th>ลำดับ</th>
               <th>ชื่อหน่วยงาน</th>
               <th>เบอร์โทรศัพท์</th>
               <th>ประเภทหน่วยงาน</th>
@@ -121,7 +121,7 @@ function AgencyApproveTable({
           <tbody>
             {currentItems.map((agencyItem, index) => (
               <tr key={agencyItem.id || index}>
-                <td data-label="#"> {index + 1} </td>
+                <td data-label="ลำดับ"> {index + 1} </td>
                 <td data-label="ชื่อหน่วยงาน">
                   {agencyItem.agency_name}
                   <br />

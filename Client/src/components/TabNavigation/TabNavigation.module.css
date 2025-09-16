@@ -3,6 +3,13 @@
   display: flex;
   border-bottom: 2px solid #d8d8d8;
   position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  z-index: 1;
 }
 
 .tabButton {
@@ -16,6 +23,10 @@
   color: #6d6d6d;
   border-bottom: 2px solid transparent;
   transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: fit-content;
+  z-index: 10;
 }
 
 .tabButton:hover {
@@ -24,7 +35,37 @@
 
 .tabButton.active {
   color: #ff7100;
-  border-bottom: 2px solid #ff7100;
+  border-bottom: 2px solid #ff7100 ;
   position: relative;
-  bottom: -1.5px;
+  bottom: -1.5px ;
+  z-index: 10;
+}
+
+@media (max-width: 768px) {
+  .tabContainer {
+    padding: 0 0.5rem;
+    border-bottom: 1px solid #d8d8d8;
+  }
+  
+  .tabButton {
+    padding: 0.6rem 1.2rem;
+    font-size: 13px;
+    min-width: auto;
+  }
+  
+  .tabButton.active {
+    border-bottom: 2px solid #ff7100;
+    bottom: -0.5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tabContainer {
+    padding: 0 0.25rem;
+  }
+  
+  .tabButton {
+    padding: 0.5rem 1rem;
+    font-size: 12px;
+  }
 }
