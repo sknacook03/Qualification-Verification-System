@@ -7,6 +7,55 @@
   min-height: 100vh;
 }
 
+.infoBox {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3e0 100%);
+  border: 1px solid #ff9800;
+  border-left: 4px solid #ff9800;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: 100%;
+  max-width: 600px;
+}
+
+.infoBox h3 {
+  color: #ef6c00;
+  margin: 0 0 0.8rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.infoBox ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: #5d4037;
+}
+
+.infoBox li {
+  margin-bottom: 0.3rem;
+  line-height: 1.3;
+  font-size: 0.9rem;
+}
+
+.infoBox .required {
+  color: #d84315;
+  font-weight: 600;
+}
+
+.infoBox code {
+  background-color: #ffe0b2;
+  color: #e65100;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.3rem;
+  font-size: 0.85rem;
+}
+
+.downloadSection {
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid #ffcc80;
+  text-align: center;
+}
+
 .searchForm {
   background: white;
   padding: 2rem;

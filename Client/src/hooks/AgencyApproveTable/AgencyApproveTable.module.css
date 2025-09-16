@@ -6,6 +6,65 @@
   max-width: 1200px;
 }
 
+.searchContainer {
+  margin-bottom: 1.5rem;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border: 2px solid #e1e5e9;
+  border-radius: 12px;
+  font-size: 1rem;
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.searchInput:focus {
+  border-color: #ff8800;
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(206, 177, 15, 0.1);
+}
+
+.searchInput::placeholder {
+  color: #6c757d;
+  font-style: italic;
+}
+
+.noData {
+  text-align: center;
+  padding: 2rem;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.agencyCountSummary {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 10px;
+  border-left: 4px solid #ff8800;
+}
+
+.totalCount {
+  font-size: 1rem;
+  color: #495057;
+  margin-bottom: 0.3rem;
+}
+
+.filteredCount {
+  font-size: 0.9rem;
+  color: #28a745;
+  font-weight: 500;
+}
+
+.countNumber {
+  font-weight: 700;
+  color: #ff8800;
+  font-size: 1.1em;
+}
+
 .responsiveTableWrapper {
   overflow-x: auto;
   width: 100%;

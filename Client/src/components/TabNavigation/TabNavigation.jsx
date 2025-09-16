@@ -10,7 +10,10 @@ const TabNavigation = ({ tabs, activeTab, onTabChange }) => {
           className={`${styles.tabButton} ${activeTab === index ? styles.active : ""}`}
           onClick={() => onTabChange(index)}
         >
-          {tab.label}
+          <span className={styles.tabLabel}>{tab.label}</span>
+          {tab.count !== null && tab.count !== undefined && (
+            <span className={styles.tabCount}>{tab.count}</span>
+          )}
         </button>
       ))}
     </div>

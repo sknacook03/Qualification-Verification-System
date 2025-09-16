@@ -246,7 +246,9 @@ function HomepagesOfficer() {
                   </span>
                   <span className={styles.statLabel}>จำนวนผู้สำเร็จการศึกษาทั้งหมด</span>
                 </div>
-                <div className={styles.statValue}>{studentCount ?? "N/A"}</div>
+                <div className={styles.statValue}>
+                  {studentCount !== null ? studentCount.toLocaleString() : "N/A"}
+                </div>
               </div>
 
               <div className={`${styles.card} ${styles.statCard}`}>
@@ -256,7 +258,9 @@ function HomepagesOfficer() {
                   </span>
                   <span className={styles.statLabel}>จำนวนหน่วยงานทั้งหมด</span>
                 </div>
-                <div className={styles.statValue}>{agencyCount ?? "N/A"}</div>
+                <div className={styles.statValue}>
+                  {agencyCount !== null ? agencyCount.toLocaleString() : "N/A"}
+                </div>
               </div>
             </div>
 

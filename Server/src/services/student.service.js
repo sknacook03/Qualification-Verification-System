@@ -78,27 +78,29 @@ const StudentService = {
           ? filterParams.student_no.trim()
           : "";
 
-      // ตรวจสอบว่าครบทั้ง 3 ช่อง
-      if (name === "" || lname === "" || student_no === "") {
+      if (name === "" || lname === "") {
         return [];
-      }
-
-      let studentNoFormatted = student_no;
-      if (!student_no.includes("-") && student_no.length === 12) {
-        studentNoFormatted =
-          student_no.slice(0, 11) + "-" + student_no.slice(11);
       }
 
       whereCondition.AND = [
         { name: { equals: name } },
-        { lname: { equals: lname } },
-        {
+        { lname: { equals: lname } }
+      ];
+
+      if (student_no !== "") {
+        let studentNoFormatted = student_no;
+        if (!student_no.includes("-") && student_no.length === 12) {
+          studentNoFormatted =
+            student_no.slice(0, 11) + "-" + student_no.slice(11);
+        }
+
+        whereCondition.AND.push({
           OR: [
             { student_no: { equals: student_no } },
             { student_no: { equals: studentNoFormatted } },
           ],
-        },
-      ];
+        });
+      }
 
       const students = await prisma.student.findMany({ where: whereCondition });
 

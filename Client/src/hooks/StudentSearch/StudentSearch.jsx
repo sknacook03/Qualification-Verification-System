@@ -47,9 +47,6 @@ const StudentSearch = ({ agency, forOfficer }) => {
       if (!filters.lname || filters.lname.trim() === "") {
         newErrors.lname = "กรุณากรอกนามสกุล";
       }
-      if (!filters.student_no || filters.student_no.trim() === "") {
-        newErrors.student_no = "กรุณากรอกรหัสนักศึกษา";
-      }
 
       if (Object.keys(newErrors).length > 0) {
         setError(newErrors);
@@ -108,7 +105,40 @@ const StudentSearch = ({ agency, forOfficer }) => {
   };
   return (
     <div className={styles.containerSearch}>
-      <h2>ค้นหาผู้สำเร็จการศึกษา</h2>
+      <div className={styles.infoBox}>
+        <h3>📋 กฏการกรอกข้อมูล</h3>
+        <ul>
+          <li>
+            <strong>ชื่อ</strong> และ <strong>นามสกุล</strong> -{" "}
+            <span className={styles.required}>จำเป็นต้องกรอก</span>
+          </li>
+          <li>
+            <strong>รหัสนักศึกษา</strong> - สามารถเว้นว่างได้
+            (ใช้เพื่อกรองผลลัพธ์เพิ่มเติม)
+          </li>
+          <li>กรอกข้อมูลให้ตรงกับที่ปรากฏในใบปริญญาหรือเอกสารทางการ</li>
+          <li>
+            รหัสนักศึกษา: รูปแบบ <code>64123456789-0</code> หรือ{" "}
+            <code>641234567890</code>
+          </li>
+          <li>ระบบจะค้นหาผู้สำเร็จการศึกษาที่ตรงกับเงื่อนไขที่กรอก</li>
+        </ul>
+        {!forOfficer && (
+          <div className={styles.downloadSection}>
+            <Button
+              text="📄 ดาวน์โหลดฟอร์มหนังสือยินยอมให้เปิดเผยข้อมูล"
+              styleType="secondary"
+              onClick={() =>
+                window.open(
+                  "https://drive.google.com/drive/folders/13E1bwHoJzosSn-cef6YFPI5ZzPgrHNxk",
+                  "_blank"
+                )
+              }
+            />
+          </div>
+        )}
+      </div>
+
       <div className={styles.searchForm}>
         <Input
           type="text"

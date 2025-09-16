@@ -1,5 +1,11 @@
 Options -MultiViews
 RewriteEngine On
+
+# Set MIME types
+AddType application/manifest+json .webmanifest
+AddType application/manifest+json .json
+AddType image/png .png
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /eduverify/index.html [L]

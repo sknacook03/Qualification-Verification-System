@@ -21,6 +21,12 @@ function AgencyControlPanel() {
   const [officer, setOfficer] = useState(null);
   const [activeTab, setActiveTab] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [agencyCounts, setAgencyCounts] = useState({
+    approved: 0,
+    pending: 0,
+    rejected: 0,
+    total: 0
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,6 +50,32 @@ function AgencyControlPanel() {
     fetchOfficerData();
   }, [navigate]);
 
+  // Fetch agency counts for tabs
+  const fetchAgencyCounts = async () => {
+    try {
+      const res = await axios.get(
+        API_BASE_URL + APIEndpoints.agency.fetchAll,
+        { withCredentials: true }
+      );
+      
+      const agencies = res.data.data || [];
+      const counts = {
+        approved: agencies.filter(a => a.status_approve === 'approved').length,
+        pending: agencies.filter(a => a.status_approve === 'pending').length,
+        rejected: agencies.filter(a => a.status_approve === 'rejected').length,
+        total: agencies.length
+      };
+      
+      setAgencyCounts(counts);
+    } catch (error) {
+      console.error("Failed to fetch agency counts:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAgencyCounts();
+  }, []);
+
   const logout = async () => {
     try {
       await axios.post(
@@ -61,9 +93,16 @@ function AgencyControlPanel() {
     }
   };
   const tabs = [
-    { label: "หน่วยงานทั้งหมด" },
-    { label: "คำขอหน่วยงาน" },
-    { label: "หน่วยงานที่ปฏิเสธ" },
+    { 
+      label: "หน่วยงานทั้งหมด"
+    },
+    { 
+      label: "คำขอหน่วยงาน",
+      count: agencyCounts.pending > 0 ? agencyCounts.pending : null
+    },
+    { 
+      label: "หน่วยงานที่ปฏิเสธ"
+    },
     { label: "เพิ่มหน่วยงาน" },
   ];
   const renderContent = () => {
@@ -71,19 +110,19 @@ function AgencyControlPanel() {
       case 0:
         return (
           <div>
-            <AllAgency officer={officer} />
+            <AllAgency officer={officer} onDataChange={fetchAgencyCounts} />
           </div>
         );
       case 1:
         return (
           <div>
-            <AgencyApproval officer={officer} />
+            <AgencyApproval officer={officer} onDataChange={fetchAgencyCounts} />
           </div>
         );
       case 2:
         return (
           <div>
-            <AgencyReject officer={officer} />
+            <AgencyReject officer={officer} onDataChange={fetchAgencyCounts} />
           </div>
         );
       case 3:
