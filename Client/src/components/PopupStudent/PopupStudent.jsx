@@ -33,7 +33,6 @@ const PopupStudent = ({ student, onClose }) => {
     สหสรรพศาสตร์บัณฑิต: "สถาบันสหสรรพศาสตร์",
   };
 
-  // แยกชื่อปริญญา (หน้าวงเล็บ) และสาขาวิชา (ในวงเล็บ)
   const getFacultyAndMajor = (currName) => {
     if (!currName) return { faculty: "Unknown", major: "Unknown" };
     

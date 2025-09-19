@@ -42,11 +42,30 @@ function Homepages() {
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const [searchTerm, setSearchTerm] = useState("");
 
   const navigate = useNavigate();
-  const sortedStudents = React.useMemo(() => {
+  
+  // Filter students based on search term
+  const filteredStudents = React.useMemo(() => {
     if (!student) return [];
-    const sortableItems = [...student];
+    if (!searchTerm.trim()) return student;
+
+    return student.filter((item) => {
+      const searchLower = searchTerm.toLowerCase();
+      
+      return (
+        item.student.name?.toLowerCase().includes(searchLower) ||
+        item.student.lname?.toLowerCase().includes(searchLower) ||
+        item.student.student_no?.includes(searchTerm) ||
+        item.student.curr_name?.toLowerCase().includes(searchLower)
+      );
+    });
+  }, [student, searchTerm]);
+
+  const sortedStudents = React.useMemo(() => {
+    if (!filteredStudents) return [];
+    const sortableItems = [...filteredStudents];
 
     if (sortConfig.key && sortConfig.direction !== "none") {
       sortableItems.sort((a, b) => {
@@ -85,7 +104,12 @@ function Homepages() {
     }
 
     return sortableItems;
-  }, [student, sortConfig]);
+  }, [filteredStudents, sortConfig]);
+
+  // Reset page when search term changes
+  React.useEffect(() => {
+    setCurrentPage(0);
+  }, [searchTerm]);
 
   const requestSort = (key) => {
     setSortConfig((prevConfig) => {
@@ -103,7 +127,7 @@ function Homepages() {
   const currentItems = sortedStudents
     ? sortedStudents.slice(offset, offset + itemsPerPage)
     : [];
-  const pageCount = student ? Math.ceil(student.length / itemsPerPage) : 0;
+  const pageCount = sortedStudents ? Math.ceil(sortedStudents.length / itemsPerPage) : 0;
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -358,6 +382,28 @@ function Homepages() {
               </div>
             </div>
             <h4 className={styles.topic}>ข้อมูลของผู้สำเร็จการศึกษาที่เคยตรวจสอบ</h4>
+            
+            <div className={styles.searchContainer}>
+              <input
+                type="text"
+                className={styles.searchInput}
+                placeholder="ค้นหาชื่อ, นามสกุล, รหัสนักศึกษา หรือสาขาวิชา..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+
+            <div className={styles.studentCountSummary}>
+              <div className={styles.totalCount}>
+                จำนวนผู้สำเร็จการศึกษาที่เคยตรวจสอบทั้งหมด: <span className={styles.countNumber}>{student?.length || 0}</span> คน
+              </div>
+              {searchTerm && (
+                <div className={styles.filteredCount}>
+                  แสดงผลลัพธ์การค้นหา: <span className={styles.countNumber}>{filteredStudents.length}</span> คน
+                </div>
+              )}
+            </div>
+            
             <div className={styles.selectedBox} style={{ marginBottom: 10 }}>
               {!selectMode ? (
                 <button
@@ -406,7 +452,7 @@ function Homepages() {
               )}
             </div>
             <div className={styles.boxHistory}>
-              {student && (
+              {currentItems.length > 0 ? (
                 <div className={styles.tableWrapper}>
                   <table className={styles.studentTable}>
                     <thead>
@@ -418,14 +464,14 @@ function Homepages() {
                             <input
                               type="checkbox"
                               checked={
-                                student &&
+                                filteredStudents &&
                                 selectedIds.length > 0 &&
-                                selectedIds.length === student.length
+                                selectedIds.length === filteredStudents.length
                               }
                               onChange={(e) => {
                                 if (e.target.checked) {
                                   setSelectedIds(
-                                    student.map((s) => s.student.student_no)
+                                    filteredStudents.map((s) => s.student.student_no)
                                   );
                                 } else {
                                   setSelectedIds([]);
@@ -641,14 +687,24 @@ function Homepages() {
                     </tbody>
                   </table>
                 </div>
+              ) : (
+                <div className={styles.emptyState}>
+                  <p>
+                    {searchTerm 
+                      ? `ไม่พบข้อมูลที่ตรงกับ "${searchTerm}"` 
+                      : "ยังไม่มีข้อมูลผู้สำเร็จการศึกษา"}
+                  </p>
+                </div>
               )}
-              <Pagination
-                pageCount={pageCount}
-                onPageChange={handlePageClick}
-                itemsPerPage={itemsPerPage}
-                setItemsPerPage={setItemsPerPage}
-                setCurrentPage={setCurrentPage}
-              />
+              {sortedStudents.length > 0 && (
+                <Pagination
+                  pageCount={pageCount}
+                  onPageChange={handlePageClick}
+                  itemsPerPage={itemsPerPage}
+                  setItemsPerPage={setItemsPerPage}
+                  setCurrentPage={setCurrentPage}
+                />
+              )}
             </div>
             {selectedStudent && (
               <PopupStudent
