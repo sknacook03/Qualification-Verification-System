@@ -10,7 +10,7 @@ function Footer({ color, disableMenu }) {
         <div className="copy">
           <h5 style={{ color: color }}>
             Developed by Pongwit and Nonraphi © 2024 Rajamangala University of
-            Technology Isan – ระบบตรวจสอบคุณวุฒิ
+            Technology Isan, Nakhon Ratchasima – ระบบตรวจสอบคุณวุฒิการศึกษา
           </h5>
         </div>
         {!disableMenu && (

@@ -35,8 +35,7 @@ function TermOfServices() {
             <>
               <h2 className={styles.termsTitle}>📝 ข้อตกลงในการใช้บริการ</h2>
               <p className={styles.termsSubtitle}>
-                ระบบตรวจสอบคุณวุฒิของมหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน
-                วิทยาเขตนครราชสีมา
+                ระบบตรวจสอบคุณวุฒิการศึกษาของมหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน นครราชสีมา
               </p>
               <section className={styles.termsSection}>
                 <h3 className={styles.termsHeading}>1. วัตถุประสงค์ของระบบ</h3>
@@ -111,8 +110,8 @@ function TermOfServices() {
             <>
               <h2 className={styles.termsTitle}>📝 Terms of Service</h2>
               <p className={styles.termsSubtitle}>
-                Qualification Verification System – Rajamangala University of
-                Technology Isan, Nakhon Ratchasima Campus
+                Educational Qualification Verification System – Rajamangala University of
+                Technology Isan, Nakhon Ratchasima
               </p>
               <section className={styles.termsSection}>
                 <h3 className={styles.termsHeading}>
