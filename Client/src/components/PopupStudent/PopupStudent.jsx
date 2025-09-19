@@ -18,41 +18,62 @@ const PopupStudent = ({ student, onClose }) => {
     }
   };
 
-  const formatYearToBuddhist = (year) => {
-    if (!year || isNaN(Number(year))) return year || "-";
-    return Number(year) + 543;
+  const getFacultyFromDeptCode = (deptCode, currName = "") => {
+    if (currName.includes("ชั้นสูง")) {
+      return "ประกาศนียบัตรวิชาชีพชั้นสูง";
+    }
+    
+    if (deptCode === 103) {
+      return "ระบบรางและการขนส่ง";
+    }
+    if (deptCode === 104) {
+      return "นวัตกรรมและเทคโนโลยีการเกษตร";
+    }
+    
+    const facultyCode = Math.floor(deptCode / 100);
+    
+    const facultyCodeMap = {
+      15: "บริหารธุรกิจ", 
+      16: "วิทยาศาสตร์และศิลปศาสตร์",
+      17: "วิศวกรรมศาสตร์และเทคโนโลยี", 
+      18: "สถาปัตยกรรมศาสตร์และศิลปกรรมสร้างสรรค์", 
+      19: "สถาบันสหสรรพศาสตร์", 
+    };
+    
+    return facultyCodeMap[facultyCode] || "ไม่ทราบคณะ";
   };
 
-    const displayNameToCodeNameMap = {
-    ระบบรางและการขนส่งบัณฑิต: "ระบบรางและการขนส่ง",
-    นวัตกรรมและเทคโนโลยีการเกษตรบัณฑิต: "นวัตกรรมและเทคโนโลยีการเกษตร",
-    บริหารธุรกิจบัณฑิต: "บริหารธุรกิจ",
-    วิทยาศาสตร์และศิลปศาสตร์บัณฑิต: "วิทยาศาสตร์และศิลปศาสตร์",
-    วิศวกรรมศาสตรบัณฑิต: "วิศวกรรมศาสตร์และเทคโนโลยี",
-    สถาปัตยกรรมศาสตรบัณฑิต: "สถาปัตยกรรมศาสตร์และศิลปกรรมสร้างสรรค์",
-    สหสรรพศาสตร์บัณฑิต: "สถาบันสหสรรพศาสตร์",
-  };
-
-  const getFacultyAndMajor = (currName) => {
-    if (!currName) return { faculty: "Unknown", major: "Unknown" };
+  const getMajorFromCurrName = (currName) => {
+    if (!currName) return "Unknown";
     
     const match = currName.match(/^(.+?)\((.+)\)$/);
     if (match) {
-      const degreeDisplayName = match[1].trim();
-      const majorName = match[2].trim(); 
-      
-      const facultyName = displayNameToCodeNameMap[degreeDisplayName] || degreeDisplayName;
-      
-      return { faculty: facultyName, major: majorName };
+      const majorName = match[2].trim();
+      return majorName;
     }
     
-    return { 
-      faculty: displayNameToCodeNameMap[currName] || currName, 
-      major: "Unknown" 
-    };
+    return "Unknown";
   };
 
-  const { faculty, major } = getFacultyAndMajor(student.curr_name);
+  const getDegreeLevelFromCurrName = (currName) => {
+    if (!currName) return "Unknown";
+    
+    if (currName.includes("ชั้นสูง")) {
+      return "ประกาศนียบัตรวิชาชีพชั้นสูง";
+    } else if (currName.includes("ดุษฎีบัณฑิต")) {
+      return "ปริญญาเอก";
+    } else if (currName.includes("มหาบัณฑิต")) {
+      return "ปริญญาโท";
+    } else if (currName.includes("บัณฑิต")) {
+      return "ปริญญาตรี";
+    }
+    
+    return "Unknown";
+  };
+
+  const faculty = getFacultyFromDeptCode(student.dept_code, student.curr_name);
+  const major = getMajorFromCurrName(student.curr_name);
+  const degreeLevel = getDegreeLevelFromCurrName(student.curr_name);
   
   return (
     <div className={styles.popupOverlay}>
@@ -73,7 +94,7 @@ const PopupStudent = ({ student, onClose }) => {
               <th>คำนำหน้าชื่อ : </th>
               <td>{student.prefix_name}</td>
               <th>ชื่อปริญญา : </th>
-              <td>{student.deg_name}</td>
+              <td>{degreeLevel}</td>
             </tr>
             <tr>
               <th>ชื่อ - นามสกุล : </th>

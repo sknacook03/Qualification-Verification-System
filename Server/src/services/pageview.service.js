@@ -321,6 +321,7 @@ const PageviewService = {
   },
   getTopAgenciesByDepartment: async (
     department,
+    faculty,
     limit = 5,
     startDate,
     endDate
@@ -334,13 +335,32 @@ const PageviewService = {
 
     const take = Number(limit) || 5;
     const dateFilter = buildDateFilter(startDate, endDate);
+    
     try {
+      let whereClause = {
+        department: department,
+        ...dateFilter,
+      };
+
+      if (faculty) {
+        const facultyMappings = {
+          'คณะระบบรางและการขนส่ง': ['คณะระบบรางและการขนส่ง', 'ระบบรางและการขนส่งบัณฑิต'],
+          'คณะนวัตกรรมและเทคโนโลยีการเกษตร': ['คณะนวัตกรรมและเทคโนโลยีการเกษตร', 'นวัตกรรมและเทคโนโลยีการเกษตรบัณฑิต'],
+          'คณะบริหารธุรกิจ': ['คณะบริหารธุรกิจ', 'บริหารธุรกิจบัณฑิต', 'บัญชีบัณฑิต'],
+          'คณะวิทยาศาสตร์และศิลปศาสตร์': ['คณะวิทยาศาสตร์และศิลปศาสตร์', 'วิทยาศาสตรบัณฑิต', 'ศิลปศาสตรบัณฑิต'],
+          'คณะวิศวกรรมศาสตร์และเทคโนโลยี': ['คณะวิศวกรรมศาสตร์และเทคโนโลยี', 'วิศวกรรมศาสตรบัณฑิต'],
+          'คณะสถาปัตยกรรมศาสตร์และศิลปกรรมสร้างสรรค์': ['คณะสถาปัตยกรรมศาสตร์และศิลปกรรมสร้างสรรค์', 'สถาปัตยกรรมศาสตรบัณฑิต', 'ศิลปกรรมศาสตรบัณฑิต', 'เทคโนโลยีบัณฑิต'],
+          'สถาบันสหสรรพศาสตร์': ['สถาบันสหสรรพศาสตร์', 'สหสรรพศาสตร์บัณฑิต'],
+          'ประกาศนียบัตรวิชาชีพชั้นสูง': ['ประกาศนียบัตรวิชาชีพชั้นสูง']
+        };
+
+        const possibleFacultyValues = facultyMappings[faculty] || [faculty];
+        whereClause.faculty = { in: possibleFacultyValues };
+      }
+
       const topAgencies = await prisma.pageView.groupBy({
         by: ["agency_id"],
-        where: {
-          department: department,
-          ...dateFilter,
-        },
+        where: whereClause,
         _count: {
           id: true,
         },
@@ -388,6 +408,16 @@ const PageviewService = {
     }
 
     try {
+      let facultyList;
+      try {
+        facultyList = JSON.parse(decodeURIComponent(faculty));
+        if (!Array.isArray(facultyList)) {
+          facultyList = [faculty];
+        }
+      } catch {
+        facultyList = [faculty];
+      }
+
       const students = await prisma.student.findMany({
         select: { curr_name: true },
         where: {
@@ -399,24 +429,42 @@ const PageviewService = {
 
       const parsedList = rawList
         .map((curr) => {
-          const match = curr.match(/^(.+)\((.+)\)$/);
-          if (!match) return null;
+          const firstOpenParen = curr.indexOf('(');
+          const lastCloseParen = curr.lastIndexOf(')');
+          
+          if (firstOpenParen === -1 || lastCloseParen === -1 || firstOpenParen >= lastCloseParen) {
+            return null;
+          }
+          
+          const faculty = curr.substring(0, firstOpenParen).trim();
+          const department = curr.substring(firstOpenParen + 1, lastCloseParen).trim();
+          
           return {
-            faculty: match[1].trim(),
-            department: match[2].trim(),
+            faculty: faculty,
+            department: department,
           };
         })
         .filter(Boolean);
 
+      const filteredItems = parsedList.filter((item) => facultyList.includes(item.faculty));
+      
       const departments = [
         ...new Set(
-          parsedList
-            .filter((item) => item.faculty === faculty)
-            .map((item) => item.department)
+          filteredItems.map((item) => item.department)
         ),
       ];
 
-      return { success: true, data: departments };
+      const departmentInfo = departments.map(dept => {
+        const fullCurriculums = filteredItems
+          .filter(item => item.department === dept)
+          .map(item => `${item.faculty}(${item.department})`);
+        return {
+          department: dept,
+          fullNames: fullCurriculums
+        };
+      });
+
+      return { success: true, data: departments, departmentInfo: departmentInfo };
     } catch (error) {
       console.error("Error parsing curr_name:", error);
       return {
@@ -528,6 +576,17 @@ const PageviewService = {
     try {
       const now = new Date();
       const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+
+      const student = await prisma.student.findUnique({
+        where: { id: BigInt(student_id) },
+        select: { curr_name: true }
+      });
+      
+      let actualFaculty = faculty;
+      if (student && student.curr_name && student.curr_name.includes("ชั้นสูง")) {
+        actualFaculty = "ประกาศนียบัตรวิชาชีพชั้นสูง";
+      }
+      
       const pageView = await prisma.pageView.upsert({
         where: {
           agency_id_student_id: {
@@ -537,7 +596,7 @@ const PageviewService = {
         },
         update: {
           action_type: action_type || "VIEW",
-          faculty,
+          faculty: actualFaculty,
           department,
           student_certificate,
           updated_at: bangkokTime,
@@ -545,7 +604,7 @@ const PageviewService = {
         create: {
           agency_id: Number(agency_id),
           student_id: Number(student_id),
-          faculty,
+          faculty: actualFaculty,
           department,
           student_certificate,
           action_type: action_type || "VIEW",

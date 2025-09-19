@@ -206,9 +206,10 @@ const PageviewController = {
   },
   getTopAgenciesByDepartmentController: async (req, res) => {
     try {
-      const { department, limit, startDate, endDate } = req.query;
+      const { department, faculty, limit, startDate, endDate } = req.query;
       const result = await PageviewService.getTopAgenciesByDepartment(
         department,
+        faculty,
         limit,
         startDate,
         endDate

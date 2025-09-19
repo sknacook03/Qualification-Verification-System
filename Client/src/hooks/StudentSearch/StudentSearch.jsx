@@ -103,6 +103,31 @@ const StudentSearch = ({ agency, forOfficer }) => {
   const handleClosePopup = () => {
     setSelectedStudent(null);
   };
+  const getFacultyFromDeptCode = (deptCode, currName = "") => {
+    if (currName.includes("ชั้นสูง")) {
+      return "ประกาศนียบัตรวิชาชีพชั้นสูง";
+    }
+
+    if (deptCode === 103) {
+      return "ระบบรางและการขนส่ง";
+    }
+    if (deptCode === 104) {
+      return "นวัตกรรมและเทคโนโลยีการเกษตร";
+    }
+
+    const facultyCode = Math.floor(deptCode / 100);
+
+    const facultyCodeMap = {
+      15: "บริหารธุรกิจ",
+      16: "วิทยาศาสตร์และศิลปศาสตร์",
+      17: "วิศวกรรมศาสตร์และเทคโนโลยี",
+      18: "สถาปัตยกรรมศาสตร์และศิลปกรรมสร้างสรรค์",
+      19: "สถาบันสหสรรพศาสตร์",
+    };
+
+    return facultyCodeMap[facultyCode] || "ไม่ทราบคณะ";
+  };
+
   return (
     <div className={styles.containerSearch}>
       <div className={styles.infoBox}>
@@ -190,7 +215,7 @@ const StudentSearch = ({ agency, forOfficer }) => {
                   <td data-label="ชื่อ">{student.name}</td>
                   <td data-label="นามสกุล">{student.lname}</td>
                   <td data-label="คณะ">
-                    {student.curr_name.split("(")[0].trim() || "Unknown"}
+                    {getFacultyFromDeptCode(student.dept_code, student.curr_name)}
                   </td>
                   <td data-label="สาขา">
                     {extractDepartment(student.curr_name)}

@@ -132,15 +132,17 @@ const AccessStatistics = ({ officer, agency }) => {
     17: "คณะวิศวกรรมศาสตร์และเทคโนโลยี",
     18: "คณะสถาปัตยกรรมศาสตร์และศิลปกรรมสร้างสรรค์",
     19: "สถาบันสหสรรพศาสตร์",
+    "ปวส": "ประกาศนียบัตรวิชาชีพชั้นสูง",
   };
   const displayNameToCodeNameMap = {
     คณะระบบรางและการขนส่ง: "ระบบรางและการขนส่งบัณฑิต",
     คณะนวัตกรรมและเทคโนโลยีการเกษตร: "นวัตกรรมและเทคโนโลยีการเกษตรบัณฑิต",
     คณะบริหารธุรกิจ: "บริหารธุรกิจบัณฑิต",
-    คณะวิทยาศาสตร์และศิลปศาสตร์: "วิทยาศาสตร์และศิลปศาสตร์บัณฑิต",
-    คณะวิศวกรรมศาสตร์และเทคโนโลยี: "วิศวกรรมศาสตรบัณฑิต",
+    คณะวิทยาศาสตร์และศิลปศาสตร์: "วิทยาศาสตรบัณฑิต",
+    คณะวิศวกรรมศาสตร์และเทคโนโลยี: "วิศวกรรมศาสตรบัณฑิต", 
     คณะสถาปัตยกรรมศาสตร์และศิลปกรรมสร้างสรรค์: "สถาปัตยกรรมศาสตรบัณฑิต",
     สถาบันสหสรรพศาสตร์: "สหสรรพศาสตร์บัณฑิต",
+    ประกาศนียบัตรวิชาชีพชั้นสูง: "ประกาศนียบัตรวิชาชีพชั้นสูง",
   };
 
   useEffect(() => {
@@ -199,11 +201,29 @@ const AccessStatistics = ({ officer, agency }) => {
 
   useEffect(() => {
     if (selectedFacultyCodeName) {
+      const baseFacultyName = selectedFacultyCodeName;
+      const facultyVariations = [
+        baseFacultyName,
+        baseFacultyName.replace('บัณฑิต', 'มหาบัณฑิต'),
+        baseFacultyName.replace('บัณฑิต', 'ดุษฎีบัณฑิต')
+      ];
+      
+      if (baseFacultyName.includes('วิทยาศาสตรบัณฑิต')) {
+        facultyVariations.push('ศิลปศาสตรบัณฑิต');
+      }
+      if (baseFacultyName.includes('บริหารธุรกิจบัณฑิต')) {
+        facultyVariations.push('บัญชีบัณฑิต', 'บัญชีมหาบัณฑิต');
+      }
+      if (baseFacultyName.includes('สถาปัตยกรรมศาสตรบัณฑิต')) {
+        facultyVariations.push('ศิลปกรรมศาสตรบัณฑิต', 'เทคโนโลยีบัณฑิต');
+      }
+
+      const facultyQuery = encodeURIComponent(JSON.stringify(facultyVariations));
       axios
         .get(
           `${
             API_BASE_URL + APIEndpoints.pageview.departmentsByFaculty
-          }?faculty=${encodeURIComponent(selectedFacultyCodeName)}`
+          }?faculty=${facultyQuery}`
         )
         .then((res) => {
           setDepartmentsList(res.data);
@@ -260,11 +280,14 @@ const AccessStatistics = ({ officer, agency }) => {
         if (selectedTopType) {
           url = `${API_BASE_URL}${APIEndpoints.pageview.topAgenciesByType}?${query}`;
         } else if (selectedDepartment) {
+          // For department queries, use the display name instead of code name
+          const facultyParam = selectedFacultyDisplayName ? 
+            `&faculty=${encodeURIComponent(selectedFacultyDisplayName)}` : '';
           url = `${API_BASE_URL}${
             APIEndpoints.pageview.topAgenciesByDepartment
           }?department=${encodeURIComponent(
             selectedDepartment
-          )}&limit=5&${query}`;
+          )}${facultyParam}&limit=5&${query}`;
         } else if (selectedFacultyDisplayName) {
           url = `${API_BASE_URL}${
             APIEndpoints.pageview.topAgenciesByFaculty
@@ -290,6 +313,7 @@ const AccessStatistics = ({ officer, agency }) => {
     fetchTopAgencies();
   }, [
     selectedFacultyDisplayName,
+    selectedFacultyCodeName,
     selectedDepartment,
     selectedTopType,
     startDate,
@@ -406,10 +430,12 @@ const AccessStatistics = ({ officer, agency }) => {
       }
 
       if (exportDepartment) {
+        const facultyParam = selectedFacultyDisplayName ? 
+          `&faculty=${encodeURIComponent(selectedFacultyDisplayName)}` : '';
         const res = await axios.get(
           `${API_BASE_URL}${
             APIEndpoints.pageview.topAgenciesByDepartment
-          }?department=${encodeURIComponent(selectedDepartment)}&${query}`
+          }?department=${encodeURIComponent(selectedDepartment)}${facultyParam}&${query}`
         );
         const list = Array.isArray(res.data.data) ? res.data.data : [];
         exportTables.push({
@@ -724,13 +750,30 @@ const AccessStatistics = ({ officer, agency }) => {
   };
   useEffect(() => {
     if (exportFaculty) {
-      const facultyCode = displayNameToCodeNameMap[exportFaculty];
-      if (facultyCode) {
+      const baseFacultyName = displayNameToCodeNameMap[exportFaculty];
+      if (baseFacultyName) {
+        const facultyVariations = [
+          baseFacultyName,
+          baseFacultyName.replace('บัณฑิต', 'มหาบัณฑิต'),
+          baseFacultyName.replace('บัณฑิต', 'ดุษฎีบัณฑิต')
+        ];
+        
+        if (baseFacultyName.includes('วิทยาศาสตรบัณฑิต')) {
+          facultyVariations.push('ศิลปศาสตรบัณฑิต');
+        }
+        if (baseFacultyName.includes('บริหารธุรกิจบัณฑิต')) {
+          facultyVariations.push('บัญชีบัณฑิต', 'บัญชีมหาบัณฑิต');
+        }
+        if (baseFacultyName.includes('สถาปัตยกรรมศาสตรบัณฑิต')) {
+          facultyVariations.push('ศิลปกรรมศาสตรบัณฑิต', 'เทคโนโลยีบัณฑิต');
+        }
+
+        const facultyQuery = encodeURIComponent(JSON.stringify(facultyVariations));
         axios
           .get(
             `${
               API_BASE_URL + APIEndpoints.pageview.departmentsByFaculty
-            }?faculty=${encodeURIComponent(facultyCode)}`
+            }?faculty=${facultyQuery}`
           )
           .then((res) => {
             setDepartmentsList(res.data);
