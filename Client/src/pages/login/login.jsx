@@ -140,6 +140,10 @@ function App() {
               <span className={styles.noteNumber}>2.</span>
               <span className={styles.noteText}>หากท่านต้องการตรวจสอบผลการศึกษาหรือข้อมูลอื่นๆ นอกเหนือจากที่ปรากฏ ท่านจะต้องส่งหนังสือตรวจสอบคุณวุฒิอย่างเป็นทางการมายังมหาวิทยาลัย</span>
             </div>
+            <div className={styles.noteItem}>
+              <span className={styles.noteNumber}>3.</span>
+              <span className={styles.noteText}>สอบถามข้อมูลเพิ่มเติมที่ สำนักส่งเสริมวิชาการและงานทะเบียน งานทะเบียนและประมวลผล โทรศัพท์: 0 4423 3000 ต่อ 2751 - 2758 โทรศัพท์มือถือ: 08 3993 7945 ในวันและเวลาราชการ</span>
+            </div>
           </div>
         </div>
 
