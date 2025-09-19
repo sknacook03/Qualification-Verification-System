@@ -170,7 +170,7 @@ footer {
 
   .noteBox {
     width: 1000px;
-    margin: -5rem 0 2rem 0;
+    margin: 0 0 2rem;
   }
 
 }
@@ -181,12 +181,11 @@ footer {
     justify-content: start;
   }
   .noteContainer {
-    margin: -5rem 0 2rem 6rem;
+    margin: 0 6rem 0;
     display: block;
   }
   .noteBox {
     width: 1000px;
-    margin: 0;
   }
 }
 @media screen and (min-width: 1920px) {
