@@ -23,8 +23,13 @@ const facultyMap = {
   19: "สถาบันสหสรรพศาสตร์",
 };
 
-const getFacultyName = (deptCode) => {
+const getFacultyName = (deptCode, currName) => {
   const code = deptCode.toString();
+  const curr_name = splitDegreeAndDepartment(currName).degree;
+
+  if (curr_name.includes("ชั้นสูง")) {
+    return "ประกาศนียบัตรวิชาชีพชั้นสูง";
+  }
   if (facultyMap[code.substring(0, 3)]) {
     return facultyMap[code.substring(0, 3)];
   }
@@ -81,7 +86,7 @@ const ExportFileController = {
       // Group ข้อมูล
       const grouped = {};
       students.forEach((s) => {
-        const fac = getFacultyName(s.dept_code);
+        const fac = getFacultyName(s.dept_code, s.curr_name);
         const { degree, dept } = splitDegreeAndDepartment(s.curr_name);
         const year = s.year_no || "-";
         const sem = s.semester_no || "-";
@@ -146,7 +151,7 @@ const ExportFileController = {
                         const d = new Date(gradRaw);
                         const dd = String(d.getDate()).padStart(2, "0");
                         const mm = String(d.getMonth() + 1).padStart(2, "0");
-                        const yyyy = d.getFullYear() + 543; // แปลงเป็น พ.ศ.
+                        const yyyy = d.getFullYear() + 543; 
                         gradDate = `${dd}/${mm}/${yyyy}`;
                       } catch (_) {
                         gradDate = "-";
@@ -370,7 +375,7 @@ const ExportFileController = {
           s.semester_no ?? "-",
           yearNo ?? "-",
           getGradStatus(s.status_graduate),
-          s.curr_name ?? "-",
+          splitDegreeAndDepartment(s.curr_name).dept ?? "-",
           s.honors ?? "-",
         ]);
       });

@@ -285,7 +285,7 @@
 }
 .selectedBox {
   display: flex;
-  justify-content: space-between;
+  justify-content: start;
 }
 .selectedBox button {
   font-family: "Prompt", sans-serif;
