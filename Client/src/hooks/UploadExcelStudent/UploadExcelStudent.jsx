@@ -11,7 +11,7 @@ import { filesize } from "filesize";
 import styles from "./UploadExcelStudent.module.css";
 
 const UploadExcelStudent = () => {
-  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState([]);
   const [errorMsg, setErrorMsg] = useState("");
   const [uploading, setUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -19,25 +19,42 @@ const UploadExcelStudent = () => {
 
   const handleClick = () => fileInputRef.current.click();
 
-  const handleFile = (selectedFile) => {
-    if (!selectedFile) return;
-    if (!selectedFile.name.toLowerCase().endsWith(".xlsx")) {
-      setErrorMsg("ไฟล์ต้องเป็นชนิด .xlsx เท่านั้น");
-      setFile(null);
-      return;
+  const handleFiles = (selectedFiles) => {
+    if (!selectedFiles || selectedFiles.length === 0) return;
+    
+    const validFiles = [];
+    const invalidFiles = [];
+    
+    Array.from(selectedFiles).forEach(file => {
+      if (file.name.toLowerCase().endsWith(".xlsx")) {
+        validFiles.push(file);
+      } else {
+        invalidFiles.push(file.name);
+      }
+    });
+    
+    if (invalidFiles.length > 0) {
+      setErrorMsg(`ไฟล์ต้องเป็นชนิด .xlsx เท่านั้น: ${invalidFiles.join(", ")}`);
+    } else {
+      setErrorMsg("");
     }
-    setErrorMsg("");
-    setFile(selectedFile);
+    
+    setFiles(prevFiles => [...prevFiles, ...validFiles]);
   };
-  const handleCloseFile = () => {
-    setFile(null);
+
+  const handleRemoveFile = (index) => {
+    setFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
+  };
+
+  const handleClearAllFiles = () => {
+    setFiles([]);
     if (fileInputRef.current) {
       fileInputRef.current.value = null;
     }
   };
 
   const handleFileChange = (e) => {
-    handleFile(e.target.files[0]);
+    handleFiles(e.target.files);
   };
 
   const handleDragEnter = (e) => {
@@ -54,7 +71,7 @@ const UploadExcelStudent = () => {
     e.preventDefault();
     setIsDragging(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleFile(e.dataTransfer.files[0]);
+      handleFiles(e.dataTransfer.files);
       e.dataTransfer.clearData();
     }
   };
@@ -65,53 +82,70 @@ const UploadExcelStudent = () => {
 
   const handleUpload = async () => {
     toast.dismiss();
-    if (!file) {
+    if (!files || files.length === 0) {
       toast.error("กรุณาเลือกไฟล์ก่อนอัปโหลด");
       return;
     }
-    const formData = new FormData();
-    formData.append("file", file);
+
     setUploading(true);
+    let totalSuccessCount = 0;
+    let totalFailedCount = 0;
+    let totalDuplicateCount = 0;
+
     try {
-      const res = await toast.promise(
-        axios.post(
-          API_BASE_URL + APIEndpoints.student.createStudent,
-          formData,
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const res = await toast.promise(
+          axios.post(
+            API_BASE_URL + APIEndpoints.student.createStudent,
+            formData,
+            {
+              withCredentials: true,
+            }
+          ),
           {
-            withCredentials: true,
+            pending: `กำลังอัปโหลดไฟล์ ${i + 1}/${files.length}: ${file.name}`,
           }
-        ),
-        {
-          pending: "กำลังอัปโหลด...",
-        }
-      );
-      const { successCount, failedCount, failedData } = res.data;
-      const duplicateRows = failedData.filter(
-        (row) => row.error === "Student already exists"
-      );
+        );
+
+        const { successCount, failedCount, failedData } = res.data;
+        const duplicateRows = failedData.filter(
+          (row) => row.error === "Student already exists"
+        );
+
+        totalSuccessCount += successCount;
+        totalFailedCount += failedCount;
+        totalDuplicateCount += duplicateRows.length;
+      }
 
       toast.success(
         <div>
-          <p>✅ อัปโหลดสำเร็จ: {successCount} รายการ</p>
-          {failedCount > 0 && (
+          <p>✅ อัปโหลดสำเร็จ: {totalSuccessCount} รายการ</p>
+          <p>📁 จำนวนไฟล์: {files.length} ไฟล์</p>
+          {totalFailedCount > 0 && (
             <>
-              <p>❌ อัปโหลดไม่สำเร็จ: {failedCount} รายการ</p>
-              {duplicateRows.length > 0 && (
-                <p>📌 พบรายชื่อซ้ำ: {duplicateRows.length} รายการ</p>
+              <p>❌ อัปโหลดไม่สำเร็จ: {totalFailedCount} รายการ</p>
+              {totalDuplicateCount > 0 && (
+                <p>📌 พบรายชื่อซ้ำ: {totalDuplicateCount} รายการ</p>
               )}
             </>
           )}
         </div>
       );
-      setFile(null);
+
+      setFiles([]);
       setErrorMsg("");
       if (fileInputRef.current) {
         fileInputRef.current.value = null;
       }
-      setUploading(false);
     } catch (err) {
       toast.error("อัปโหลดล้มเหลว");
       console.error(err);
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -131,7 +165,7 @@ const UploadExcelStudent = () => {
         </div>
         <div className={styles.UploadInfo}>
           <p>กรุณาเลือกไฟล์ Excel ที่ต้องการอัปโหลด</p>
-          <p>รองรับไฟล์ .xlsx เท่านั้น</p>
+          <p>รองรับไฟล์ .xlsx เท่านั้น (สามารถเลือกหลายไฟล์)</p>
         </div>
         <button className={styles.btnChooseFile}>เลือกไฟล์</button>
         <input
@@ -140,27 +174,44 @@ const UploadExcelStudent = () => {
           onChange={handleFileChange}
           className={styles.inputUploadFile}
           accept=".xlsx"
+          multiple
         />
-        {file && (
-          <div className={styles.selectedFileContainer}>
-            <div className={styles.selectedFile}>
-              <img src={IconExcel} alt="" width={40} height={40} />
-              <div className={styles.infoFile}>
-                <p className={styles.fileName}>{file.name}</p>
-                <p className={styles.fileSize}>{filesize(file.size)}</p>
-              </div>
+        {files.length > 0 && (
+          <div className={styles.selectedFilesContainer}>
+            <div className={styles.filesHeader}>
+              <span>ไฟล์ที่เลือก ({files.length} ไฟล์)</span>
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleClearAllFiles();
+                }}
+                className={styles.clearAllBtn}
+              >
+                ลบทั้งหมด
+              </button>
             </div>
-            <img
-              src={IconClose}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleCloseFile();
-              }}
-              className={styles.closeIcon}
-              alt=""
-              width={15}
-              height={15}
-            />
+            {files.map((file, index) => (
+              <div key={index} className={styles.selectedFileContainer}>
+                <div className={styles.selectedFile}>
+                  <img src={IconExcel} alt="" width={40} height={40} />
+                  <div className={styles.infoFile}>
+                    <p className={styles.fileName}>{file.name}</p>
+                    <p className={styles.fileSize}>{filesize(file.size)}</p>
+                  </div>
+                </div>
+                <img
+                  src={IconClose}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveFile(index);
+                  }}
+                  className={styles.closeIcon}
+                  alt=""
+                  width={15}
+                  height={15}
+                />
+              </div>
+            ))}
           </div>
         )}
         {errorMsg && <p className={styles.errorMsg}>{errorMsg}</p>}
@@ -174,8 +225,8 @@ const UploadExcelStudent = () => {
         <button
           onClick={handleUpload}
           className={styles.btnUpload}
-          disabled={!file}
-          title={!file ? "กรุณาเลือกไฟล์ก่อนอัปโหลด" : ""}
+          disabled={files.length === 0}
+          title={files.length === 0 ? "กรุณาเลือกไฟล์ก่อนอัปโหลด" : ""}
         >
           อัปโหลด
         </button>
