@@ -38,7 +38,7 @@ function Contact() {
               <li>
                 <span className={styles.icon}><FaPhone /></span>
                 <span className={styles.phoneTel}>044-233-000</span>
-                <span className={styles.label}> ( ประชาสัมพันธ์: ต่อ 2751–2758 )</span>
+                <span className={styles.label}> ( ประชาสัมพันธ์: ต่อ 2751–8 )</span>
               </li>
               <li>
                 <span className={styles.icon}><FaMobileAlt /></span>
