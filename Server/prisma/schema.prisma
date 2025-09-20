@@ -126,8 +126,8 @@ model Student {
   graduate_date   DateTime?
   deg_name        String?
   honors          String?
-  thesis_topic_th String?
-  thesis_topic_en String?
+  thesis_topic_th String?  @db.Text
+  thesis_topic_en String?  @db.Text
   dept_code       Int?
   curr_name       String?
   created_at      DateTime  @default(now())     
