@@ -162,7 +162,7 @@ const useTokenExpiry = (opts = {}) => {
   const handleExtendToken = async () => {
     try {
       const res = await axios.post(
-        API_BASE_URL + APIEndpoints.auth.renewToken, 
+        API_BASE_URL + APIEndpoints.auth.refresh, 
         {},
         { withCredentials: true }
       );

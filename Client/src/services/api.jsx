@@ -8,6 +8,7 @@ export const APIEndpoints = {
     logout: "/auth/logout",
     loginOfficer: "/auth/login-officer",
     refresh: "/auth/refresh",
+    checkTokenExpiry: "/auth/check-token-expiry",
   },
   agency: {
     checkEmail: "/agency/check-email",

@@ -134,6 +134,43 @@ const AuthController = {
       return res.status(401).json({ error: "Invalid token" });
     }
   },
+  checkTokenExpiryController: (req, res) => {
+    try {
+      const token = req.cookies?.token;
+
+      if (!token) {
+        return res.status(401).json({ 
+          error: "No token provided",
+          expired: true 
+        });
+      }
+
+      // ข้อมูล token expiry ถูก set ไว้ใน middleware checkTokenExpiry แล้ว
+      const tokenExpiry = req.tokenExpiry;
+
+      if (tokenExpiry && tokenExpiry.isExpired) {
+        return res.status(401).json({ 
+          error: "Token expired",
+          expired: true,
+          timeLeft: 0,
+          expiresIn: tokenExpiry.expiryDate
+        });
+      }
+
+      res.status(200).json({
+        message: "Token is valid",
+        expired: false,
+        timeLeft: tokenExpiry ? tokenExpiry.timeLeft * 1000 : 0, // แปลงเป็น milliseconds
+        expiresIn: tokenExpiry ? tokenExpiry.expiryDate : null
+      });
+    } catch (error) {
+      console.error("Error checking token expiry:", error);
+      return res.status(401).json({ 
+        error: "Invalid token",
+        expired: true 
+      });
+    }
+  },
 };
 
 export default AuthController;
