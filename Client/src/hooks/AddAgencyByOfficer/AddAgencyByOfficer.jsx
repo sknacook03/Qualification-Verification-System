@@ -15,7 +15,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { API_BASE_URL, APIEndpoints } from "../../services/api";
 import axios from "axios";
 
-const AddAgencyByOfficer = ({ officer }) => {
+const AddAgencyByOfficer = ({ officer, onDataChange }) => {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [errors, setErrors] = useState({});
@@ -226,6 +226,11 @@ const AddAgencyByOfficer = ({ officer }) => {
       );
       setShowPopup(true);
       resetForm();
+      
+      // อัปเดต counts แบบเรียลไทม์
+      if (onDataChange) {
+        onDataChange();
+      }
     } catch (error) {
       toast.error(
         error.response?.data?.message || "เกิดข้อผิดพลาดในการเพิ่มหน่วยงาน"

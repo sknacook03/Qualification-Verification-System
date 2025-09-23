@@ -11,25 +11,28 @@ import styles from "./Register.module.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ClipLoader from "react-spinners/ClipLoader";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { API_BASE_URL, APIEndpoints } from "../../services/api";
 import axios from "axios";
 
 function Register() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const savedFormData = location.state || {};
+  
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const [email, setEmail] = useState("");
-  const [orgname, setOrgname] = useState("");
-  const [department, setDepartment] = useState("");
-  const [orgaddress, setOrgaddress] = useState("");
-  const [telphone, setTelphone] = useState("");
-  const [orgType, setOrgType] = useState("");
+  const [email, setEmail] = useState(savedFormData.email || "");
+  const [orgname, setOrgname] = useState(savedFormData.orgname || "");
+  const [department, setDepartment] = useState(savedFormData.department || "");
+  const [orgaddress, setOrgaddress] = useState(savedFormData.orgaddress || "");
+  const [telphone, setTelphone] = useState(savedFormData.telphone || "");
+  const [orgType, setOrgType] = useState(savedFormData.orgType || "");
   const [address, setAddress] = useState({
-    subdistrict: "",
-    district: "",
-    province: "",
-    postalCode: "",
+    subdistrict: savedFormData.subdistrict || "",
+    district: savedFormData.district || "",
+    province: savedFormData.province || "",
+    postalCode: savedFormData.postalCode || "",
   });
 
   const validateForm = () => {
@@ -134,6 +137,7 @@ function Register() {
 
         navigate("/RegisterNext", {
           state: {
+            ...savedFormData, // รวมข้อมูลที่บันทึกไว้
             email,
             orgname,
             department,
@@ -245,6 +249,7 @@ function Register() {
             </div>
             <div className={styles.inputRegister}>
               <ThailandAddress
+                value={address}
                 onAddressChange={handleAddressChange}
                 onClearError={handleClearError}
                 error={{
@@ -273,18 +278,18 @@ function Register() {
           <Link to="/" style={{ textDecoration: "none" }}>
             <ArrowButton direction="left" color="grey" />
           </Link>
-          <button
-            type="button"
+          <ArrowButton 
+            direction="right" 
+            color="orange" 
             onClick={handleNext}
-            style={{ border: "none", position: "relative" }}
             disabled={loading}
-          >
-            {loading ? (
+            style={{ border: "none", position: "relative" }}
+          />
+          {loading && (
+            <div style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)" }}>
               <ClipLoader color="#FF9900" size={20} />
-            ) : (
-              <ArrowButton direction="right" color="orange" />
-            )}
-          </button>
+            </div>
+          )}
         </div>
       </div>
       <Footer />
