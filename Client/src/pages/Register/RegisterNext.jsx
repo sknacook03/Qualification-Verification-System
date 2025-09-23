@@ -107,6 +107,7 @@ function RegisterNext() {
     return Object.keys(newErrors).length === 0;
   };
   const closePopup = (e) => {
+    localStorage.removeItem('registerFormData'); // ล้างข้อมูลก่อนไปหน้าล็อกอิน
     navigate("/");
     setShowPopup(false);
   };
@@ -123,6 +124,9 @@ function RegisterNext() {
       ...formData,
       ...nextPageData 
     };
+
+    // บันทึกข้อมูลลง localStorage เป็น backup
+    localStorage.setItem('registerFormData', JSON.stringify(allFormData));
 
     navigate("/Register", { 
       state: allFormData,
@@ -170,6 +174,9 @@ function RegisterNext() {
         );
 
         setShowPopup(true);
+        
+        // ล้าง localStorage เมื่อสมัครสมาชิกสำเร็จ
+        localStorage.removeItem('registerFormData');
       } catch (error) {
         if (error.response) {
           console.error("Error response:", error.response.data);

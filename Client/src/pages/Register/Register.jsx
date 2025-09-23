@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ArrowButton from "../../components/ArrowButton/ArrowButton";
 import Header from "../../components/header/header";
 import Footer from "../../components/footer/footer";
@@ -18,7 +18,29 @@ import axios from "axios";
 function Register() {
   const navigate = useNavigate();
   const location = useLocation();
-  const savedFormData = location.state || {};
+  
+  // รับข้อมูลจาก navigation state หรือ localStorage
+  const getInitialData = () => {
+    const navigationData = location.state || {};
+    const localStorageData = localStorage.getItem('registerFormData');
+    
+    if (Object.keys(navigationData).length > 0) {
+      // ถ้ามีข้อมูลจาก navigation ให้บันทึกลง localStorage ด้วย
+      localStorage.setItem('registerFormData', JSON.stringify(navigationData));
+      return navigationData;
+    } else if (localStorageData) {
+      // ถ้าไม่มีข้อมูลจาก navigation ให้ใช้จาก localStorage
+      try {
+        return JSON.parse(localStorageData);
+      } catch (error) {
+        console.error('Error parsing localStorage data:', error);
+        return {};
+      }
+    }
+    return {};
+  };
+  
+  const savedFormData = getInitialData();
   
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -34,6 +56,25 @@ function Register() {
     province: savedFormData.province || "",
     postalCode: savedFormData.postalCode || "",
   });
+
+  // บันทึกข้อมูลลง localStorage เมื่อมีการเปลี่ยนแปลง
+  useEffect(() => {
+    const formData = {
+      email,
+      orgname,
+      department,
+      orgaddress,
+      telphone,
+      orgType,
+      ...address
+    };
+    
+    // บันทึกเฉพาะเมื่อมีข้อมูลบางส่วน
+    const hasData = Object.values(formData).some(value => value && value.trim() !== '');
+    if (hasData) {
+      localStorage.setItem('registerFormData', JSON.stringify(formData));
+    }
+  }, [email, orgname, department, orgaddress, telphone, orgType, address]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -147,6 +188,9 @@ function Register() {
             orgType,
           },
         });
+        
+        // ล้าง localStorage เมื่อไปหน้าถัดไปสำเร็จ
+        localStorage.removeItem('registerFormData');
       } catch (error) {
         console.error("Error handling next:", error);
         toast.error(error.message || "เกิดข้อผิดพลาดในการบันทึกข้อมูล");
