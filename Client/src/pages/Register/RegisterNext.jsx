@@ -21,10 +21,10 @@ function RegisterNext() {
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const formData = location.state || {};
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [file, setFile] = useState(null);
-  const [acceptTerms, setAcceptTerms] = useState(false);
+  const [password, setPassword] = useState(formData.password || "");
+  const [confirmPassword, setConfirmPassword] = useState(formData.confirmPassword || "");
+  const [file, setFile] = useState(formData.file || null);
+  const [acceptTerms, setAcceptTerms] = useState(formData.acceptTerms || false);
   const [errors, setErrors] = useState({});
 
   const isPasswordStrong = (password) => {
@@ -107,25 +107,51 @@ function RegisterNext() {
     return Object.keys(newErrors).length === 0;
   };
   const closePopup = (e) => {
+    localStorage.removeItem('registerFormData'); // ล้างข้อมูลก่อนไปหน้าล็อกอิน
     navigate("/");
     setShowPopup(false);
   };
+
+  const handleGoBack = () => {
+    const nextPageData = {
+      password,
+      confirmPassword,
+      file,
+      acceptTerms
+    };
+
+    const allFormData = {
+      ...formData,
+      ...nextPageData 
+    };
+
+    // บันทึกข้อมูลลง localStorage เป็น backup
+    localStorage.setItem('registerFormData', JSON.stringify(allFormData));
+
+    navigate("/Register", { 
+      state: allFormData,
+      replace: true 
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const finalData = new FormData();
-    finalData.append("password", password);
-    finalData.append("confirmPassword", confirmPassword);
-    finalData.append("certificate", file);
+    
+    // ข้อมูลที่ต้องการสำหรับ server
+    finalData.append("email", formData.email);
     finalData.append("agency_name", formData.orgname);
+    finalData.append("department", formData.department);
     finalData.append("telephone_number", formData.telphone);
     finalData.append("address", formData.orgaddress);
+    finalData.append("subdistrict", formData.subdistrict);
+    finalData.append("district", formData.district);
+    finalData.append("province", formData.province);
     finalData.append("postal_code", formData.postalCode);
     finalData.append("type_id", formData.orgType);
-
-    Object.keys(formData).forEach((key) => {
-      finalData.append(key, formData[key]);
-    });
+    finalData.append("password", password);
+    finalData.append("certificate", file);
 
     if (validateForm()) {
       try {
@@ -148,6 +174,9 @@ function RegisterNext() {
         );
 
         setShowPopup(true);
+        
+        // ล้าง localStorage เมื่อสมัครสมาชิกสำเร็จ
+        localStorage.removeItem('registerFormData');
       } catch (error) {
         if (error.response) {
           console.error("Error response:", error.response.data);
@@ -292,9 +321,12 @@ function RegisterNext() {
                 loading || !acceptTerms || !file || !isPasswordStrong(password)
               }
             />
-            <Link to="/Register" style={{ textDecoration: "none" }}>
-              <Button text="ย้อนกลับ" styleType="back" disabled={loading} />
-            </Link>
+            <Button 
+              text="ย้อนกลับ" 
+              styleType="back" 
+              disabled={loading}
+              onClick={handleGoBack}
+            />
           </div>
         </form>
       </div>

@@ -10,7 +10,7 @@ import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "./AllAgency.module.css";
 
-const AllAgency = ({ officer }) => {
+const AllAgency = ({ officer, onDataChange }) => {
   const [agency, setAgency] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
@@ -62,6 +62,11 @@ const AllAgency = ({ officer }) => {
             : agencyItem
         )
       );
+
+      // อัปเดต counts แบบเรียลไทม์
+      if (onDataChange) {
+        onDataChange();
+      }
 
       toast.success("อัปเดตสถานะหน่วยงานเป็นรอดำเนินการเรียบร้อยแล้ว");
     } catch (error) {
@@ -130,6 +135,12 @@ const AllAgency = ({ officer }) => {
       setShowPopup(false);
       setRejectionReason("");
       setRejectLoading(false);
+      
+      // อัปเดต counts แบบเรียลไทม์
+      if (onDataChange) {
+        onDataChange();
+      }
+      
       toast.success("บันทึกการปฏิเสธและส่งอีเมลเรียบร้อยแล้ว");
     } catch (error) {
       console.error("Failed to reject agency:", error);
@@ -174,6 +185,12 @@ const AllAgency = ({ officer }) => {
         throw new Error("Delete failed");
       }
       setAgency((prev) => prev.filter((a) => a.id !== agencyId));
+      
+      // อัปเดต counts แบบเรียลไทม์
+      if (onDataChange) {
+        onDataChange();
+      }
+      
       toast.success("ลบหน่วยงานเรียบร้อยแล้ว");
     } catch (error) {
       console.error("Failed to delete agency:", error);

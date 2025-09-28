@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ArrowButton from "../../components/ArrowButton/ArrowButton";
 import Header from "../../components/header/header";
 import Footer from "../../components/footer/footer";
@@ -11,26 +11,70 @@ import styles from "./Register.module.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ClipLoader from "react-spinners/ClipLoader";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { API_BASE_URL, APIEndpoints } from "../../services/api";
 import axios from "axios";
 
 function Register() {
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // รับข้อมูลจาก navigation state หรือ localStorage
+  const getInitialData = () => {
+    const navigationData = location.state || {};
+    const localStorageData = localStorage.getItem('registerFormData');
+    
+    if (Object.keys(navigationData).length > 0) {
+      // ถ้ามีข้อมูลจาก navigation ให้บันทึกลง localStorage ด้วย
+      localStorage.setItem('registerFormData', JSON.stringify(navigationData));
+      return navigationData;
+    } else if (localStorageData) {
+      // ถ้าไม่มีข้อมูลจาก navigation ให้ใช้จาก localStorage
+      try {
+        return JSON.parse(localStorageData);
+      } catch (error) {
+        console.error('Error parsing localStorage data:', error);
+        return {};
+      }
+    }
+    return {};
+  };
+  
+  const savedFormData = getInitialData();
+  
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const [email, setEmail] = useState("");
-  const [orgname, setOrgname] = useState("");
-  const [department, setDepartment] = useState("");
-  const [orgaddress, setOrgaddress] = useState("");
-  const [telphone, setTelphone] = useState("");
-  const [orgType, setOrgType] = useState("");
+  const [email, setEmail] = useState(savedFormData.email || "");
+  const [orgname, setOrgname] = useState(savedFormData.orgname || "");
+  const [department, setDepartment] = useState(savedFormData.department || "");
+  const [orgaddress, setOrgaddress] = useState(savedFormData.orgaddress || "");
+  const [telphone, setTelphone] = useState(savedFormData.telphone || "");
+  const [orgType, setOrgType] = useState(savedFormData.orgType || "");
   const [address, setAddress] = useState({
-    subdistrict: "",
-    district: "",
-    province: "",
-    postalCode: "",
+    subdistrict: savedFormData.subdistrict || "",
+    district: savedFormData.district || "",
+    province: savedFormData.province || "",
+    postalCode: savedFormData.postalCode || "",
   });
+
+  // บันทึกข้อมูลลง localStorage เมื่อมีการเปลี่ยนแปลง
+  useEffect(() => {
+    const formData = {
+      email,
+      orgname,
+      department,
+      orgaddress,
+      telphone,
+      orgType,
+      ...address
+    };
+    
+    // บันทึกเฉพาะเมื่อมีข้อมูลบางส่วน
+    const hasData = Object.values(formData).some(value => value && value.trim() !== '');
+    if (hasData) {
+      localStorage.setItem('registerFormData', JSON.stringify(formData));
+    }
+  }, [email, orgname, department, orgaddress, telphone, orgType, address]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -134,6 +178,7 @@ function Register() {
 
         navigate("/RegisterNext", {
           state: {
+            ...savedFormData, // รวมข้อมูลที่บันทึกไว้
             email,
             orgname,
             department,
@@ -143,6 +188,9 @@ function Register() {
             orgType,
           },
         });
+        
+        // ล้าง localStorage เมื่อไปหน้าถัดไปสำเร็จ
+        localStorage.removeItem('registerFormData');
       } catch (error) {
         console.error("Error handling next:", error);
         toast.error(error.message || "เกิดข้อผิดพลาดในการบันทึกข้อมูล");
@@ -245,6 +293,7 @@ function Register() {
             </div>
             <div className={styles.inputRegister}>
               <ThailandAddress
+                value={address}
                 onAddressChange={handleAddressChange}
                 onClearError={handleClearError}
                 error={{
@@ -273,18 +322,18 @@ function Register() {
           <Link to="/" style={{ textDecoration: "none" }}>
             <ArrowButton direction="left" color="grey" />
           </Link>
-          <button
-            type="button"
+          <ArrowButton 
+            direction="right" 
+            color="orange" 
             onClick={handleNext}
-            style={{ border: "none", position: "relative" }}
             disabled={loading}
-          >
-            {loading ? (
+            style={{ border: "none", position: "relative" }}
+          />
+          {loading && (
+            <div style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)" }}>
               <ClipLoader color="#FF9900" size={20} />
-            ) : (
-              <ArrowButton direction="right" color="orange" />
-            )}
-          </button>
+            </div>
+          )}
         </div>
       </div>
       <Footer />

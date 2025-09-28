@@ -22,7 +22,7 @@ const HeaderHomePage = ({ user, toggleSidebar, userRole }) => {
             <h2 className={styles.headerInfo1}>
               มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน นครราชสีมา
             </h2>
-            <h2>RAJAMANGARA UNIVERSITY OF TECHNOLOGY ISAN, NAKHON RATCHASIMA</h2>
+            <h2>RAJAMANGALA UNIVERSITY OF TECHNOLOGY ISAN, NAKHON RATCHASIMA</h2>
           </div>
         </div>
         <div className={styles.user}>

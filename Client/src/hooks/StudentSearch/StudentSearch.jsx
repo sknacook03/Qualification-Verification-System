@@ -168,14 +168,14 @@ const StudentSearch = ({ agency, forOfficer }) => {
         <Input
           type="text"
           name="name"
-          placeholder="ชื่อ"
+          placeholder="ชื่อ*"
           onChange={handleChange}
           error={error.name}
         />
         <Input
           type="text"
           name="lname"
-          placeholder="นามสกุล"
+          placeholder="นามสกุล*"
           onChange={handleChange}
           error={error.lname}
         />

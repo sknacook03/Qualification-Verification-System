@@ -10,7 +10,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "./AgencyApproval.module.css";
 
-const AgencyApproval = ({ officer }) => {
+const AgencyApproval = ({ officer, onDataChange }) => {
   const [agency, setAgency] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
@@ -81,6 +81,11 @@ const AgencyApproval = ({ officer }) => {
             : agencyItem
         )
       );
+
+      // อัปเดต counts แบบเรียลไทม์
+      if (onDataChange) {
+        onDataChange();
+      }
 
       toast.success("บันทึกการอนุมัติและส่งอีเมลเรียบร้อยแล้ว");
     } catch (error) {
@@ -192,6 +197,12 @@ const AgencyApproval = ({ officer }) => {
         throw new Error("Delete failed");
       }
       setAgency((prev) => prev.filter((a) => a.id !== agencyId));
+      
+      // อัปเดต counts แบบเรียลไทม์
+      if (onDataChange) {
+        onDataChange();
+      }
+      
       toast.success("ลบหน่วยงานเรียบร้อยแล้ว");
     } catch (error) {
       console.error("Failed to delete agency:", error);

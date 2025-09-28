@@ -50,7 +50,6 @@ function AgencyControlPanel() {
     fetchOfficerData();
   }, [navigate]);
 
-  // Fetch agency counts for tabs
   const fetchAgencyCounts = async () => {
     try {
       const res = await axios.get(
@@ -128,7 +127,7 @@ function AgencyControlPanel() {
       case 3:
         return (
           <div>
-            <AddAgencyByOfficer officer={officer} />
+            <AddAgencyByOfficer officer={officer} onDataChange={fetchAgencyCounts} />
           </div>
         );
       default:
