@@ -35,14 +35,15 @@ function TermOfServices() {
             <>
               <h2 className={styles.termsTitle}>📝 ข้อตกลงในการใช้บริการ</h2>
               <p className={styles.termsSubtitle}>
-                ระบบตรวจสอบคุณวุฒิการศึกษาของมหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน นครราชสีมา
+                ระบบตรวจสอบคุณวุฒิการศึกษาของมหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน
+                นครราชสีมา
               </p>
               <section className={styles.termsSection}>
                 <h3 className={styles.termsHeading}>1. วัตถุประสงค์ของระบบ</h3>
                 <p className={styles.termsText}>
-                  ระบบนี้จัดทำขึ้นเพื่อให้หน่วยงานภาครัฐ เอกชน
+                  ระบบนี้จัดทำขึ้นเพื่อให้หน่วยงานภาครัฐ เอกชน รัฐวิสาหกิจ
                   หรือบุคคลทั่วไปที่ได้รับอนุญาต
-                  สามารถตรวจสอบสถานะคุณวุฒิของผู้สำเร็จการศึกษาจากมหาวิทยาลัยได้อย่างถูกต้อง
+                  สามารถตรวจสอบคุณวุฒิของผู้สำเร็จการศึกษาจากมหาวิทยาลัยได้อย่างถูกต้อง
                   โปร่งใส และปลอดภัย
                 </p>
               </section>
@@ -66,13 +67,16 @@ function TermOfServices() {
                     3.1 ยินยอมให้มหาวิทยาลัยเก็บ ใช้ และเปิดเผยข้อมูลส่วนบุคคล
                   </li>
                   <li>
-                    3.2 ข้อมูลที่เก็บ เช่น อีเมล หน่วยงาน ที่อยู่ เบอร์โทร
-                    รหัสผ่าน เอกสารรับรอง ฯลฯ
+                    3.2 ข้อมูลที่เก็บ เช่น อีเมล ชื่อหน่วยงาน ที่อยู่ เบอร์โทร
+                    หนังสือรับรอง
                   </li>
                   <li>
-                    3.3 จะไม่เปิดเผยข้อมูลเว้นแต่มีความยินยอมหรือข้อกฎหมาย
+                    3.3 มหาวิทยาลัยจะไม่เปิดเผยข้อมูล
+                    เว้นแต่มีความยินยอมหรือข้อกฎหมาย
                   </li>
-                  <li>3.4 ผู้ใช้มีสิทธิ์เข้าถึง แก้ไข หรือลบข้อมูล</li>
+                  <li>
+                    3.4 ผู้ใช้งานระบบมีสิทธิ์เข้าถึงหรือแก้ไขข้อมูลของตนเองได้
+                  </li>
                   <li>3.5 มีมาตรการรักษาความปลอดภัยของข้อมูล</li>
                 </ul>
               </section>
@@ -89,14 +93,9 @@ function TermOfServices() {
                 <h3 className={styles.termsHeading}>
                   5. ข้อจำกัดความรับผิดชอบ
                 </h3>
-                <ul className={styles.termsList}>
-                  <li>
-                    5.1 ไม่รับผิดชอบหากใช้ระบบผิดวัตถุประสงค์หรือเกิดข้อขัดข้อง
-                  </li>
-                  <li>
-                    5.2 ไม่รับประกันความถูกต้องของข้อมูลจากแหล่งที่ไม่รับรอง
-                  </li>
-                </ul>
+                <p className={styles.termsText}>
+                  มหาวิทยาลัยจะไม่รับผิดชอบหากใช้ข้อมูลในระบบผิดวัตถุประสงค์นอกจากการตรวจสอบคุณวุฒิ
+                </p>
               </section>
               <section className={styles.termsSection}>
                 <h3 className={styles.termsHeading}>6. การยอมรับข้อตกลง</h3>
@@ -110,18 +109,18 @@ function TermOfServices() {
             <>
               <h2 className={styles.termsTitle}>📝 Terms of Service</h2>
               <p className={styles.termsSubtitle}>
-                Educational Qualification Verification System – Rajamangala University of
-                Technology Isan, Nakhon Ratchasima
+                Educational Qualification Verification System – Rajamangala
+                University of Technology Isan, Nakhon Ratchasima
               </p>
               <section className={styles.termsSection}>
                 <h3 className={styles.termsHeading}>
                   1. Purpose of the System
                 </h3>
                 <p className={styles.termsText}>
-                  This system is designed to allow authorized government
-                  agencies, private organizations, or individuals to verify the
-                  academic qualifications of graduates accurately,
-                  transparently, and securely.
+                  This system has been developed to enable authorized government
+                  agencies, private organizations, state enterprises, and
+                  members of the public to verify the academic qualifications of
+                  university graduates accurately, transparently, and securely.
                 </p>
               </section>
               <section className={styles.termsSection}>
@@ -150,16 +149,16 @@ function TermOfServices() {
                     disclose personal data.
                   </li>
                   <li>
-                    3.2 Collected data includes email, agency name, address,
-                    phone number, password, and supporting documents.
+                    3.2 Collected data includes email address, organization
+                    name, address, phone number, and letters of certification.
                   </li>
                   <li>
-                    3.3 No disclosure without user consent unless required by
-                    law.
+                    3.3 The University will not disclose information unless
+                    consent has been obtained or disclosure is required by law.
                   </li>
                   <li>
-                    3.4 Users can access, correct, or delete their personal
-                    data.
+                    3.4 System users have the right to access and correct their
+                    own information.
                   </li>
                   <li>
                     3.5 Data is protected under standard security practices.
@@ -179,16 +178,11 @@ function TermOfServices() {
                 <h3 className={styles.termsHeading}>
                   5. Limitation of Liability
                 </h3>
-                <ul className={styles.termsList}>
-                  <li>
-                    5.1 The university is not responsible for damages from
-                    improper use or technical failures.
-                  </li>
-                  <li>
-                    5.2 No guarantee on the accuracy of data submitted by
-                    uncertified sources.
-                  </li>
-                </ul>
+                <p className={styles.termsText}>
+                  The University shall not be liable for any use of data in the
+                  system for purposes other than verifying academic
+                  qualifications.
+                </p>
               </section>
               <section className={styles.termsSection}>
                 <h3 className={styles.termsHeading}>6. Acceptance of Terms</h3>
