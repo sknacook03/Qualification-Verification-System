@@ -18,11 +18,7 @@ const PopupStudent = ({ student, onClose }) => {
     }
   };
 
-  const getFacultyFromDeptCode = (deptCode, currName = "") => {
-    if (currName.includes("ชั้นสูง")) {
-      return "ประกาศนียบัตรวิชาชีพชั้นสูง";
-    }
-    
+  const getFacultyFromDeptCode = (deptCode) => {
     if (deptCode === 103) {
       return "ระบบรางและการขนส่ง";
     }
@@ -93,7 +89,7 @@ const PopupStudent = ({ student, onClose }) => {
             <tr>
               <th>คำนำหน้าชื่อ : </th>
               <td>{student.prefix_name}</td>
-              <th>ชื่อปริญญา : </th>
+              <th>ระดับ : </th>
               <td>{degreeLevel}</td>
             </tr>
             <tr>

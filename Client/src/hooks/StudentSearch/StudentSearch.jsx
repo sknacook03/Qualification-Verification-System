@@ -103,10 +103,7 @@ const StudentSearch = ({ agency, forOfficer }) => {
   const handleClosePopup = () => {
     setSelectedStudent(null);
   };
-  const getFacultyFromDeptCode = (deptCode, currName = "") => {
-    if (currName.includes("ชั้นสูง")) {
-      return "ประกาศนียบัตรวิชาชีพชั้นสูง";
-    }
+  const getFacultyFromDeptCode = (deptCode) => {
 
     if (deptCode === 103) {
       return "ระบบรางและการขนส่ง";
