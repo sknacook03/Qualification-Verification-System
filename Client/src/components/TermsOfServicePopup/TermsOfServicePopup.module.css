@@ -1,0 +1,233 @@
+.overlayPopup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.contentPopup {
+  background: white;
+  border-radius: 12px;
+  padding: 0;
+  max-width: 600px;
+  width: 90%;
+  max-height: fit-content;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header {
+  background: linear-gradient(135deg, #FF7100, #FF9900);
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.header h2 {
+  margin: 10px 0 0 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.content {
+  padding: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.termsText {
+  line-height: 1.6;
+  color: #333;
+}
+
+.termsText p {
+  margin-bottom: 15px;
+}
+
+.termsText strong {
+  color: #FF7100;
+  font-size: 1.1rem;
+}
+
+.termsText ul {
+  padding-left: 20px;
+  margin: 15px 0;
+}
+
+.termsText li {
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.termsText li::marker {
+  color: #FF7100;
+}
+
+.warning {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 20px;
+  color: #856404;
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 15px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+}
+
+.button {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.acceptButton {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+}
+
+.acceptButton:hover {
+  background: linear-gradient(135deg, #218838, #1ea080);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.rejectButton {
+  background: linear-gradient(135deg, #dc3545, #e74c3c);
+  color: white;
+}
+
+.rejectButton:hover {
+  background: linear-gradient(135deg, #c82333, #dc2626);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .contentPopup {
+    width: 95%;
+    margin: 10px;
+    max-height: 85vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .header h2 {
+    font-size: 1.2rem;
+  }
+  
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    max-height: none;
+  }
+  
+  .buttonContainer {
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+    flex-shrink: 0;
+  }
+  
+  .button {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .overlayPopup {
+    padding: 10px;
+  }
+  
+  .contentPopup {
+    width: 100%;
+    margin: 0;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .header {
+    padding: 15px;
+    flex-shrink: 0;
+  }
+  
+  .header h2 {
+    font-size: 1.1rem;
+  }
+  
+  .content {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    max-height: none;
+    min-height: 200px;
+  }
+  
+  .buttonContainer {
+    padding: 12px;
+    flex-shrink: 0;
+    background: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+  }
+  
+  .button {
+    padding: 12px 16px;
+    font-size: 0.95rem;
+  }
+}
+
+.content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.content::-webkit-scrollbar-thumb {
+  background: #FF7100;
+  border-radius: 10px;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+  background: #FF9900;
+}

@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Icon from "../../../assets/homepage.png";
 import LayoutAllPage from "../../../components/LayoutAllPage/LayoutAllPage";
 import PopupStudent from "../../../components/PopupStudent/PopupStudent";
+import TermsOfServicePopup from "../../../components/TermsOfServicePopup/TermsOfServicePopup";
 import Loading from "../../../components/Loading/Loading";
 import Pagination from "../../../components/Pagination/Pagination";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -25,6 +26,7 @@ import styles from "./Homepages.module.css";
 import moment from "moment";
 import axios from "axios";
 import { API_BASE_URL, APIEndpoints } from "../../../services/api";
+import { setCookie, getCookie, deleteCookie } from "../../../utils/cookieUtils";
 import {
   topMenuItems,
   bottomMenuItems,
@@ -43,10 +45,11 @@ function Homepages() {
   const [selectedIds, setSelectedIds] = useState([]);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
   const [searchTerm, setSearchTerm] = useState("");
+  const [showTermsPopup, setShowTermsPopup] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const navigate = useNavigate();
   
-  // Filter students based on search term
   const filteredStudents = React.useMemo(() => {
     if (!student) return [];
     if (!searchTerm.trim()) return student;
@@ -106,7 +109,6 @@ function Homepages() {
     return sortableItems;
   }, [filteredStudents, sortConfig]);
 
-  // Reset page when search term changes
   React.useEffect(() => {
     setCurrentPage(0);
   }, [searchTerm]);
@@ -146,6 +148,14 @@ function Homepages() {
 
         setAgency(res.data.data);
 
+        // ตรวจสอบว่า agency ยอมรับ Terms of Service แล้วหรือไม่ (ใช้ cookie)
+        const termsAcceptedStatus = getCookie(`termsAccepted_${res.data.data.id}`);
+        if (!termsAcceptedStatus) {
+          setShowTermsPopup(true);
+        } else {
+          setTermsAccepted(true);
+        }
+
         try {
           const response = await axios.get(
             API_BASE_URL + APIEndpoints.agency.latestSearch(res.data.data.id),
@@ -177,11 +187,41 @@ function Homepages() {
         }
       );
       localStorage.clear();
+      // หมายเหตุ: ไม่ลบ Terms cookie เพื่อให้ไม่ต้องยอมรับใหม่ในอนาคต
+      // หากต้องการลบ Terms cookie ใช้: deleteCookie(`termsAccepted_${agency?.id}`);
       navigate("/");
     } catch (error) {
       toast.error("เกิดข้อผิดพลาดในการออกจากระบบ");
     }
   };
+
+  const handleAcceptTerms = () => {
+    if (agency) {
+      // บันทึกลง cookie ที่หมดอายุ 1 ปี
+      setCookie(`termsAccepted_${agency.id}`, 'true', 365);
+      setTermsAccepted(true);
+      setShowTermsPopup(false);
+      toast.success("ยอมรับข้อกำหนดการใช้งานเรียบร้อยแล้ว");
+    }
+  };
+
+  const handleRejectTerms = () => {
+    toast.info("คุณปฏิเสธข้อกำหนดการใช้งาน กำลังออกจากระบบ...");
+    setTimeout(() => {
+      logout();
+    }, 1500);
+  };
+
+  // ฟังก์ชันสำหรับรีเซ็ต Terms (ใช้ในกรณีพิเศษ)
+  const resetTermsAcceptance = () => {
+    if (agency) {
+      deleteCookie(`termsAccepted_${agency.id}`);
+      setTermsAccepted(false);
+      setShowTermsPopup(true);
+      toast.info("รีเซ็ตการยอมรับข้อกำหนดแล้ว");
+    }
+  };
+
   const handlePageClick = ({ selected }) => {
     setCurrentPage(selected);
   };
@@ -288,7 +328,10 @@ function Homepages() {
         {loading && <Loading />}
         {!loading && (
           <>
-            <h4 className={styles.topic}>ข้อมูลของท่าน</h4>
+            {/* แสดงเนื้อหาเฉพาะเมื่อยอมรับ Terms แล้วหรือ popup ไม่แสดง */}
+            {(termsAccepted || !showTermsPopup) && (
+              <>
+                <h4 className={styles.topic}>ข้อมูลของท่าน</h4>
             <div className={styles.boxInfoAgency}>
               <div className={styles.agencyHeader}>
                 <div className={styles.agencyIcon}>
@@ -712,8 +755,18 @@ function Homepages() {
                 onClose={handleClosePopup}
               />
             )}
+              </>
+            )}
           </>
         )}
+        
+        {/* Terms of Service Popup */}
+        <TermsOfServicePopup
+          showPopup={showTermsPopup}
+          onAccept={handleAcceptTerms}
+          onReject={handleRejectTerms}
+        />
+        
         <ToastContainer />
       </LayoutAllPage>
     </>
