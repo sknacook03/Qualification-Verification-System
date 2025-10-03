@@ -47,6 +47,7 @@ function Register() {
   const [email, setEmail] = useState(savedFormData.email || "");
   const [orgname, setOrgname] = useState(savedFormData.orgname || "");
   const [department, setDepartment] = useState(savedFormData.department || "");
+  const [contactName, setContactName] = useState(savedFormData.name || "");
   const [orgaddress, setOrgaddress] = useState(savedFormData.orgaddress || "");
   const [telphone, setTelphone] = useState(savedFormData.telphone || "");
   const [orgType, setOrgType] = useState(savedFormData.orgType || "");
@@ -63,6 +64,7 @@ function Register() {
       email,
       orgname,
       department,
+      name: contactName,
       orgaddress,
       telphone,
       orgType,
@@ -74,7 +76,7 @@ function Register() {
     if (hasData) {
       localStorage.setItem('registerFormData', JSON.stringify(formData));
     }
-  }, [email, orgname, department, orgaddress, telphone, orgType, address]);
+  }, [email, orgname, department, contactName, orgaddress, telphone, orgType, address]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -86,6 +88,9 @@ function Register() {
     }
     if (!department) {
       newErrors.department = "กรุณากรอกแผนกงานที่รับผิดชอบตรวจสอบคุณวุฒิ*";
+    }
+    if (!contactName) {
+      newErrors.name = "กรุณากรอกชื่อ-นามสกุลผู้ติดต่อ*";
     }
     if (!telphone) {
       newErrors.telphone = "กรุณากรอกเบอร์โทรศัพท์ของหน่วยงาน*";
@@ -182,6 +187,7 @@ function Register() {
             email,
             orgname,
             department,
+            name: contactName,
             orgaddress,
             telphone,
             ...address,
@@ -265,6 +271,18 @@ function Register() {
                   setErrors((prev) => ({ ...prev, department: undefined }));
                 }}
                 error={errors.department}
+              />
+              <Input
+                label="ชื่อ-นามสกุลผู้ติดต่อ*"
+                id="contactName"
+                name="contactName"
+                type="text"
+                value={contactName}
+                onChange={(e) => {
+                  setContactName(e.target.value);
+                  setErrors((prev) => ({ ...prev, name: undefined }));
+                }}
+                error={errors.name}
               />
               <Input
                 label="เบอร์โทรศัพท์ของหน่วยงาน*"

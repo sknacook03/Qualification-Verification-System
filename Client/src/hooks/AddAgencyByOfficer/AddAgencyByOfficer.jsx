@@ -21,6 +21,7 @@ const AddAgencyByOfficer = ({ officer, onDataChange }) => {
   const [errors, setErrors] = useState({});
   const [email, setEmail] = useState("");
   const [orgname, setOrgname] = useState("");
+  const [contactName, setContactName] = useState("");
   const [department, setDepartment] = useState("");
   const [orgaddress, setOrgaddress] = useState("");
   const [telphone, setTelphone] = useState("");
@@ -102,6 +103,9 @@ const AddAgencyByOfficer = ({ officer, onDataChange }) => {
     if (!department) newErrors.department = "กรุณากรอกแผนกงาน*";
     if (!telphone) {
       newErrors.telphone = "กรุณากรอกเบอร์โทรศัพท์*";
+    }
+    if (!contactName) {
+      newErrors.name = 'กรุณากรอกชื่อ-นามสกุลผู้ติดต่อ*';
     } else if (
       !mobilePhoneRegex.test(telphone) &&
       !landlinePhoneRegex.test(telphone)
@@ -172,6 +176,7 @@ const AddAgencyByOfficer = ({ officer, onDataChange }) => {
 
   const closePopup = (e) => {
     setShowPopup(false);
+    setContactName("");
   };
 
   const handleSubmit = async (e) => {
@@ -204,6 +209,7 @@ const AddAgencyByOfficer = ({ officer, onDataChange }) => {
       formData.append("email", email);
       formData.append("agency_name", orgname);
       formData.append("department", department);
+      formData.append("name", contactName);
       formData.append("telephone_number", telphone);
       formData.append("address", orgaddress);
       formData.append("subdistrict", address.subdistrict);
@@ -280,6 +286,18 @@ const AddAgencyByOfficer = ({ officer, onDataChange }) => {
                   }
                 }}
                 error={errors.department}
+              />
+              <Input
+                label='ชื่อ-นามสกุลผู้ติดต่อ*'
+                type='text'
+                value={contactName}
+                onChange={(e) => {
+                  setContactName(e.target.value);
+                  if (errors.name) {
+                    setErrors((prev) => ({ ...prev, name: undefined }));
+                  }
+                }}
+                error={errors.name}
               />
               <Input
                 label="เบอร์โทรศัพท์*"
@@ -417,3 +435,4 @@ const AddAgencyByOfficer = ({ officer, onDataChange }) => {
 };
 
 export default AddAgencyByOfficer;
+

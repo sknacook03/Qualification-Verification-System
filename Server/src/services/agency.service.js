@@ -75,6 +75,7 @@ const AgencyService = {
         email,
         agency_name,
         department,
+        name = "",
         telephone_number,
         address,
         subdistrict,
@@ -109,6 +110,7 @@ const AgencyService = {
           email,
           agency_name,
           department,
+          name: name ? name.trim() : "",
           telephone_number,
           address: address || "-",
           subdistrict: subdistrict || "-",
@@ -212,6 +214,20 @@ const AgencyService = {
       const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
       let updatePayload = { ...updateData, updated_at: bangkokTime };
 
+      if (typeof updatePayload.name === "string") {
+        updatePayload.name = updatePayload.name.trim();
+      }
+
+      if (Array.isArray(updateData.subdistrict)) {
+        updatePayload.subdistrict = updateData.subdistrict[0] || '';
+      }
+      if (Array.isArray(updateData.district)) {
+        updatePayload.district = updateData.district[0] || '';
+      }
+      if (Array.isArray(updateData.province)) {
+        updatePayload.province = updateData.province[0] || '';
+      }
+
       if (updateData.password) {
         updatePayload.password = await bcrypt.hash(updateData.password, 10);
       } else {
@@ -246,6 +262,10 @@ const AgencyService = {
       const { password, ...restData } = updateData;
 
       const data = { ...restData };
+
+      if (typeof data.name === "string") {
+        data.name = data.name.trim();
+      }
 
       if (password) {
         data.password = await bcrypt.hash(password, 10);

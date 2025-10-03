@@ -168,7 +168,8 @@ function AgencyApproveTable({
                 <td data-label="ชื่อหน่วยงาน">
                   {agencyItem.agency_name}
                   <br />
-                  <span className={styles.emailText}>{agencyItem.email}</span>
+                  <span className={styles.emailText}>{agencyItem.email}</span><br />
+                  <span className={styles.emailText}>{agencyItem.name}</span>
                 </td>
                 <td data-label="เบอร์โทรศัพท์">
                   <span className={styles.telText}>

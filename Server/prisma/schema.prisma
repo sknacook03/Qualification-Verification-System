@@ -13,6 +13,7 @@ model Agency {
   email            String        @unique
   agency_name      String
   department       String
+  name             String        @default("")
   telephone_number String        @unique
   address          String        @default("-")
   subdistrict      String        @default("-")

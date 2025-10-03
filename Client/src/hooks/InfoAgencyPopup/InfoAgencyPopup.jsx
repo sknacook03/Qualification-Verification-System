@@ -54,6 +54,10 @@ const InfoAgencyPopup = ({
             <span>{agency.department || "-"}</span>
           </div>
           <div className={styles.formGroup}>
+            <label>ชื่อ-นามสกุลผู้ติดต่อ</label>
+            <span>{agency.name || "-"}</span>
+          </div>
+          <div className={styles.formGroup}>
             <label>เบอร์โทรศัพท์</label>
             <span>{agency.telephone_number || "-"}</span>
           </div>
