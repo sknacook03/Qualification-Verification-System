@@ -143,6 +143,7 @@ function RegisterNext() {
     finalData.append("email", formData.email);
     finalData.append("agency_name", formData.orgname);
     finalData.append("department", formData.department);
+    finalData.append("name", formData.name);
     finalData.append("telephone_number", formData.telphone);
     finalData.append("address", formData.orgaddress);
     finalData.append("subdistrict", formData.subdistrict);

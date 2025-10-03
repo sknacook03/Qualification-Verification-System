@@ -13,6 +13,7 @@ export default function EditAgencyPopup({
     email: "",
     agency_name: "",
     department: "",
+    name: "",
     telephone_number: "",
     address: "",
     subdistrict: "",
@@ -28,6 +29,7 @@ export default function EditAgencyPopup({
         email: agency.email || "",
         agency_name: agency.agency_name || "",
         department: agency.department || "",
+        name: agency.name || "",
         telephone_number: agency.telephone_number || "",
         address: agency.address || "",
         subdistrict: agency.subdistrict || "",
@@ -80,6 +82,15 @@ export default function EditAgencyPopup({
             name="department"
             type="text"
             value={form.department}
+            onChange={handleChange}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label>ชื่อ-นามสกุลผู้ติดต่อ*</label>
+          <input
+            name="name"
+            type="text"
+            value={form.name}
             onChange={handleChange}
           />
         </div>

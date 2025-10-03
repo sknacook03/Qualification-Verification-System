@@ -131,6 +131,7 @@ function Editregister() {
             setEmail(data.email);
             setOrgname(data.agency_name);
             setDepartment(data.department);
+            setContactName(data.name);
             setOrgaddress(data.address);
             setTelphone(data.telephone_number);
             setOrgType(data.type_id);
@@ -160,6 +161,7 @@ function Editregister() {
     if (!department) newErrors.department = "กรุณากรอกแผนกงาน*";
     if (!telphone) newErrors.telphone = "กรุณากรอกเบอร์โทรศัพท์*";
     if (!orgType) newErrors.orgType = "กรุณาเลือกประเภทหน่วยงาน*";
+    if (!contactName) newErrors.name = 'กรุณากรอกชื่อ-นามสกุลผู้ติดต่อ*';
     if (!orgaddress) newErrors.orgaddress = "กรุณากรอกที่อยู่ของหน่วยงาน*";
     if (!address.subdistrict) newErrors.subdistrict = "กรุณากรอกตำบล*";
     if (!address.district) newErrors.district = "กรุณากรอกอำเภอ*";
@@ -195,6 +197,7 @@ function Editregister() {
       email && 
       orgname && 
       department && 
+      contactName && 
       telphone && 
       orgType && 
       orgaddress && 
@@ -313,6 +316,18 @@ function Editregister() {
                   setErrors((prev) => ({ ...prev, department: undefined }));
                 }} 
                 error={errors.department} 
+              />
+              <Input
+                label='ชื่อ-นามสกุลผู้ติดต่อ*'
+                id="contactName"
+                name="contactName"
+                type="text"
+                value={contactName}
+                onChange={(e) => {
+                  setContactName(e.target.value);
+                  setErrors((prev) => ({ ...prev, name: undefined }));
+                }}
+                error={errors.name}
               />
               <Input 
                 label="เบอร์โทรศัพท์*" 

@@ -172,6 +172,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
         email: form.email,
         agency_name: form.agencyName,
         department: form.department,
+        name: form.contactName,
         telephone_number: form.telephoneNumber,
         address: form.address,
         subdistrict: form.subdistrict,
@@ -229,6 +230,7 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                 ["ชื่อหน่วยงาน", agency.agency_name],
                 ["อีเมล", agency.email],
                 ["แผนก", agency.department],
+                ["ชื่อ-นามสกุลผู้ติดต่อ", agency.name],
                 [
                   "ประเภทหน่วยงาน",
                   typeAgencies.find((t) => t.id === agency.type_id)
@@ -333,6 +335,18 @@ export default function AgencyPrivacy({ agency, loading, onAgencyUpdated }) {
                     value={form.department}
                     onChange={(e) =>
                       setForm({ ...form, department: e.target.value })
+                    }
+                    disabled={busy}
+                  />
+                </div>
+                <div className={styles.inputGroup}>
+                  <label className={styles.label}>ชื่อ-นามสกุลผู้ติดต่อ*</label>
+                  <input
+                    className={styles.input}
+                    type="text"
+                    value={form.contactName}
+                    onChange={(e) =>
+                      setForm({ ...form, contactName: e.target.value })
                     }
                     disabled={busy}
                   />
