@@ -339,7 +339,12 @@ function Homepages() {
                   <FontAwesomeIcon icon={faBuilding} />
                 </div>
                 <div className={styles.agencyTitle}>
-                  <h3>{agency.agency_name}</h3>
+                  <h3>
+                    {agency.agency_name},
+                    <span style={{ color: "gray", fontWeight: "normal", fontSize: "20px", marginLeft: "8px" }}>
+                      คุณ {agency.name}
+                    </span>
+                  </h3>
                   <span
                     className={`${styles.statusBadge} ${
                       agency.status_approve === "approved"
