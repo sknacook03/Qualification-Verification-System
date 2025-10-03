@@ -27,7 +27,7 @@
 .testLabel {
   color: white;
   font-size: 14px;
-  padding-right: 1rem;
+  padding-right: 0.7rem;
   border-right: 1px solid white;
 }
 
@@ -61,6 +61,13 @@
   opacity: 0.8;
   text-decoration: underline;
 }
+@media screen and (min-width: 768px) {
+  .testLabel {
+    min-width: max-content;
+    font-size: 14px;
+  }
+}
+
 @media screen and (min-width: 1024px) {
   .container {
     padding: 0 5rem;
@@ -78,6 +85,7 @@
   .hamberger {
     display: none;
   }
+
 }
 
 @media screen and (min-width: 1720px) {

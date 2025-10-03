@@ -64,6 +64,7 @@ function CheckQualificationsPage() {
         bottomMenuItems={bottomMenuItems(logout)}
         icon={Icon}
         label="ตรวจสอบคุณวุฒิผู้สำเร็จการศึกษา"
+        userRole="agency"
       >
         <StudentSearch />
       </LayoutAllPage>
