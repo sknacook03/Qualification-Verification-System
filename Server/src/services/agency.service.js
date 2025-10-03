@@ -32,6 +32,7 @@ const AgencyService = {
   },
   getAgencyById: async (id) => {
     try {
+      console.log("Fetching agency by ID:", id);
       const agency = await prisma.agency.findUnique({
         where: { id: BigInt(id) },
       });
@@ -86,6 +87,8 @@ const AgencyService = {
         role = "agency",
         status_approve = "pending",
       } = agency;
+
+      console.log("Received type_id:", agency.type_id);
 
       if (!type_id) {
         throw new Error("Type ID is required");
@@ -208,16 +211,6 @@ const AgencyService = {
       const now = new Date();
       const bangkokTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
       let updatePayload = { ...updateData, updated_at: bangkokTime };
-
-      if (Array.isArray(updateData.subdistrict)) {
-        updatePayload.subdistrict = updateData.subdistrict[0] || '';
-      }
-      if (Array.isArray(updateData.district)) {
-        updatePayload.district = updateData.district[0] || '';
-      }
-      if (Array.isArray(updateData.province)) {
-        updatePayload.province = updateData.province[0] || '';
-      }
 
       if (updateData.password) {
         updatePayload.password = await bcrypt.hash(updateData.password, 10);
