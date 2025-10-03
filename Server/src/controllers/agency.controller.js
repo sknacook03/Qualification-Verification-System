@@ -1,7 +1,10 @@
 import multer from "multer";
 import path from "path";
 import AgencyService from "../services/agency.service.js";
-import { sendAgencyCreate, sendAgencyUpdateNotification } from "../services/email.service.js";
+import {
+  sendAgencyCreate,
+  sendAgencyUpdateNotification,
+} from "../services/email.service.js";
 const replacer = (key, value) => {
   if (typeof value === "bigint") {
     return value.toString();
@@ -142,21 +145,25 @@ const AgencyController = {
 
         const agency = await AgencyService.createAgency(agencyData);
         const responseData = JSON.parse(JSON.stringify(agency, replacer));
-        
+
         res.status(201).json({
           success: true,
           data: responseData,
         });
-        
+
         AgencyService.findAllOfficerEmailsAndNames()
-          .then(emailOfficer => {
+          .then((emailOfficer) => {
             emailOfficer.forEach((officer, index) => {
               setTimeout(() => {
-                sendAgencyCreate(officer.email, officer.first_name, agency_name);
+                sendAgencyCreate(
+                  officer.email,
+                  officer.first_name,
+                  agency_name
+                );
               }, index * 300);
             });
           })
-          .catch(error => console.error('Error queuing emails:', error));
+          .catch((error) => console.error("Error queuing emails:", error));
       } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Failed to create agency" });
@@ -177,26 +184,26 @@ const AgencyController = {
       });
     } catch (error) {
       console.error(error);
-      
-      if (error.code === 'FOREIGN_KEY_CONSTRAINT') {
-        return res.status(409).json({ 
+
+      if (error.code === "FOREIGN_KEY_CONSTRAINT") {
+        return res.status(409).json({
           success: false,
           error: "Cannot delete agency",
-          message: "foreign key constraint"
+          message: "foreign key constraint",
         });
       }
-      
-      if (error.code === 'NOT_FOUND') {
-        return res.status(404).json({ 
+
+      if (error.code === "NOT_FOUND") {
+        return res.status(404).json({
           success: false,
           error: "Agency not found",
-          message: "The agency you're trying to delete does not exist"
+          message: "The agency you're trying to delete does not exist",
         });
       }
-      
-      res.status(500).json({ 
+
+      res.status(500).json({
         success: false,
-        error: "Failed to delete agency" 
+        error: "Failed to delete agency",
       });
     }
   },
@@ -239,22 +246,24 @@ const AgencyController = {
         // ส่งอีเมลแจ้งเตือนเจ้าหน้าที่ในพื้นหลัง
         setTimeout(() => {
           AgencyService.findAllOfficerEmailsAndNames()
-            .then(emailOfficer => {
+            .then((emailOfficer) => {
               emailOfficer.forEach((officer, index) => {
                 setTimeout(() => {
-                  sendAgencyUpdateNotification(officer.email, officer.first_name, updatedAgency.agency_name);
+                  sendAgencyUpdateNotification(
+                    officer.email,
+                    officer.first_name,
+                    updatedAgency.agency_name
+                  );
                 }, index * 1000); // ส่งทีละรอบห้าง 1 วินาที
               });
             })
-            .catch(error => {
-              console.error("Error fetching officer emails for update notification:", error);
+            .catch((error) => {
+              console.error(
+                "Error fetching officer emails for update notification:",
+                error
+              );
             });
         }, 100);
-res.status(200).json({
-          success: true,
-          message: "Successfully updated agency.",
-          data: responseData,
-        });
       } catch (error) {
         console.error(
           "An error occurred while updating the unit:",

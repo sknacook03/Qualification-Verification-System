@@ -24,6 +24,7 @@ function Editregister() {
   const [agencyId, setAgencyId] = useState(null);
   const [email, setEmail] = useState("");
   const [orgname, setOrgname] = useState("");
+  const [contactName, setContactName] = useState("");
   const [department, setDepartment] = useState("");
   const [orgaddress, setOrgaddress] = useState("");
   const [telphone, setTelphone] = useState("");
@@ -233,6 +234,7 @@ function Editregister() {
     try {
       const formData = new FormData();
       formData.append("email", email);
+      formData.append("name", contactName);
       formData.append("agency_name", orgname);
       formData.append("department", department);
       formData.append("address", orgaddress);

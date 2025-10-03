@@ -25,7 +25,7 @@ function AgencyControlPanel() {
     approved: 0,
     pending: 0,
     rejected: 0,
-    total: 0
+    total: 0,
   });
   const navigate = useNavigate();
 
@@ -52,19 +52,20 @@ function AgencyControlPanel() {
 
   const fetchAgencyCounts = async () => {
     try {
-      const res = await axios.get(
-        API_BASE_URL + APIEndpoints.agency.fetchAll,
-        { withCredentials: true }
-      );
-      
+      const res = await axios.get(API_BASE_URL + APIEndpoints.agency.fetchAll, {
+        withCredentials: true,
+      });
+
       const agencies = res.data.data || [];
       const counts = {
-        approved: agencies.filter(a => a.status_approve === 'approved').length,
-        pending: agencies.filter(a => a.status_approve === 'pending').length,
-        rejected: agencies.filter(a => a.status_approve === 'rejected').length,
-        total: agencies.length
+        approved: agencies.filter((a) => a.status_approve === "approved")
+          .length,
+        pending: agencies.filter((a) => a.status_approve === "pending").length,
+        rejected: agencies.filter((a) => a.status_approve === "rejected")
+          .length,
+        total: agencies.length,
       };
-      
+
       setAgencyCounts(counts);
     } catch (error) {
       console.error("Failed to fetch agency counts:", error);
@@ -92,15 +93,15 @@ function AgencyControlPanel() {
     }
   };
   const tabs = [
-    { 
-      label: "หน่วยงานทั้งหมด"
+    {
+      label: "หน่วยงานทั้งหมด",
     },
-    { 
+    {
       label: "คำขอหน่วยงาน",
-      count: agencyCounts.pending > 0 ? agencyCounts.pending : null
+      count: agencyCounts.pending > 0 ? agencyCounts.pending : null,
     },
-    { 
-      label: "หน่วยงานที่ปฏิเสธ"
+    {
+      label: "หน่วยงานที่ปฏิเสธ",
     },
     { label: "เพิ่มหน่วยงาน" },
   ];
@@ -115,7 +116,10 @@ function AgencyControlPanel() {
       case 1:
         return (
           <div>
-            <AgencyApproval officer={officer} onDataChange={fetchAgencyCounts} />
+            <AgencyApproval
+              officer={officer}
+              onDataChange={fetchAgencyCounts}
+            />
           </div>
         );
       case 2:
@@ -127,7 +131,10 @@ function AgencyControlPanel() {
       case 3:
         return (
           <div>
-            <AddAgencyByOfficer officer={officer} onDataChange={fetchAgencyCounts} />
+            <AddAgencyByOfficer
+              officer={officer}
+              onDataChange={fetchAgencyCounts}
+            />
           </div>
         );
       default:

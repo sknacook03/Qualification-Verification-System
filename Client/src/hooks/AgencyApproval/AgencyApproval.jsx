@@ -154,6 +154,11 @@ const AgencyApproval = ({ officer, onDataChange }) => {
       setShowPopup(false);
       setRejectionReason("");
       setRejectLoading(false);
+      
+      if (onDataChange) {
+        onDataChange();
+      }
+      
       toast.success("บันทึกการปฏิเสธและส่งอีเมลเรียบร้อยแล้ว");
     } catch (error) {
       console.error("Failed to reject agency:", error);

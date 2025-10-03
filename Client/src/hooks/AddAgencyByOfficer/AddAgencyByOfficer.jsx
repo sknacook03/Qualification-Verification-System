@@ -207,9 +207,9 @@ const AddAgencyByOfficer = ({ officer, onDataChange }) => {
 
       const formData = new FormData();
       formData.append("email", email);
+      formData.append("name", contactName);
       formData.append("agency_name", orgname);
       formData.append("department", department);
-      formData.append("name", contactName);
       formData.append("telephone_number", telphone);
       formData.append("address", orgaddress);
       formData.append("subdistrict", address.subdistrict);

@@ -32,7 +32,6 @@ const AgencyService = {
   },
   getAgencyById: async (id) => {
     try {
-      console.log("Fetching agency by ID:", id);
       const agency = await prisma.agency.findUnique({
         where: { id: BigInt(id) },
       });
@@ -88,8 +87,6 @@ const AgencyService = {
         role = "agency",
         status_approve = "pending",
       } = agency;
-
-      console.log("Received type_id:", agency.type_id);
 
       if (!type_id) {
         throw new Error("Type ID is required");
