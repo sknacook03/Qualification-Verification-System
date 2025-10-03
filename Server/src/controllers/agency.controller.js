@@ -250,6 +250,11 @@ const AgencyController = {
               console.error("Error fetching officer emails for update notification:", error);
             });
         }, 100);
+res.status(200).json({
+          success: true,
+          message: "Successfully updated agency.",
+          data: responseData,
+        });
       } catch (error) {
         console.error(
           "An error occurred while updating the unit:",
