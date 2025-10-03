@@ -81,6 +81,7 @@ export default function PrivacySettingsPage() {
         bottomMenuItems={bottomMenuItems(logout)}
         icon={Icon}
         label="ตั้งค่าความเป็นส่วนตัว"
+        userRole="agency"
       >
         <ToastContainer position="top-right" autoClose={3000} />
         <AgencyPrivacy

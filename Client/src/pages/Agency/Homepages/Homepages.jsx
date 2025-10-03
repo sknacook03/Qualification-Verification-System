@@ -324,6 +324,7 @@ function Homepages() {
         bottomMenuItems={bottomMenuItems(logout)}
         icon={Icon}
         label="หน้าหลัก"
+        userRole="agency"
       >
         {loading && <Loading />}
         {!loading && (

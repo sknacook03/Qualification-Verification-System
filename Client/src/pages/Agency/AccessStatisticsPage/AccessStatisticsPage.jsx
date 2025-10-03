@@ -68,6 +68,7 @@ function AccessStatisticsPage() {
         bottomMenuItems={bottomMenuItems(logout)}
         icon={Icon}
         label="สถิติการเข้าถึง"
+        userRole="agency"
       >
         <AccessStatistics agency={agency?.id} />
       </LayoutAllPage>
