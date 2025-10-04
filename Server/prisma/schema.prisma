@@ -56,8 +56,8 @@ model ApprovalLog {
   officer_id     BigInt?
   status_approve StatusApprove
   reason         String?       @db.VarChar(255)
-  created_at     DateTime     @default(now())
-  updated_at     DateTime     @updatedAt
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
 
   // Relations
   agency  Agency   @relation(fields: [agency_id], references: [id])
@@ -93,22 +93,21 @@ model Officer {
 }
 
 model PageView {
-  id         BigInt   @id @default(autoincrement())
-  agency_id  BigInt
-  student_id BigInt
-  faculty    String
-  department String
+  id                  BigInt     @id @default(autoincrement())
+  agency_id           BigInt
+  student_id          BigInt
+  faculty             String
+  department          String
   student_certificate String?
-  action_type ActionType  @default(VIEW)
-  created_at DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  action_type         ActionType @default(VIEW)
+  created_at          DateTime   @default(now())
+  updated_at          DateTime   @updatedAt
 
   // Relations
   agency  Agency  @relation(fields: [agency_id], references: [id])
   student Student @relation(fields: [student_id], references: [id])
 
   @@unique([agency_id, student_id])
-
   @@map("pageview")
 }
 
@@ -127,11 +126,11 @@ model Student {
   graduate_date   DateTime?
   deg_name        String?
   honors          String?
-  thesis_topic_th String?  @db.Text
-  thesis_topic_en String?  @db.Text
+  thesis_topic_th String?   @db.Text
+  thesis_topic_en String?   @db.Text
   dept_code       Int?
   curr_name       String?
-  created_at      DateTime  @default(now())     
+  created_at      DateTime  @default(now())
   updated_at      DateTime  @updatedAt
 
   // Relations
