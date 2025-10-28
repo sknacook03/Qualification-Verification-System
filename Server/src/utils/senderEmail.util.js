@@ -10,10 +10,24 @@ const transporter = nodemailer.createTransport({
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASSWORD,
   },
+  pool: true,
+  maxConnections: 5, 
+  maxMessages: 100, 
+  rateDelta: 1000, 
+  rateLimit: 5,
   tls: {
     rejectUnauthorized: false
   }
 });
+
+
+transporter.verify()
+  .then(() => {
+    console.log('✅ SMTP server is ready to send emails');
+  })
+  .catch((error) => {
+    console.error('❌ SMTP server connection failed:', error.message);
+  });
 
 export const sendEmail = async (to, subject, text, html = null, attachments = null) => {
   const mailOptions = {
@@ -32,8 +46,7 @@ export const sendEmail = async (to, subject, text, html = null, attachments = nu
   }
 
   try {
-    await transporter.verify();
-    
+    // No need to verify before each send - connection pool handles it
     const info = await transporter.sendMail(mailOptions);
     return info;
   } catch (error) {
