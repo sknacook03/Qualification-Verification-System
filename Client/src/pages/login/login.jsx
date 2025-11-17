@@ -134,7 +134,7 @@ function App() {
             <h3 className={styles.noteTitle}>หมายเหตุ:</h3>
             <div className={styles.noteItem}>
               <span className={styles.noteNumber}>1.</span>
-              <span className={styles.noteText}>สามารถตรวจสอบคุณวุฒิการศึกษาที่สำเร็จการศึกษาตั้งแต่ปีการศึกษา 2552 เป็นต้นไป</span>
+              <span className={styles.noteText}>สามารถตรวจสอบคุณวุฒิการศึกษาที่สำเร็จการศึกษาตั้งแต่ปีการศึกษา 2553 เป็นต้นไป</span>
             </div>
             <div className={styles.noteItem}>
               <span className={styles.noteNumber}>2.</span>
