@@ -37,7 +37,13 @@ const AllAgency = ({ officer, onDataChange }) => {
           API_BASE_URL + APIEndpoints.agency.fetchAll,
           { withCredentials: true }
         );
-        setAgency(res.data.data);
+        const sortedData = res.data.data.sort((a, b) => {
+          if (a.created_at && b.created_at) {
+            return new Date(b.created_at) - new Date(a.created_at);
+          }
+          return b.id - a.id;
+        });
+        setAgency(sortedData);
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch agency data:", error);
