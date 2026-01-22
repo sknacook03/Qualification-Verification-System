@@ -158,7 +158,7 @@ function AllOfficer() {
             <tbody>
               {currentItems.map((officer, index) => (
                 <tr key={officer.id}>
-                  <td data-label="ลำดับ"> {index + 1} </td>
+                  <td data-label="ลำดับ"> {offset + index + 1} </td>
                   <td data-label="ชื่อ"> {officer.first_name} </td>
                   <td data-label="นามสกุล"> {officer.last_name} </td>
                   <td data-label="อีเมล"> {officer.email} </td>
