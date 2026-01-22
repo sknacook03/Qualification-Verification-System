@@ -164,7 +164,7 @@ function AgencyApproveTable({
           <tbody>
             {currentItems.map((agencyItem, index) => (
               <tr key={agencyItem.id || index}>
-                <td data-label="ลำดับ"> {index + 1} </td>
+                <td data-label="ลำดับ"> {offset + index + 1} </td>
                 <td data-label="ชื่อหน่วยงาน">
                   {agencyItem.agency_name}
                   <br />
