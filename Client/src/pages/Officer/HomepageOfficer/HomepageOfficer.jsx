@@ -320,7 +320,7 @@ function HomepagesOfficer() {
 
                       return (
                         <tr key={pv.id ?? i}>
-                          <td data-label="#">{i + 1}</td>
+                          <td data-label="#">{offset + i + 1}</td>
                           <td data-label="ชื่อนักศึกษา">
                             {pv.student_name ?? "-"}
                           </td>
